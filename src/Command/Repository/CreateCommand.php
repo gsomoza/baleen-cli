@@ -95,10 +95,10 @@ class CreateCommand extends RepositoryCommand
     }
 
     /**
-     * @param $className
-     * @param null $directory
-     * @param null $namespace
-     * @return int
+     * @param string $className
+     * @param string $directory
+     * @param string $namespace
+     * @return string|false
      * @throws CliException
      */
     protected function generate($className, $directory = null, $namespace = null)
@@ -118,7 +118,7 @@ class CreateCommand extends RepositoryCommand
         $class->addUse(SimpleMigration::class);
         $file = new FileGenerator([
             'fileName' => $className . '.php',
-            'classes' => [ $class ]
+            'classes' => [$class]
         ]);
         $contents = $file->generate();
         $filePath = $directory . DIRECTORY_SEPARATOR . $file->getFilename();

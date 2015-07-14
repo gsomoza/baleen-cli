@@ -19,7 +19,6 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Cli\Command\Storage\StorageCommand;
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Storage\FileStorage;
