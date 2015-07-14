@@ -21,6 +21,7 @@ namespace Baleen\Baleen\Command\Repository;
 
 use Baleen\Migrations\Version\Collection\LinkedVersions;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -33,7 +34,13 @@ class ListCommand extends RepositoryCommand
 
     public function configure()
     {
-        $this->setDescription('Prints version IDs for all available migrations ordered incrementally.');
+        $this->setDescription('Prints version IDs for all available migrations ordered incrementally.')
+            ->addOption(
+                'reverse',
+                null,
+                InputOption::VALUE_NONE,
+                'Sort list in reverse order (newest first)'
+            );
         parent::configure();
     }
 
@@ -42,8 +49,12 @@ class ListCommand extends RepositoryCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $reverse = $input->getOption('reverse');
         $versions = $this->getCollection();
         if (count($versions) > 0) {
+            if ($reverse) {
+                $versions = $versions->getReverse();
+            }
             $this->outputVersions($versions, $output);
         } else {
             $output->writeln('No available migrations were found. Please check your settings.');
