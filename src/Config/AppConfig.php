@@ -37,7 +37,7 @@ class AppConfig
         return [
             'migrations'   => [
                 'directory' => 'migrations',
-                'namespace' => 'Migrations\\',
+                'namespace' => 'Migrations',
             ],
             'storage_file' => self::VERSIONS_FILE_NAME,
         ];

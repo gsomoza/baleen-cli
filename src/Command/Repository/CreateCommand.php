@@ -66,6 +66,8 @@ class CreateCommand extends RepositoryCommand
         if (null === $namespace) {
             $namespace = $this->config->getMigrationsNamespace();
         }
+        $namespace = rtrim($namespace, '\\');
+
         $title = $input->getArgument('title');
         $title = preg_replace('/[^A-Za-z\d\s]+/', '', $title);
         $className = ['v' . $timestamp];
