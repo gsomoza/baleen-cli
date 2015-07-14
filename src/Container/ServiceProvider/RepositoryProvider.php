@@ -19,7 +19,6 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Cli\Command\Repository\RepositoryCommand;
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;

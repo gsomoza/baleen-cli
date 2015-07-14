@@ -56,20 +56,23 @@ class AppConfig
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMigrationsDirectoryPath()
     {
         return getcwd() . DIRECTORY_SEPARATOR . $this->config['migrations']['directory'];
     }
 
+    /**
+     * @return string
+     */
     public function getMigrationsNamespace()
     {
         return $this->config['migrations']['namespace'];
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getStorageFilePath()
     {
@@ -82,7 +85,7 @@ class AppConfig
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getConfigFilePath()
     {
@@ -104,7 +107,7 @@ class AppConfig
     }
 
     /**
-     * @param $configFile
+     * @param string $configFile
      * @return static
      * @throws CliException
      */

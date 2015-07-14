@@ -68,7 +68,7 @@ class ListCommand extends RepositoryCommand
     protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
     {
         foreach ($versions as $version) {
-            $output->writeln('<comment>('.$version->getId() . ')</comment> ' . get_class($version->getMigration()));
+            $output->writeln('<comment>(' . $version->getId() . ')</comment> ' . get_class($version->getMigration()));
         }
     }
 }
