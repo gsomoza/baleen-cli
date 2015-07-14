@@ -17,11 +17,11 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Container\ServiceProvider;
+namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Baleen\Command\Storage\StorageCommand;
-use Baleen\Baleen\Config\AppConfig;
-use Baleen\Baleen\Exception\CliException;
+use Baleen\Cli\Command\Storage\StorageCommand;
+use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Storage\FileStorage;
 use League\Container\ServiceProvider;
 
@@ -44,18 +44,18 @@ class StorageProvider extends ServiceProvider
     {
         $container = $this->getContainer();
         $container->singleton(self::SERVICE_STORAGE, function (AppConfig $config) {
-                $storageFile = $config->getStorageFilePath();
-                if (!file_exists($storageFile)) {
-                    $result = touch($storageFile);
-                    if (!$result) {
-                        throw new CliException(sprintf(
-                            'Could not write storage file "%s".',
-                            $config->getStorageFile()
-                        ));
-                    }
+            $storageFile = $config->getStorageFilePath();
+            if (!file_exists($storageFile)) {
+                $result = touch($storageFile);
+                if (!$result) {
+                    throw new CliException(sprintf(
+                        'Could not write storage file "%s".',
+                        $config->getStorageFile()
+                    ));
                 }
-                return new FileStorage($storageFile);
-            })
-            ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+            }
+            return new FileStorage($storageFile);
+        })
+        ->withArgument(AppConfigProvider::SERVICE_CONFIG);
     }
 }

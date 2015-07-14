@@ -17,9 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command\Repository;
+namespace Baleen\Cli\Command\Repository;
 
-use Baleen\Baleen\Command\AbstractCommand;
+use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version\Collection\LinkedVersions;

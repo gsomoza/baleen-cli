@@ -17,9 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Config;
+namespace Baleen\Cli\Config;
 
-use Baleen\Baleen\Exception\CliException;
+use Baleen\Cli\Exception\CliException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
@@ -112,7 +112,8 @@ class AppConfig
     {
         if (!is_file($configFile) || !is_readable($configFile)) {
             throw new CliException(sprintf(
-                'Configuration file "%s" could not be read.', $configFile
+                'Configuration file "%s" could not be read.',
+                $configFile
             ));
         }
         $rawConfig = Yaml::parse(file_get_contents($configFile));

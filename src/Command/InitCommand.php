@@ -17,9 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command;
+namespace Baleen\Cli\Command;
 
-use Baleen\Baleen\Config\AppConfig;
+use Baleen\Cli\Config\AppConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;

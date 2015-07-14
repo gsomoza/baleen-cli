@@ -18,7 +18,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command;
+namespace Baleen\Cli\Command;
 
 use Baleen\Migrations\Timeline;
 use Symfony\Component\Console\Command\Command;
@@ -35,9 +35,9 @@ abstract class TimelineCommand extends Command
     /**
      * @inheritdoc
      */
-    public function __construct($name = null, Timeline $storage)
+    public function __construct(Timeline $storage)
     {
         $this->timeline = $storage;
-        parent::__construct($name);
+        parent::__construct(null);
     }
 }

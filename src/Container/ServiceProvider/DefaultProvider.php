@@ -17,12 +17,12 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Container\ServiceProvider;
+namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Baleen\Application;
-use Baleen\Baleen\Command\AbstractCommand;
-use Baleen\Baleen\Command\Repository\RepositoryCommand;
-use Baleen\Baleen\Command\Storage\StorageCommand;
+use Baleen\Cli\Application;
+use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Cli\Command\Repository\RepositoryCommand;
+use Baleen\Cli\Command\Storage\StorageCommand;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 

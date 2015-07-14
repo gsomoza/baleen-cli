@@ -17,7 +17,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen;
+namespace Baleen\Cli;
 
 use League\Container\Container;
 use Symfony\Component\Console\Application as ConsoleApplication;

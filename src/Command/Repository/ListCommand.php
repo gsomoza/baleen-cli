@@ -17,7 +17,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command\Repository;
+namespace Baleen\Cli\Command\Repository;
 
 use Baleen\Migrations\Version\Collection\LinkedVersions;
 use Symfony\Component\Console\Input\InputInterface;

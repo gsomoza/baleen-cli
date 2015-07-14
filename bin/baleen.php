@@ -45,8 +45,8 @@ if (!$composerAutoloader = $findAutoloader()) {
     );
 }
 
-use Baleen\Baleen\Application;
-use Baleen\Baleen\Container\ServiceProvider\DefaultProvider;
+use Baleen\Cli\Application;
+use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
 use League\Container\Container;
 
 $container = new Container();

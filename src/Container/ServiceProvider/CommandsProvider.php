@@ -18,13 +18,13 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Container\ServiceProvider;
+namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Baleen\Command\InitCommand;
-use Baleen\Baleen\Command\Repository\CreateCommand;
-use Baleen\Baleen\Command\Storage\LatestCommand as StorageLatest;
-use Baleen\Baleen\Command\Repository\ListCommand as RepositoryList;
-use Baleen\Baleen\Command\Repository\LatestCommand as RepositoryLatest;
+use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\Command\Repository\CreateCommand;
+use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
+use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
+use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatest;
 use League\Container\ServiceProvider;
 
 /**

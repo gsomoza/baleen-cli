@@ -17,12 +17,12 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Container\ServiceProvider;
+namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Baleen\Command\Storage\StorageCommand;
-use Baleen\Baleen\Config\AppConfig;
-use Baleen\Baleen\Exception\CliException;
-use Baleen\Baleen\Helper\ConfigHelper;
+use Baleen\Cli\Command\Storage\StorageCommand;
+use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Helper\ConfigHelper;
 use Baleen\Migrations\Storage\FileStorage;
 use League\Container\ServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -49,12 +49,12 @@ class HelperSetProvider extends ServiceProvider
     {
         $container = $this->getContainer();
         $container->singleton(self::SERVICE_HELPERSET, function () use ($container) {
-                $helperSet = new HelperSet();
-                $helperSet->set($container->get(QuestionHelper::class), 'question');
-                $helperSet->set($container->get(ConfigHelper::class));
-                return $helperSet;
-            })
-            ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+            $helperSet = new HelperSet();
+            $helperSet->set($container->get(QuestionHelper::class), 'question');
+            $helperSet->set($container->get(ConfigHelper::class));
+            return $helperSet;
+        })
+        ->withArgument(AppConfigProvider::SERVICE_CONFIG);
 
         $container->add(QuestionHelper::class);
         $container->add(ConfigHelper::class)

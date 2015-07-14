@@ -18,7 +18,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command\Storage;
+namespace Baleen\Cli\Command\Storage;
 
 use Baleen\Migrations\Version\Collection;
 use Symfony\Component\Console\Input\InputInterface;

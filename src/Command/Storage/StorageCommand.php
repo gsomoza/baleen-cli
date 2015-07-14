@@ -18,9 +18,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command\Storage;
+namespace Baleen\Cli\Command\Storage;
 
-use Baleen\Baleen\Command\AbstractCommand;
+use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
 

@@ -14,51 +14,14 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
-
-namespace Baleen\Cli\Helper;
-
-use Baleen\Cli\Config\AppConfig;
-use Symfony\Component\Console\Helper\Helper;
 
 /**
- * Class ConfigHelper
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ConfigHelper extends Helper
-{
-    protected $config;
 
-    /**
-     * @inheritDoc
-     */
-    public function __construct(AppConfig $configuration)
-    {
-        $this->config = $configuration;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'config';
-    }
-
-    /**
-     * @return AppConfig
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param AppConfig $configuration
-     */
-    public function setConfig(AppConfig $configuration)
-    {
-        $this->config = $configuration;
-    }
-}
+define('TEST_BASE_DIR', __DIR__);
+/** @var \Composer\Autoload\ClassLoader $loader */
+$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader->addPsr4('BaleenTest\\Baleen\\', __DIR__);

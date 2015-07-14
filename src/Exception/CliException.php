@@ -18,7 +18,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Exception;
+namespace Baleen\Cli\Exception;
 
 /**
  * Class CliException

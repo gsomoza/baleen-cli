@@ -17,9 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command\Repository;
+namespace Baleen\Cli\Command\Repository;
 
-use Baleen\Baleen\Exception\CliException;
+use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,8 +39,8 @@ class CreateCommand extends RepositoryCommand
     public function configure()
     {
         $this
-            ->addArgument('title',    null, 'Adds a descriptive title for the migration file and class name', null)
-            ->addOption('namespace',  null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
+            ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
+            ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
             ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')
             ;
         parent::configure();

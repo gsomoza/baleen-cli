@@ -17,9 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Container\ServiceProvider;
+namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Baleen\Config\AppConfig;
+use Baleen\Cli\Config\AppConfig;
 use League\Container\ServiceProvider;
 
 /**
