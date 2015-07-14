@@ -1,4 +1,4 @@
-/src/Migration
+/migrations/*
 /vendor/
 composer.lock
 .baleen_versions

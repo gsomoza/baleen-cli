@@ -17,8 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-use Baleen\Baleen\Config\AppConfig;
-use Baleen\Baleen\Config\ConfigLoader;
+use Baleen\Baleen\Application;
+use Baleen\Baleen\Container\CommandsServiceProvider;
+use Baleen\Baleen\Container\DefaultServiceProvider;
 use League\Container\Container;
 
 $autoloader = __DIR__ . '/../vendor/autoload.php';
@@ -30,21 +31,13 @@ if ( ! file_exists($autoloader)) {
     die('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
 }
 
-require $autoloader;
+$composerAutoloader = require $autoloader;
 
 $container = new Container();
-$container->add('config', function() {
-    $configFile = getcwd() . DIRECTORY_SEPARATOR . AppConfig::CONFIG_FILE_NAME;
-    if (file_exists($configFile)) {
-        $config = ConfigLoader::loadFromFile($configFile);
-    } else {
-        $config = new AppConfig([]);
-    }
-    return $config;
-}, true);
-$container->addServiceProvider(new \Baleen\Baleen\Container\DefaultServiceProvider());
-$container->addServiceProvider(new \Baleen\Baleen\Container\CommandsServiceProvider());
+$container->add(DefaultServiceProvider::SERVICE_AUTOLOADER, $composerAutoloader);
+$container->addServiceProvider(new DefaultServiceProvider());
+$container->addServiceProvider(new CommandsServiceProvider());
 
-/** @var \Baleen\Baleen\Application $app */
-$app = $container->get(\Baleen\Baleen\Application::class);
+/** @var Application $app */
+$app = $container->get(Application::class);
 $app->run();

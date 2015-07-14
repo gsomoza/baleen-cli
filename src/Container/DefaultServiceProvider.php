@@ -23,6 +23,7 @@ namespace Baleen\Baleen\Container;
 use Baleen\Baleen\Application;
 use Baleen\Baleen\ApplicationFactory;
 use Baleen\Baleen\Config\AppConfig;
+use Baleen\Baleen\Config\ConfigLoader;
 use Baleen\Baleen\Exception\CliException;
 use Baleen\Baleen\Helper\ConfigHelper;
 use Baleen\Migrations\Repository\DirectoryRepository;
@@ -43,6 +44,7 @@ class DefaultServiceProvider extends ServiceProvider
     const SERVICE_HELPERSET  = 'helperSet';
     const SERVICE_STORAGE    = 'storage';
     const SERVICE_REPOSITORY = 'repository';
+    const SERVICE_AUTOLOADER = 'composerAutoloader';
 
     protected $provides = [
         self::SERVICE_CONFIG,
@@ -66,6 +68,16 @@ class DefaultServiceProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
+        $container->add(DefaultServiceProvider::SERVICE_CONFIG, function() {
+            $configFile = getcwd() . DIRECTORY_SEPARATOR . AppConfig::CONFIG_FILE_NAME;
+            if (file_exists($configFile)) {
+                $config = ConfigLoader::loadFromFile($configFile);
+            } else {
+                $config = new AppConfig();
+            }
+            return $config;
+        }, true);
+
         $container->add(Application::class, null, true)
             ->withArguments([
                 CommandsServiceProvider::SERVICE_COMMANDS,
@@ -87,7 +99,7 @@ class DefaultServiceProvider extends ServiceProvider
             })
             ->withArgument(self::SERVICE_CONFIG);
 
-        $container->add(self::SERVICE_REPOSITORY, function (AppConfig $config){
+        $container->add(self::SERVICE_REPOSITORY, function (AppConfig $config) use ($container) {
                 $migrationsDir = $config->getMigrationsDirectoryPath();
                 if (!is_dir($migrationsDir)) {
                     $result = mkdir($migrationsDir, 0777, true);
@@ -98,6 +110,10 @@ class DefaultServiceProvider extends ServiceProvider
                         ));
                     }
                 }
+                // make sure classes in the migration directory are autoloaded
+                /** @var \Composer\Autoload\ClassLoader $autoloader */
+                $autoloader = $container->get(self::SERVICE_AUTOLOADER);
+                $autoloader->addPsr4($config->getMigrationsNamespace(), $migrationsDir);
                 return new DirectoryRepository($migrationsDir);
             })
             ->withArgument(self::SERVICE_CONFIG);

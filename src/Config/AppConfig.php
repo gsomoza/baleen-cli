@@ -35,15 +35,18 @@ class AppConfig
     public function getDefaults()
     {
         return [
-            'migrations_directory' => 'migrations',
-            'storage_file'         => self::VERSIONS_FILE_NAME,
+            'migrations'   => [
+                'directory' => 'migrations',
+                'namespace' => 'Migrations\\',
+            ],
+            'storage_file' => self::VERSIONS_FILE_NAME,
         ];
     }
 
     /**
      * @inheritDoc
      */
-    function __construct(array $config)
+    function __construct(array $config = [])
     {
         $mergedConfig = array_merge($this->getDefaults(), $config);
         $this->config = $mergedConfig;
@@ -54,7 +57,12 @@ class AppConfig
      */
     public function getMigrationsDirectoryPath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->config['migrations_directory'];
+        return getcwd() . DIRECTORY_SEPARATOR . $this->config['migrations']['directory'];
+    }
+
+    public function getMigrationsNamespace()
+    {
+        return $this->config['migrations']['namespace'];
     }
 
     /**

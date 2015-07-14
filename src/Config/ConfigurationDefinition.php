@@ -40,8 +40,13 @@ class ConfigurationDefinition implements ConfigurationInterface
         $builder = new TreeBuilder();
         $root = $builder->root('baleen');
         $root->children()
-            ->scalarNode('migrations_directory')->end()
-            ->scalarNode('storage_file')->end()
+            ->arrayNode('migrations')
+                ->children()
+                    ->scalarNode('directory')->defaultValue('migrations')->end()
+                    ->scalarNode('namespace')->defaultValue('Migrations\\\\')->end()
+                ->end()
+            ->end()
+            ->scalarNode('storage_file')->defaultValue('.baleen_versions')->end()
         ->end();
         return $builder;
     }
