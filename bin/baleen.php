@@ -17,20 +17,37 @@
  * <https://github.com/baleen/migrations>.
  */
 
+/**
+ * Attempts to load Composer's autoload.php as either a dependency or a
+ * stand-alone package.
+ */
+$findAutoloader = function () {
+    $files = array(
+        __DIR__ . '/../../../autoload.php',  // composer dependency
+        __DIR__ . '/../vendor/autoload.php', // stand-alone package
+    );
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            return require_once $file;
+        }
+    }
+    return false;
+};
+
+if (!$composerAutoloader = $findAutoloader()) {
+    if (extension_loaded('phar') && ($uri = Phar::running())) {
+        echo 'Looks like the phar has been built without dependencies.' . PHP_EOL . PHP_EOL;
+    }
+    die(
+        'You need to set up the project dependencies using the following commands:' . PHP_EOL .
+        'curl -s http://getcomposer.org/installer | php' . PHP_EOL .
+        'php composer.phar install' . PHP_EOL
+    );
+}
+
 use Baleen\Baleen\Application;
 use Baleen\Baleen\Container\ServiceProvider\DefaultProvider;
 use League\Container\Container;
-
-$autoloader = __DIR__ . '/../vendor/autoload.php';
-
-if ( ! file_exists($autoloader)) {
-    if (extension_loaded('phar') && ($uri = Phar::running())) {
-        echo 'The phar has been builded without the depedencies' . PHP_EOL;
-    }
-    die('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
-}
-
-$composerAutoloader = require $autoloader;
 
 $container = new Container();
 $container->add(DefaultProvider::SERVICE_AUTOLOADER, $composerAutoloader);
