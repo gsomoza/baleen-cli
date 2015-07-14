@@ -21,7 +21,6 @@ namespace Baleen\Baleen\Command;
 
 use Baleen\Baleen\Config\AppConfig;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -43,12 +42,6 @@ class AbstractCommand extends Command
     public function configure()
     {
         $this->setName(static::COMMAND_NAME);
-        $this->addOption(
-            'configuration',
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'The path to a migrations configuration file.'
-        );
     }
 
     protected function outputHeader($configuration, OutputInterface $output)

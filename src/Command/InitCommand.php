@@ -53,11 +53,12 @@ class InitCommand extends AbstractCommand
 
         $result = $this->config->write();
 
-        if ($result !== false) {
-            $output->writeln(sprintf('Config file created at "./%s".', $name));
+        if (false && $result !== false) {
+            $output->writeln(sprintf('Config file created at "<info>%s</info>".', $name));
         } else {
             $output->writeln(sprintf(
-                'Could not create and write file "./%"s. Please check file and directory permissions.',
+                '<error>Error: Could not create and write file "%s". Please check file and directory permissions.' .
+                '</error>',
                 $name
             ));
         }
