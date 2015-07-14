@@ -20,17 +20,12 @@
 
 namespace Baleen\Baleen\Container;
 
-use Baleen\Baleen\Application;
-use Baleen\Baleen\ApplicationFactory;
 use Baleen\Baleen\Command\InitCommand;
-use Baleen\Baleen\Command\Storage\LatestCommand;
-use Baleen\Baleen\Command\TimelineCommand;
-use Baleen\Baleen\Helper\ConfigHelper;
-use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Baleen\Command\Storage\LatestCommand as StorageLatest;
+use Baleen\Baleen\Command\Repository\ListCommand as RepositoryList;
+use Baleen\Baleen\Command\Repository\LatestCommand as RepositoryLatest;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Helper\QuestionHelper;
 
 /**
  * Class CommandsServiceProvider
@@ -42,8 +37,10 @@ class CommandsServiceProvider extends ServiceProvider
 
     protected $provides = [
         self::SERVICE_COMMANDS,
-        LatestCommand::class,
+        StorageLatest::class,
         InitCommand::class,
+        RepositoryLatest::class,
+        RepositoryList::class,
     ];
 
     /**
@@ -57,8 +54,18 @@ class CommandsServiceProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->add(LatestCommand::class)
+        $container->add(StorageLatest::class)
             ->withMethodCall('setStorage', [DefaultServiceProvider::SERVICE_STORAGE])
+            ->withMethodCall('setComparator', [DefaultComparator::class])
+            ;
+
+        $container->add(RepositoryLatest::class)
+            ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
+            ->withMethodCall('setComparator', [DefaultComparator::class])
+            ;
+
+        $container->add(RepositoryList::class)
+            ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
             ->withMethodCall('setComparator', [DefaultComparator::class])
         ;
 

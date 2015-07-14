@@ -25,6 +25,7 @@ use Baleen\Baleen\ApplicationFactory;
 use Baleen\Baleen\Config\AppConfig;
 use Baleen\Baleen\Exception\CliException;
 use Baleen\Baleen\Helper\ConfigHelper;
+use Baleen\Migrations\Repository\DirectoryRepository;
 use Baleen\Migrations\Storage\FileStorage;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
@@ -41,11 +42,13 @@ class DefaultServiceProvider extends ServiceProvider
     const SERVICE_CONFIG     = 'config';
     const SERVICE_HELPERSET  = 'helperSet';
     const SERVICE_STORAGE    = 'storage';
+    const SERVICE_REPOSITORY = 'repository';
 
     protected $provides = [
         self::SERVICE_CONFIG,
         self::SERVICE_HELPERSET,
         self::SERVICE_STORAGE,
+        self::SERVICE_REPOSITORY,
         Application::class,
         QuestionHelper::class,
         ConfigHelper::class,
@@ -69,7 +72,7 @@ class DefaultServiceProvider extends ServiceProvider
                 self::SERVICE_HELPERSET
             ]);
 
-        $container->add(self::SERVICE_STORAGE, function(AppConfig $config) {
+        $container->add(self::SERVICE_STORAGE, function (AppConfig $config) {
                 $storageFile = $config->getStorageFilePath();
                 if (!file_exists($storageFile)) {
                     $result = touch($storageFile);
@@ -81,6 +84,21 @@ class DefaultServiceProvider extends ServiceProvider
                     }
                 }
                 return new FileStorage($storageFile);
+            })
+            ->withArgument(self::SERVICE_CONFIG);
+
+        $container->add(self::SERVICE_REPOSITORY, function (AppConfig $config){
+                $migrationsDir = $config->getMigrationsDirectoryPath();
+                if (!is_dir($migrationsDir)) {
+                    $result = mkdir($migrationsDir, 0777, true);
+                    if (!$result) {
+                        throw new CliException(sprintf(
+                            'Could not create directory "$s.',
+                            $migrationsDir
+                        ));
+                    }
+                }
+                return new DirectoryRepository($migrationsDir);
             })
             ->withArgument(self::SERVICE_CONFIG);
 

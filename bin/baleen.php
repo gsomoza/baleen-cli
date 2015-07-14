@@ -17,6 +17,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
+use Baleen\Baleen\Config\AppConfig;
 use Baleen\Baleen\Config\ConfigLoader;
 use League\Container\Container;
 
@@ -33,11 +34,11 @@ require $autoloader;
 
 $container = new Container();
 $container->add('config', function() {
-    $configFile = getcwd() . '/baleen.yml';
+    $configFile = getcwd() . DIRECTORY_SEPARATOR . AppConfig::CONFIG_FILE_NAME;
     if (file_exists($configFile)) {
         $config = ConfigLoader::loadFromFile($configFile);
     } else {
-        $config = new \Baleen\Baleen\Config\AppConfig([]);
+        $config = new AppConfig([]);
     }
     return $config;
 }, true);

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,9 +17,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command\Storage;
+namespace Baleen\Baleen\Command\Repository;
 
-use Baleen\Migrations\Version\Collection;
+use Baleen\Migrations\Version\Collection\LinkedVersions;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,32 +27,34 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ListCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends StorageCommand
+class LatestCommand extends ListCommand
 {
-    const COMMAND_NAME = 'versions:latest';
+    const COMMAND_NAME = 'migrations:latest';
 
-    /**
-     * @inheritdoc
-     */
     public function configure()
     {
-        $this->setDescription('Outputs the name of the latest migrated version.');
         parent::configure();
+        $this->setDescription('Prints the version ID of the latest available migration.');
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $migrated = $this->storage->fetchAll();
-        if (count($migrated) === 0) {
-            $output->writeln('No migrated versions found in storage.');
-            return;
+        $versions = $this->getCollection();
+        if (count($versions) > 0) {
+            $this->outputVersions($versions, $output);
+        } else {
+            $output->writeln('No available migrations were found. Please check your settings.');
         }
-        if (is_callable($this->comparator)) {
-            $migrated->sortWith($this->comparator);
-        }
-        $output->writeln($migrated->last()->getId());
+    }
+
+    /**
+     * @param LinkedVersions $versions
+     * @param OutputInterface $output
+     */
+    protected function outputVersions(LinkedVersions $versions, OutputInterface $output) {
+       $output->writeln($versions->last()->getId());
     }
 }
