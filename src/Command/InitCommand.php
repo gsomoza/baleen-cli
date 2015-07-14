@@ -53,7 +53,7 @@ class InitCommand extends AbstractCommand
 
         $result = $this->config->write();
 
-        if (false && $result !== false) {
+        if ($result !== false) {
             $output->writeln(sprintf('Config file created at "<info>%s</info>".', $name));
         } else {
             $output->writeln(sprintf(
