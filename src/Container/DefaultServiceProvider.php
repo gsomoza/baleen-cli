@@ -68,7 +68,7 @@ class DefaultServiceProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->add(DefaultServiceProvider::SERVICE_CONFIG, function() {
+        $container->singleton(DefaultServiceProvider::SERVICE_CONFIG, function() {
             $configFile = getcwd() . DIRECTORY_SEPARATOR . AppConfig::CONFIG_FILE_NAME;
             if (file_exists($configFile)) {
                 $config = ConfigLoader::loadFromFile($configFile);
@@ -78,13 +78,13 @@ class DefaultServiceProvider extends ServiceProvider
             return $config;
         }, true);
 
-        $container->add(Application::class, null, true)
+        $container->singleton(Application::class, null, true)
             ->withArguments([
                 CommandsServiceProvider::SERVICE_COMMANDS,
-                self::SERVICE_HELPERSET
+                self::SERVICE_HELPERSET,
             ]);
 
-        $container->add(self::SERVICE_STORAGE, function (AppConfig $config) {
+        $container->singleton(self::SERVICE_STORAGE, function (AppConfig $config) {
                 $storageFile = $config->getStorageFilePath();
                 if (!file_exists($storageFile)) {
                     $result = touch($storageFile);
@@ -99,7 +99,7 @@ class DefaultServiceProvider extends ServiceProvider
             })
             ->withArgument(self::SERVICE_CONFIG);
 
-        $container->add(self::SERVICE_REPOSITORY, function (AppConfig $config) use ($container) {
+        $container->singleton(self::SERVICE_REPOSITORY, function (AppConfig $config) use ($container) {
                 $migrationsDir = $config->getMigrationsDirectoryPath();
                 if (!is_dir($migrationsDir)) {
                     $result = mkdir($migrationsDir, 0777, true);
@@ -113,7 +113,7 @@ class DefaultServiceProvider extends ServiceProvider
                 // make sure classes in the migration directory are autoloaded
                 /** @var \Composer\Autoload\ClassLoader $autoloader */
                 $autoloader = $container->get(self::SERVICE_AUTOLOADER);
-                $autoloader->addPsr4($config->getMigrationsNamespace(), $migrationsDir);
+                $autoloader->addPsr4($config->getMigrationsNamespace() . '\\', $migrationsDir);
                 return new DirectoryRepository($migrationsDir);
             })
             ->withArgument(self::SERVICE_CONFIG);

@@ -21,6 +21,7 @@
 namespace Baleen\Baleen\Container;
 
 use Baleen\Baleen\Command\InitCommand;
+use Baleen\Baleen\Command\Repository\CreateCommand;
 use Baleen\Baleen\Command\Storage\LatestCommand as StorageLatest;
 use Baleen\Baleen\Command\Repository\ListCommand as RepositoryList;
 use Baleen\Baleen\Command\Repository\LatestCommand as RepositoryLatest;
@@ -41,6 +42,7 @@ class CommandsServiceProvider extends ServiceProvider
         InitCommand::class,
         RepositoryLatest::class,
         RepositoryList::class,
+        CreateCommand::class,
     ];
 
     /**
@@ -67,7 +69,12 @@ class CommandsServiceProvider extends ServiceProvider
         $container->add(RepositoryList::class)
             ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
             ->withMethodCall('setComparator', [DefaultComparator::class])
-        ;
+            ;
+
+        $container->add(CreateCommand::class)
+            ->withMethodCall('setConfig', [DefaultServiceProvider::SERVICE_CONFIG])
+            ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
+            ;
 
         $container->add(InitCommand::class)
             ->withMethodCall('setConfig', [DefaultServiceProvider::SERVICE_CONFIG]);

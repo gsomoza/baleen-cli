@@ -39,5 +39,6 @@ $container->addServiceProvider(new DefaultServiceProvider());
 $container->addServiceProvider(new CommandsServiceProvider());
 
 /** @var Application $app */
+$config = $container->get(DefaultServiceProvider::SERVICE_CONFIG);
 $app = $container->get(Application::class);
 $app->run();
