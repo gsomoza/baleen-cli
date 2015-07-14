@@ -18,6 +18,8 @@
  */
 
 namespace Baleen\Baleen\Config;
+use Baleen\Baleen\Exception\CliException;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -98,5 +100,28 @@ class AppConfig
         }
         $configFile = $this->getConfigFilePath();
         return file_put_contents($configFile, Yaml::dump(['baleen' => $data]));
+    }
+
+    /**
+     * @param $configFile
+     * @return static
+     * @throws CliException
+     */
+    public static function loadFromFile($configFile)
+    {
+        if (!is_file($configFile) || !is_readable($configFile)) {
+            throw new CliException(sprintf(
+                'Configuration file "%s" could not be read.', $configFile
+            ));
+        }
+        $rawConfig = Yaml::parse(file_get_contents($configFile));
+
+        $processor = new Processor();
+        $definition = new ConfigurationDefinition();
+        $config = $processor->processConfiguration(
+            $definition,
+            $rawConfig
+        );
+        return new static($config);
     }
 }

@@ -18,21 +18,20 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Container;
+namespace Baleen\Baleen\Container\ServiceProvider;
 
 use Baleen\Baleen\Command\InitCommand;
 use Baleen\Baleen\Command\Repository\CreateCommand;
 use Baleen\Baleen\Command\Storage\LatestCommand as StorageLatest;
 use Baleen\Baleen\Command\Repository\ListCommand as RepositoryList;
 use Baleen\Baleen\Command\Repository\LatestCommand as RepositoryLatest;
-use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
 /**
- * Class CommandsServiceProvider
+ * Class CommandsProvider
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class CommandsServiceProvider extends ServiceProvider
+class CommandsProvider extends ServiceProvider
 {
     const SERVICE_COMMANDS = 'commands';
 
@@ -56,28 +55,11 @@ class CommandsServiceProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->add(StorageLatest::class)
-            ->withMethodCall('setStorage', [DefaultServiceProvider::SERVICE_STORAGE])
-            ->withMethodCall('setComparator', [DefaultComparator::class])
-            ;
-
-        $container->add(RepositoryLatest::class)
-            ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
-            ->withMethodCall('setComparator', [DefaultComparator::class])
-            ;
-
-        $container->add(RepositoryList::class)
-            ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
-            ->withMethodCall('setComparator', [DefaultComparator::class])
-            ;
-
-        $container->add(CreateCommand::class)
-            ->withMethodCall('setConfig', [DefaultServiceProvider::SERVICE_CONFIG])
-            ->withMethodCall('setRepository', [DefaultServiceProvider::SERVICE_REPOSITORY])
-            ;
-
-        $container->add(InitCommand::class)
-            ->withMethodCall('setConfig', [DefaultServiceProvider::SERVICE_CONFIG]);
+        $container->add(StorageLatest::class);
+        $container->add(RepositoryLatest::class);
+        $container->add(RepositoryList::class);
+        $container->add(CreateCommand::class);
+        $container->add(InitCommand::class);
 
         $provides = $this->provides;
         $container->add(self::SERVICE_COMMANDS, function() use ($container, $provides) {

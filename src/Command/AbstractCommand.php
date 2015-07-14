@@ -34,6 +34,9 @@ class AbstractCommand extends Command
     /** @var AppConfig */
     protected $config;
 
+    /** @var callable */
+    protected $comparator;
+
     public function setConfig(AppConfig $config)
     {
         $this->config = $config;
@@ -53,6 +56,22 @@ class AbstractCommand extends Command
         $output->writeln('<question>' . $name . '</question>');
         $output->writeln('<question>' . str_repeat(' ', strlen($name)) . '</question>');
         $output->writeln('');
+    }
+
+    /**
+     * @return callable
+     */
+    public function getComparator()
+    {
+        return $this->comparator;
+    }
+
+    /**
+     * @param callable $comparator
+     */
+    public function setComparator(callable $comparator)
+    {
+        $this->comparator = $comparator;
     }
     
 }

@@ -33,9 +33,6 @@ abstract class StorageCommand extends AbstractCommand
     /** @var StorageInterface */
     protected $storage;
 
-    /** @var callable */
-    protected $comparator;
-
     /**
      * @return StorageInterface
      */
@@ -50,21 +47,5 @@ abstract class StorageCommand extends AbstractCommand
     public function setStorage(StorageInterface $storage = null)
     {
         $this->storage = $storage;
-    }
-
-    /**
-     * @return callable
-     */
-    public function getComparator()
-    {
-        return $this->comparator;
-    }
-
-    /**
-     * @param callable $comparator
-     */
-    public function setComparator(callable $comparator)
-    {
-        $this->comparator = $comparator;
     }
 }

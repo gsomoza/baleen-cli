@@ -17,36 +17,38 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Config;
+namespace Baleen\Baleen\Container\ServiceProvider;
 
-use Baleen\Baleen\Exception\CliException;
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\Yaml\Yaml;
+use Baleen\Baleen\Config\AppConfig;
+use League\Container\ServiceProvider;
 
 /**
- * Class ConfigLoader
+ * Class AppConfigProvider
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ConfigLoader
+class AppConfigProvider extends ServiceProvider
 {
+    const SERVICE_CONFIG = 'config';
 
-    protected $config;
+    protected $provides = [
+        self::SERVICE_CONFIG
+    ];
 
-    public static function loadFromFile($configFile)
+    /**
+     * Use the register method to register items with the container via the
+     * protected $this->container property or the `getContainer` method
+     * from the ContainerAwareTrait.
+     *
+     * @return void
+     */
+    public function register()
     {
-        if (!is_file($configFile) || !is_readable($configFile)) {
-            throw new CliException(sprintf(
-                'Configuration file "%s" could not be read.', $configFile
-            ));
-        }
-        $rawConfig = Yaml::parse(file_get_contents($configFile));
-
-        $processor = new Processor();
-        $definition = new ConfigurationDefinition();
-        $config = $processor->processConfiguration(
-            $definition,
-            $rawConfig
-        );
-        return new AppConfig($config);
+        $this->getContainer()->singleton(self::SERVICE_CONFIG, function () {
+            $configFile = getcwd() . DIRECTORY_SEPARATOR . AppConfig::CONFIG_FILE_NAME;
+            return file_exists($configFile) ?
+                AppConfig::loadFromFile($configFile) :
+                new AppConfig();
+        });
     }
+
 }

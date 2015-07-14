@@ -18,8 +18,7 @@
  */
 
 use Baleen\Baleen\Application;
-use Baleen\Baleen\Container\CommandsServiceProvider;
-use Baleen\Baleen\Container\DefaultServiceProvider;
+use Baleen\Baleen\Container\ServiceProvider\DefaultProvider;
 use League\Container\Container;
 
 $autoloader = __DIR__ . '/../vendor/autoload.php';
@@ -34,11 +33,9 @@ if ( ! file_exists($autoloader)) {
 $composerAutoloader = require $autoloader;
 
 $container = new Container();
-$container->add(DefaultServiceProvider::SERVICE_AUTOLOADER, $composerAutoloader);
-$container->addServiceProvider(new DefaultServiceProvider());
-$container->addServiceProvider(new CommandsServiceProvider());
+$container->add(DefaultProvider::SERVICE_AUTOLOADER, $composerAutoloader);
+$container->addServiceProvider(new DefaultProvider());
 
 /** @var Application $app */
-$config = $container->get(DefaultServiceProvider::SERVICE_CONFIG);
 $app = $container->get(Application::class);
 $app->run();

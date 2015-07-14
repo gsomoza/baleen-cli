@@ -33,9 +33,6 @@ abstract class RepositoryCommand extends AbstractCommand
     /** @var RepositoryInterface */
     protected $repository;
 
-    /** @var callable */
-    protected $comparator;
-
     /** @var LinkedVersions */
     protected $versions;
 
@@ -53,22 +50,6 @@ abstract class RepositoryCommand extends AbstractCommand
     public function setRepository(RepositoryInterface $repository)
     {
         $this->repository = $repository;
-    }
-
-    /**
-     * @return callable
-     */
-    public function getComparator()
-    {
-        return $this->comparator;
-    }
-
-    /**
-     * @param callable $comparator
-     */
-    public function setComparator(callable $comparator)
-    {
-        $this->comparator = $comparator;
     }
 
     /**
