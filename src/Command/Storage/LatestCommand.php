@@ -20,7 +20,6 @@
 
 namespace Baleen\Baleen\Command\Storage;
 
-use Baleen\Baleen\Command\StorageCommand;
 use Baleen\Migrations\Version\Collection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,7 +35,7 @@ class LatestCommand extends StorageCommand
     public function configure()
     {
         $this->setName(self::COMMAND_NAME)
-            ->setDescription('Outputs the latest version number')
+            ->setDescription('Outputs the name of the latest migrated version.')
             ;
         parent::configure();
     }

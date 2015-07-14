@@ -18,8 +18,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Baleen\Command;
+namespace Baleen\Baleen\Command\Storage;
 
+use Baleen\Baleen\Command\AbstractCommand;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
 
@@ -33,11 +34,18 @@ abstract class StorageCommand extends AbstractCommand
     protected $storage;
 
     /**
-     * @inheritdoc
+     * @return StorageInterface
      */
-    public function __construct(StorageInterface $storage)
+    public function getStorage()
+    {
+        return $this->storage;
+    }
+
+    /**
+     * @param StorageInterface $storage
+     */
+    public function setStorage(StorageInterface $storage = null)
     {
         $this->storage = $storage;
-        parent::__construct();
     }
 }

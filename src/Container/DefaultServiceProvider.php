@@ -23,6 +23,7 @@ namespace Baleen\Baleen\Container;
 use Baleen\Baleen\Application;
 use Baleen\Baleen\ApplicationFactory;
 use Baleen\Baleen\Config\AppConfig;
+use Baleen\Baleen\Exception\CliException;
 use Baleen\Baleen\Helper\ConfigHelper;
 use Baleen\Migrations\Storage\FileStorage;
 use League\Container\ServiceProvider;
@@ -67,7 +68,17 @@ class DefaultServiceProvider extends ServiceProvider
             ]);
 
         $container->add(self::SERVICE_STORAGE, function(AppConfig $config) {
-                return new FileStorage($config->getStorageFile());
+                $storageFile = $config->getStorageFilePath();
+                if (!file_exists($storageFile)) {
+                    $result = touch($storageFile);
+                    if (!$result) {
+                        throw new CliException(sprintf(
+                            'Could not write storage file "./%s"',
+                            $config->getStorageFile()
+                        ));
+                    }
+                }
+                return new FileStorage($storageFile);
             })
             ->withArgument(self::SERVICE_CONFIG);
 

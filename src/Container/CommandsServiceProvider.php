@@ -22,6 +22,7 @@ namespace Baleen\Baleen\Container;
 
 use Baleen\Baleen\Application;
 use Baleen\Baleen\ApplicationFactory;
+use Baleen\Baleen\Command\InitCommand;
 use Baleen\Baleen\Command\Storage\LatestCommand;
 use Baleen\Baleen\Command\TimelineCommand;
 use Baleen\Baleen\Helper\ConfigHelper;
@@ -41,6 +42,7 @@ class CommandsServiceProvider extends ServiceProvider
     protected $provides = [
         self::SERVICE_COMMANDS,
         LatestCommand::class,
+        InitCommand::class,
     ];
 
     /**
@@ -55,7 +57,10 @@ class CommandsServiceProvider extends ServiceProvider
         $container = $this->getContainer();
 
         $container->add(LatestCommand::class)
-            ->withArgument(DefaultServiceProvider::SERVICE_STORAGE);
+            ->withMethodCall('setStorage', [DefaultServiceProvider::SERVICE_STORAGE]);
+
+        $container->add(InitCommand::class)
+            ->withMethodCall('setConfig', [DefaultServiceProvider::SERVICE_CONFIG]);
 
         $provides = $this->provides;
         $container->add(self::SERVICE_COMMANDS, function() use ($container, $provides) {

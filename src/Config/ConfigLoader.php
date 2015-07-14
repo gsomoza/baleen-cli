@@ -49,5 +49,4 @@ class ConfigLoader
         );
         return new AppConfig($config);
     }
-
 }

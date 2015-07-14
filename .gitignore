@@ -1,2 +1,5 @@
+/migrations
 /vendor/
 composer.lock
+.baleen_versions
+.baleen.yml

@@ -17,7 +17,7 @@
     "require": {
         "symfony/console": "^2.7",
         "psr/log": "^1.0",
-        "baleen/migrations": "^0.2.1",
+        "baleen/migrations": "dev-master",
         "symfony/yaml": "^2.7",
         "symfony/config": "^2.7",
         "league/container": "^1.3"

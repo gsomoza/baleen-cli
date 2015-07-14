@@ -42,15 +42,7 @@ class ConfigurationDefinition implements ConfigurationInterface
         $root->children()
             ->scalarNode('migrations_directory')->end()
             ->scalarNode('storage_file')->end()
-            ->arrayNode('services')
-                ->useAttributeAsKey('alias')
-                ->requiresAtLestOneElement()
-                ->prototype('array')
-                    ->children()
-                        ->scalarNode('value')->isRequired()->cannotBeEmpty()->end()
-                    ->end()
-                ->end()
-            ->end();
+        ->end();
         return $builder;
     }
 }

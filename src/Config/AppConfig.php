@@ -18,6 +18,7 @@
  */
 
 namespace Baleen\Baleen\Config;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class AppConfig
@@ -25,39 +26,69 @@ namespace Baleen\Baleen\Config;
  */
 class AppConfig
 {
+    const CONFIG_FILE_NAME = '.baleen.yml';
+    const VERSIONS_FILE_NAME = '.baleen_versions';
 
-    protected $migrationsDirectory;
-
-    protected $storageFile;
+    /**
+     * @return array
+     */
+    public function getDefaults()
+    {
+        return [
+            'migrations_directory' => 'migrations',
+            'storage_file'         => self::VERSIONS_FILE_NAME,
+        ];
+    }
 
     /**
      * @inheritDoc
      */
     function __construct(array $config)
     {
-        $defaults = [
-            'migrations_directory' => getcwd() . '/migrations',
-            'storage_file'         => getcwd() . '/.baleen_versions',
-        ];
-        $mergedConfig = array_merge($defaults, $config);
-
-        $this->migrationsDirectory = $mergedConfig['migrations_directory'];
-        $this->storageFile = $mergedConfig['storage_file'];
+        $mergedConfig = array_merge($this->getDefaults(), $config);
+        $this->config = $mergedConfig;
     }
 
     /**
      * @return mixed
      */
-    public function getMigrationsDirectory()
+    public function getMigrationsDirectoryPath()
     {
-        return $this->migrationsDirectory;
+        return getcwd() . DIRECTORY_SEPARATOR . $this->config['migrations_directory'];
     }
 
     /**
      * @return mixed
      */
+    public function getStorageFilePath()
+    {
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getStorageFile();
+    }
+
     public function getStorageFile()
     {
-        return $this->storageFile;
+        return $this->config['storage_file'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfigFilePath()
+    {
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getConfigFile();
+    }
+
+    public function getConfigFile()
+    {
+        return self::CONFIG_FILE_NAME;
+    }
+
+    public function write(array $data = null)
+    {
+        if (null === $data) {
+            $data = $this->config;
+        }
+        $configFile = $this->getConfigFilePath();
+        return file_put_contents($configFile, Yaml::dump(['baleen' => $data]));
     }
 }
