@@ -32,6 +32,20 @@ To see some help and a list of available commands, simply execute:
 For more help on a specific command simply run `./vendor/bin/baleen help {command}`, replacing `{command}` with the name
 of an available command.
 
+### Migrations
+
+Migrations are stored by default under the `./migrations` directory, which will be automatically created every time
+your run a commend if it doesn't exist.
+
+You can customise which directory to use for migrations, as well as the namespace for migration classes by editing the 
+`.baleen.yml` config file.
+
+To easily create a new Migration file run the following command:
+
+```bash
+./vendor/bin/baleen migrations:create
+```
+
 ### License
 MIT - for more details please refer to [LICENSE](https://github.com/baleen/cli/blob/master/LICENSE) at the root 
 directory.

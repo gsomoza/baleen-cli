@@ -14,6 +14,7 @@
             "Baleen\\Baleen\\": "src/"
         }
     },
+    "bin": ["bin/baleen"],
     "require": {
         "symfony/console": "^2.7",
         "psr/log": "^1.0",
