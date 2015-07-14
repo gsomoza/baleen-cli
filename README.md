@@ -1,4 +1,6 @@
 # Baleen CLI
+[![Build Status](https://travis-ci.org/baleen/cli.svg?branch=master)](https://travis-ci.org/baleen/cli)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/baleen/cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/baleen/cli/?branch=master)
 
 Generic, customisable command-line wrapper for Baleen Migrations.
 
