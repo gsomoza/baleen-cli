@@ -26,6 +26,7 @@ use Baleen\Baleen\Config\AppConfig;
 use Baleen\Baleen\Exception\CliException;
 use Baleen\Baleen\Helper\ConfigHelper;
 use Baleen\Migrations\Storage\FileStorage;
+use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -37,9 +38,9 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 class DefaultServiceProvider extends ServiceProvider
 {
 
-    const SERVICE_CONFIG = 'config';
-    const SERVICE_HELPERSET = 'helperSet';
-    const SERVICE_STORAGE = 'storage';
+    const SERVICE_CONFIG     = 'config';
+    const SERVICE_HELPERSET  = 'helperSet';
+    const SERVICE_STORAGE    = 'storage';
 
     protected $provides = [
         self::SERVICE_CONFIG,
@@ -48,6 +49,7 @@ class DefaultServiceProvider extends ServiceProvider
         Application::class,
         QuestionHelper::class,
         ConfigHelper::class,
+        DefaultComparator::class,
     ];
 
     /**
@@ -85,6 +87,8 @@ class DefaultServiceProvider extends ServiceProvider
         $container->add(QuestionHelper::class);
         $container->add(ConfigHelper::class)
             ->withArgument(self::SERVICE_CONFIG);
+
+        $container->add(DefaultComparator::class);
 
         $container->add(self::SERVICE_HELPERSET, function() use ($container) {
             $helperSet = new HelperSet();

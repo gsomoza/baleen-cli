@@ -27,6 +27,7 @@ use Baleen\Baleen\Command\Storage\LatestCommand;
 use Baleen\Baleen\Command\TimelineCommand;
 use Baleen\Baleen\Helper\ConfigHelper;
 use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -57,7 +58,9 @@ class CommandsServiceProvider extends ServiceProvider
         $container = $this->getContainer();
 
         $container->add(LatestCommand::class)
-            ->withMethodCall('setStorage', [DefaultServiceProvider::SERVICE_STORAGE]);
+            ->withMethodCall('setStorage', [DefaultServiceProvider::SERVICE_STORAGE])
+            ->withMethodCall('setComparator', [DefaultComparator::class])
+        ;
 
         $container->add(InitCommand::class)
             ->withMethodCall('setConfig', [DefaultServiceProvider::SERVICE_CONFIG]);

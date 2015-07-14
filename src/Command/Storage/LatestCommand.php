@@ -30,8 +30,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LatestCommand extends StorageCommand
 {
-    const COMMAND_NAME = 'migrations:latest';
+    const COMMAND_NAME = 'versions:latest';
 
+    /**
+     * @inheritdoc
+     */
     public function configure()
     {
         $this->setName(self::COMMAND_NAME)
@@ -40,16 +43,19 @@ class LatestCommand extends StorageCommand
         parent::configure();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $migrated = $this->storage->readMigratedVersions();
+        $migrated = $this->storage->fetchAll();
         if (count($migrated) === 0) {
             $output->writeln('No migrated versions found in storage.');
             return;
         }
-        end($migrated);
-        /** @var \Baleen\Migrations\Version $last */
-        $last = current($migrated);
-        $output->writeln($last->getId());
+        if (is_callable($this->comparator)) {
+            $migrated->sortWith($this->comparator);
+        }
+        $output->writeln($migrated->last()->getId());
     }
 }
