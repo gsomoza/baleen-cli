@@ -63,5 +63,4 @@ class InitCommand extends AbstractCommand
             ));
         }
     }
-
 }

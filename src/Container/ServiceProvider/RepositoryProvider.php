@@ -31,7 +31,6 @@ use League\Container\ServiceProvider;
  */
 class RepositoryProvider extends ServiceProvider
 {
-
     const SERVICE_REPOSITORY = 'repository';
 
     protected $provides = [

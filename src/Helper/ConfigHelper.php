@@ -28,13 +28,12 @@ use Symfony\Component\Console\Helper\Helper;
  */
 class ConfigHelper extends Helper
 {
-
     protected $config;
 
     /**
      * @inheritDoc
      */
-    function __construct(AppConfig $configuration)
+    public function __construct(AppConfig $configuration)
     {
         $this->config = $configuration;
     }

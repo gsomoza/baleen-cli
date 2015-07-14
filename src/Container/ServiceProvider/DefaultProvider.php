@@ -32,7 +32,6 @@ use League\Container\ServiceProvider;
  */
 class DefaultProvider extends ServiceProvider
 {
-
     const SERVICE_AUTOLOADER = 'composerAutoloader';
 
     protected $provides = [

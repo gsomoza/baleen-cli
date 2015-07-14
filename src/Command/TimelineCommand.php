@@ -40,6 +40,4 @@ abstract class TimelineCommand extends Command
         $this->timeline = $storage;
         parent::__construct($name);
     }
-
-
 }

@@ -31,7 +31,6 @@ use League\Container\ServiceProvider;
  */
 class StorageProvider extends ServiceProvider
 {
-
     const SERVICE_STORAGE = 'storage';
 
     protected $provides = [

@@ -73,5 +73,4 @@ class AbstractCommand extends Command
     {
         $this->comparator = $comparator;
     }
-    
 }

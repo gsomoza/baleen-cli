@@ -54,7 +54,8 @@ class LatestCommand extends ListCommand
      * @param LinkedVersions $versions
      * @param OutputInterface $output
      */
-    protected function outputVersions(LinkedVersions $versions, OutputInterface $output) {
-       $output->writeln($versions->last()->getId());
+    protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
+    {
+        $output->writeln($versions->last()->getId());
     }
 }

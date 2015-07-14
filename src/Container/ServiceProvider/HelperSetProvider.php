@@ -34,7 +34,6 @@ use Symfony\Component\Console\Helper\QuestionHelper;
  */
 class HelperSetProvider extends ServiceProvider
 {
-
     const SERVICE_HELPERSET = 'helper-set';
 
     protected $provides = [
@@ -49,7 +48,7 @@ class HelperSetProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(self::SERVICE_HELPERSET, function() use ($container) {
+        $container->singleton(self::SERVICE_HELPERSET, function () use ($container) {
                 $helperSet = new HelperSet();
                 $helperSet->set($container->get(QuestionHelper::class), 'question');
                 $helperSet->set($container->get(ConfigHelper::class));

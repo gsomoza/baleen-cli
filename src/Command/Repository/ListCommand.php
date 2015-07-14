@@ -65,7 +65,8 @@ class ListCommand extends RepositoryCommand
      * @param LinkedVersions $versions
      * @param OutputInterface $output
      */
-    protected function outputVersions(LinkedVersions $versions, OutputInterface $output) {
+    protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
+    {
         foreach ($versions as $version) {
             $output->writeln('<comment>('.$version->getId() . ')</comment> ' . get_class($version->getMigration()));
         }

@@ -50,5 +50,4 @@ class AppConfigProvider extends ServiceProvider
                 new AppConfig();
         });
     }
-
 }

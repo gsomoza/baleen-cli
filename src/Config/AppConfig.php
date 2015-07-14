@@ -18,6 +18,7 @@
  */
 
 namespace Baleen\Baleen\Config;
+
 use Baleen\Baleen\Exception\CliException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
@@ -48,7 +49,7 @@ class AppConfig
     /**
      * @inheritDoc
      */
-    function __construct(array $config = [])
+    public function __construct(array $config = [])
     {
         $mergedConfig = array_merge($this->getDefaults(), $config);
         $this->config = $mergedConfig;

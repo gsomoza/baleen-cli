@@ -62,7 +62,7 @@ class CommandsProvider extends ServiceProvider
         $container->add(InitCommand::class);
 
         $provides = $this->provides;
-        $container->add(self::SERVICE_COMMANDS, function() use ($container, $provides) {
+        $container->add(self::SERVICE_COMMANDS, function () use ($container, $provides) {
             $commands = [];
             foreach ($provides as $command) {
                 if ($command !== self::SERVICE_COMMANDS) {

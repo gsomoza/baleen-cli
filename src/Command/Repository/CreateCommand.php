@@ -48,6 +48,8 @@ class CreateCommand extends RepositoryCommand
 
     /**
      * @inheritDoc
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -123,6 +125,4 @@ class CreateCommand extends RepositoryCommand
         $result = file_put_contents($filePath, $contents);
         return $result ? $filePath : false;
     }
-
-
 }
