@@ -14,43 +14,36 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli;
+namespace BaleenTest\Baleen;
 
-use League\Container\Container;
-use Symfony\Component\Console\Application as ConsoleApplication;
-use Symfony\Component\Console\Helper\HelperSet;
+use Mockery as m;
 
 /**
- * Class Application
+ * Class BaseTestCase
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class Application extends ConsoleApplication
+class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
-    const VERSION = '0.1.0';
 
-    /** @var Container */
-    protected $container;
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $commands, HelperSet $helperSet)
+    public function tearDown()
     {
-        parent::__construct('Baleen', self::VERSION);
-        $this->init($commands, $helperSet);
+        m::close();
     }
 
-    /**
-     * @param array $commands
-     * @param HelperSet $helperSet
-     */
-    protected function init(array $commands, HelperSet $helperSet)
+    public function propVal($propName, $instance)
     {
-        $this->setCatchExceptions(true);
-        $this->setHelperSet($helperSet);
-        $this->addCommands($commands);
+        $prop = new \ReflectionProperty($instance, $propName);
+        $prop->setAccessible(true);
+        return $prop->getValue($instance);
+    }
+
+    public function invokeMethod($methodName, $instance, $args)
+    {
+        $method = new \ReflectionMethod($instance, $methodName);
+        $method->setAccessible(true);
+        return $method->invokeArgs($instance, $args);
     }
 }

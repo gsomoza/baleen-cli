@@ -14,43 +14,32 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli;
+namespace BaleenTest\Baleen\Helper;
 
-use League\Container\Container;
-use Symfony\Component\Console\Application as ConsoleApplication;
-use Symfony\Component\Console\Helper\HelperSet;
+use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Helper\ConfigHelper;
+use BaleenTest\Baleen\BaseTestCase;
+use Mockery as m;
 
 /**
- * Class Application
+ * Class ConfigHelperTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class Application extends ConsoleApplication
+class ConfigHelperTest extends BaseTestCase
 {
-    const VERSION = '0.1.0';
-
-    /** @var Container */
-    protected $container;
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $commands, HelperSet $helperSet)
+    public function testConstructor()
     {
-        parent::__construct('Baleen', self::VERSION);
-        $this->init($commands, $helperSet);
-    }
+        $config = m::mock(AppConfig::class);
+        $instance = new ConfigHelper($config);
+        $this->assertSame($config, $instance->getConfig());
+        $this->assertEquals('config', $instance->getName());
 
-    /**
-     * @param array $commands
-     * @param HelperSet $helperSet
-     */
-    protected function init(array $commands, HelperSet $helperSet)
-    {
-        $this->setCatchExceptions(true);
-        $this->setHelperSet($helperSet);
-        $this->addCommands($commands);
+        $config2 = m::mock(AppConfig::class);
+        $this->assertNotSame($config, $config2);
+        $instance->setConfig($config2);
+        $this->assertSame($config2, $instance->getConfig());
     }
 }

@@ -28,7 +28,7 @@ $findAutoloader = function () {
     );
     foreach ($files as $file) {
         if (is_file($file)) {
-            return require_once $file;
+            return require $file;
         }
     }
     return false;

@@ -14,43 +14,29 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli;
+namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use League\Container\Container;
-use Symfony\Component\Console\Application as ConsoleApplication;
-use Symfony\Component\Console\Helper\HelperSet;
+use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
+use Mockery as m;
 
 /**
- * Class Application
+ * Class AppConfigProviderTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class Application extends ConsoleApplication
+class AppConfigProviderTest extends ServiceProviderTestCase
 {
-    const VERSION = '0.1.0';
-
-    /** @var Container */
-    protected $container;
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct(array $commands, HelperSet $helperSet)
+    public function testRegister()
     {
-        parent::__construct('Baleen', self::VERSION);
-        $this->init($commands, $helperSet);
-    }
+        $this->setInstance(m::mock(AppConfigProvider::class)->makePartial());
 
-    /**
-     * @param array $commands
-     * @param HelperSet $helperSet
-     */
-    protected function init(array $commands, HelperSet $helperSet)
-    {
-        $this->setCatchExceptions(true);
-        $this->setHelperSet($helperSet);
-        $this->addCommands($commands);
+        $this->assertSingletonProvided(
+            AppConfigProvider::SERVICE_CONFIG,
+            $this->assertCallbackInstanceOf(AppConfig::class));
+
+        $this->instance->register();
     }
 }
