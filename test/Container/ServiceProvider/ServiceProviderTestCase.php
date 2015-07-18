@@ -61,11 +61,17 @@ class ServiceProviderTestCase extends BaseTestCase
         $this->container = $container;
     }
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
-        $this->instance = null;
         $this->container = m::mock(Container::class)->makePartial();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->instance = null;
+        $this->container = null;
     }
 
     /**
@@ -85,7 +91,8 @@ class ServiceProviderTestCase extends BaseTestCase
      */
     public function assertSingletonProvided($service, $callback)
     {
-        return $this->assertServiceProvided($service, 'singleton', $callback);
+        $this->assertServiceProvided($service, 'singleton', $callback);
+        return $this->getContainer();
     }
 
     /**
@@ -96,23 +103,53 @@ class ServiceProviderTestCase extends BaseTestCase
      */
     private function assertServiceProvided($service, $type, $callback)
     {
-        return $this->getContainer()->shouldReceive($type)->with($service, m::type('callable'))->once()
+        $this->getContainer()->shouldReceive($type)->with($service, m::type('callable'))->once()
             ->andReturnUsing($callback);
     }
 
     /**
-     * Returns a closure that validates whether the result of a callback passsed as the second argument to the closure
-     * is an instance of the specified $instanceOf class.
+     * Returns a closure that validates whether the result of a service factory callback is an instance of the
+     * specified $instanceOf class.
      *
      * @param $instanceOf
+     * @param array $factoryArgs
      * @return \Closure
      */
-    protected function assertCallbackInstanceOf($instanceOf) {
+    protected function assertCallbackInstanceOf($instanceOf, $factoryArgs = [], \Closure $additionalAssertions = null) {
+        if ($factoryArgs && !is_array($factoryArgs)) {
+            $factoryArgs = [$factoryArgs];
+        }
+        return $this->assertableCallback(
+            function(callable $factory) use ($instanceOf, $factoryArgs, $additionalAssertions) {
+                if ($factory instanceof \Closure) {
+                    $factory = $factory->bindTo($this);
+                }
+                $result = call_user_func_array([$factory, '__invoke'], $factoryArgs);
+                $this->assertInstanceOf($instanceOf, $result);
+                if (null !== $additionalAssertions) {
+                    $additionalAssertions = $additionalAssertions->bindTo($this);
+                    $additionalAssertions->__invoke($result);
+                }
+                return $this->getContainer();
+            }
+        );
+    }
+
+    /**
+     * Returns a closure that calls $callback with scope $this (this test case object), passing the service $factory
+     * as the first argument.
+     *
+     * @param $callback
+     * @return \Closure
+     */
+    protected function assertableCallback($callback)
+    {
         $self = $this;
-        return function () use ($self, $instanceOf) {
-            list(, $callback) = func_get_args();
-            $self->assertInstanceOf($instanceOf, $callback());
-            return m::mock(Container::class)->makePartial();
+        return function() use ($self, $callback) {
+            /** @var \Closure $callback */
+            list(, $factory) = func_get_args();
+            $callback = $callback->bindTo($self, $factory);
+            return $callback->__invoke($factory);
         };
     }
 }
