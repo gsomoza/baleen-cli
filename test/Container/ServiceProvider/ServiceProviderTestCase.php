@@ -86,7 +86,7 @@ class ServiceProviderTestCase extends BaseTestCase
     }
 
     /**
-     * @param ServiceProvider|m\MockInterface $instance
+     * @param m\Mock $instance
      */
     protected function setInstance($instance)
     {
@@ -97,7 +97,7 @@ class ServiceProviderTestCase extends BaseTestCase
 
     /**
      * @param $service
-     * @param $callback
+     * @param \Closure $callback
      * @return m\Mock
      */
     public function assertSingletonProvided($service, $callback)
@@ -108,7 +108,7 @@ class ServiceProviderTestCase extends BaseTestCase
 
     /**
      * @param $service
-     * @param $type
+     * @param string $type
      * @param $callback
      * @return m\Mock
      */
@@ -150,7 +150,7 @@ class ServiceProviderTestCase extends BaseTestCase
      * Returns a closure that calls $callback with scope $this (this test case object), passing the service $factory
      * as the first argument.
      *
-     * @param $callback
+     * @param \Closure $callback
      * @return \Closure
      */
     protected function assertableCallback($callback)
