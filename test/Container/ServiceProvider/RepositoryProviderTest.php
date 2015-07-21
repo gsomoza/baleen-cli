@@ -52,10 +52,6 @@ use Mockery as m;
  */
 class RepositoryProviderTest extends ServiceProviderTestCase
 {
-
-    /** @var m\Mock */
-    protected $config;
-
     protected $autoloader;
 
     /** @var boolean Used to mock PHP's "mkdir" function */
@@ -64,9 +60,6 @@ class RepositoryProviderTest extends ServiceProviderTestCase
     public function setUp()
     {
         parent::setUp();
-
-        $config = m::mock(AppConfig::class);
-        $this->config = $config;
 
         $autoloaderMock = m::mock(ClassLoader::class);
         $autoloaderMock->shouldReceive('addPsr4')->with(__NAMESPACE__ . '\\', __DIR__);

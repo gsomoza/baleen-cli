@@ -19,6 +19,7 @@
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
+use Baleen\Cli\Config\AppConfig;
 use BaleenTest\Baleen\BaseTestCase;
 use League\Container\Container;
 use League\Container\Definition\Factory;
@@ -34,6 +35,9 @@ class ServiceProviderTestCase extends BaseTestCase
 
     /** @var ServiceProvider|m\Mock */
     protected $instance;
+
+    /** @var m\Mock */
+    protected $config;
 
     /**
      * @return ServiceProvider|m\Mock
@@ -69,6 +73,9 @@ class ServiceProviderTestCase extends BaseTestCase
         $prop = new \ReflectionProperty($this->container, 'factory');
         $prop->setAccessible(true);
         $prop->setValue($this->container, new Factory());
+
+        $config = m::mock(AppConfig::class);
+        $this->config = $config;
     }
 
     public function tearDown()

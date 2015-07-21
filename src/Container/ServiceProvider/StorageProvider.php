@@ -44,14 +44,12 @@ class StorageProvider extends ServiceProvider
         $container = $this->getContainer();
         $container->singleton(self::SERVICE_STORAGE, function (AppConfig $config) {
             $storageFile = $config->getStorageFilePath();
-            if (!file_exists($storageFile)) {
-                $result = touch($storageFile);
-                if (!$result) {
-                    throw new CliException(sprintf(
-                        'Could not write storage file "%s".',
-                        $config->getStorageFile()
-                    ));
-                }
+            $result = touch($storageFile);
+            if (!$result) {
+                throw new CliException(sprintf(
+                    'Could not write storage file "%s".',
+                    $config->getStorageFile()
+                ));
             }
             return new FileStorage($storageFile);
         })
