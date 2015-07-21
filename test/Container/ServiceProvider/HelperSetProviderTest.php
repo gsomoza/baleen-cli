@@ -55,7 +55,7 @@ class HelperSetProviderTest extends ServiceProviderTestCase
 
         $this->assertSingletonProvided(
             HelperSetProvider::SERVICE_HELPERSET,
-            function () use ($self, $container) {
+            function() use ($self, $container) {
                 list(, $callback) = func_get_args();
                 $self->assertInstanceOf(HelperSet::class, $callback());
                 return $container;
