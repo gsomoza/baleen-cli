@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\Command\Storage;
 
+use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Version\Collection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,9 +52,10 @@ class LatestCommand extends StorageCommand
             $output->writeln('No migrated versions found in storage.');
             return;
         }
-        if (is_callable($this->comparator)) {
-            $migrated->sortWith($this->comparator);
+        if (!is_callable($this->comparator)) {
+            throw new CliException('No comparator available, cannot order versions!');
         }
+        $migrated->sortWith($this->comparator);
         $output->writeln($migrated->last()->getId());
     }
 }
