@@ -21,6 +21,7 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use BaleenTest\Baleen\BaseTestCase;
 use League\Container\Container;
+use League\Container\Definition\Factory;
 use League\Container\ServiceProvider;
 use Mockery as m;
 
@@ -65,6 +66,9 @@ class ServiceProviderTestCase extends BaseTestCase
     {
         parent::setUp();
         $this->container = m::mock(Container::class)->makePartial();
+        $prop = new \ReflectionProperty($this->container, 'factory');
+        $prop->setAccessible(true);
+        $prop->setValue($this->container, new Factory());
     }
 
     public function tearDown()

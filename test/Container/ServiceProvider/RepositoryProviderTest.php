@@ -17,12 +17,31 @@
  * <http://www.doctrine-project.org>.
  */
 
+/**
+ * Override mkdir() in target namespace for testing
+ *
+ * @return int
+ */
+namespace Baleen\Cli\Container\ServiceProvider;
+
+use BaleenTest\Baleen\Container\ServiceProvider\RepositoryProviderTest;
+
+function mkdir()
+{
+    $mkDirResult = RepositoryProviderTest::$mkDirResult;
+    if (null === $mkDirResult) { // means we didn't want to mock it, so call the real function
+        $mkDirResult = call_user_func_array('mkdir', func_get_args());
+    }
+    return $mkDirResult;
+}
+
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
 use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
+use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Composer\Autoload\ClassLoader;
 use Mockery as m;
@@ -34,9 +53,13 @@ use Mockery as m;
 class RepositoryProviderTest extends ServiceProviderTestCase
 {
 
+    /** @var m\Mock */
     protected $config;
 
     protected $autoloader;
+
+    /** @var boolean Used to mock PHP's "mkdir" function */
+    public static $mkDirResult;
 
     public function setUp()
     {
@@ -80,7 +103,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->getInstance()->register();
     }
 
-    /*public function testFactoryCreatesDirectory()
+    public function testFactoryCreatesDirectory()
     {
         $newDir = __DIR__ . '/newdir';
         $this->assertFalse(file_exists($newDir), sprintf('expected directory "%s" to not exist', $newDir));
@@ -96,11 +119,29 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         try {
             $this->getInstance()->register();
             $this->assertTrue(file_exists($newDir), sprintf('expected directory "%s" to have been created', $newDir));
-
         } catch (\Exception $e) {
-
+            // nothing
         } finally {
-            unlink($newDir);
+            rmdir($newDir);
         }
-    }*/
+    }
+
+    public function testFactoryFailToCreateDirectory()
+    {
+        $newDir = __DIR__ . '/newdir';
+        $this->assertFalse(file_exists($newDir), sprintf('expected directory "%s" to not exist', $newDir));
+
+        $this->config->shouldNotReceive('getMigrationsNamespace');
+        $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
+
+        $this->assertSingletonProvided(
+            RepositoryProvider::SERVICE_REPOSITORY,
+            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
+        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG);
+
+        self::$mkDirResult = false;
+
+        $this->setExpectedException(CliException::class);
+        $this->getInstance()->register();
+    }
 }
