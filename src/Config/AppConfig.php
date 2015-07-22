@@ -89,10 +89,10 @@ class AppConfig
      */
     public function getConfigFilePath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getConfigFile();
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getConfigFileName();
     }
 
-    public function getConfigFile()
+    public function getConfigFileName()
     {
         return self::CONFIG_FILE_NAME;
     }

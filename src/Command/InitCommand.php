@@ -34,9 +34,8 @@ class InitCommand extends AbstractCommand
 
     public function configure()
     {
-        $this->setName(self::COMMAND_NAME)
-            ->setDescription('Initialises Baleen by creating a config file in the current directory.');
         parent::configure();
+        $this->setDescription('Initialises Baleen by creating a config file in the current directory.');
     }
 
     /**
@@ -45,7 +44,7 @@ class InitCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $path = $this->config->getConfigFilePath();
-        $name = $this->config->getConfigFile();
+        $relativePath = $this->config->getConfigFileName();
         if (file_exists($path)) {
             $output->writeln('Baleen is already initialised!');
             return;
@@ -54,12 +53,12 @@ class InitCommand extends AbstractCommand
         $result = $this->config->write();
 
         if ($result !== false) {
-            $output->writeln(sprintf('Config file created at "<info>%s</info>".', $name));
+            $output->writeln(sprintf('Config file created at "<info>%s</info>".', $relativePath));
         } else {
             $output->writeln(sprintf(
-                '<error>Error: Could not create and write file "%s". Please check file and directory permissions.' .
-                '</error>',
-                $name
+                '<error>Error: Could not create and write file "<info>%s</info>". ' .
+                'Please check file and directory permissions.</error>',
+                $relativePath
             ));
         }
     }
