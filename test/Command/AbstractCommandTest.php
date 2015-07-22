@@ -14,52 +14,58 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Command;
+namespace BaleenTest\Baleen\Command;
 
+use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Config\AppConfig;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\OutputInterface;
+use Mockery as m;
 
 /**
- * Class AbstractCommand
+ * Class AbstractCommandTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class AbstractCommand extends Command
+class AbstractCommandTest extends CommandTestCase
 {
-    const COMMAND_NAME = '';
 
-    /** @var AppConfig */
-    protected $config;
-
-    /** @var callable */
-    protected $comparator;
-
-    public function setConfig(AppConfig $config)
+    public function setUp()
     {
-        $this->config = $config;
+        parent::setUp();
+        $this->instance = m::mock(AbstractCommand::class)->makePartial();
     }
 
-    public function configure()
+    public function tearDown()
     {
-        $this->setName(static::COMMAND_NAME);
+        parent::tearDown();
+        $this->instance = null;
     }
 
-    /**
-     * @return callable
-     */
-    public function getComparator()
+    public function testSetGetConfig()
     {
-        return $this->comparator;
+        $config = m::mock(AppConfig::class);
+        $this->instance->setConfig($config);
+
+        $this->assertSame($config, $this->propVal('config', $this->instance));
     }
 
-    /**
-     * @param callable $comparator
-     */
-    public function setComparator(callable $comparator)
+    public function testConfigure()
     {
-        $this->comparator = $comparator;
+        $this->instance->shouldReceive('setName')->with(m::type('string'))->once();
+        $this->instance->configure();
+    }
+
+    public function testGetSetComparator()
+    {
+        $comparator = function(){};
+        $this->instance->setComparator($comparator);
+
+        $this->assertSame($comparator, $this->instance->getComparator());
+    }
+
+    public function testOutputHeader()
+    {
+
     }
 }
