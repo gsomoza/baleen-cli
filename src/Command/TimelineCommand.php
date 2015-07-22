@@ -35,9 +35,9 @@ abstract class TimelineCommand extends Command
     /**
      * @inheritdoc
      */
-    public function __construct(Timeline $storage)
+    public function __construct(Timeline $timeline)
     {
-        $this->timeline = $storage;
+        $this->timeline = $timeline;
         parent::__construct(null);
     }
 }
