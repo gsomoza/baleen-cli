@@ -36,7 +36,7 @@ class ListCommand extends RepositoryCommand
     {
         $this->setDescription('Prints version IDs for all available migrations ordered incrementally.')
             ->addOption(
-                'reverse',
+                'newest-first',
                 null,
                 InputOption::VALUE_NONE,
                 'Sort list in reverse order (newest first)'
@@ -49,7 +49,7 @@ class ListCommand extends RepositoryCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $reverse = $input->getOption('reverse');
+        $reverse = $input->getOption('newest-first');
         $versions = $this->getCollection();
         if (count($versions) > 0) {
             if ($reverse) {
