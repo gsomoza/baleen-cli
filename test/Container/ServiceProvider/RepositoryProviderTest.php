@@ -37,7 +37,6 @@ function mkdir()
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
 use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
