@@ -44,6 +44,9 @@ class LatestCommandTest extends CommandTestCase
             ->makePartial();
     }
 
+    /**
+     * testConstructor
+     */
     public function testConstructor()
     {
         $instance = new LatestCommand();
@@ -51,6 +54,9 @@ class LatestCommandTest extends CommandTestCase
         $this->assertSame(LatestCommand::COMMAND_NAME, $instance->getName());
     }
 
+    /**
+     * testExecute
+     */
     public function testExecute()
     {
         $version = new V(1);
@@ -62,6 +68,9 @@ class LatestCommandTest extends CommandTestCase
         $this->execute();
     }
 
+    /**
+     * testExecuteNoVersions
+     */
     public function testExecuteNoVersions()
     {
         // only thing that matters is that its empty
@@ -69,5 +78,17 @@ class LatestCommandTest extends CommandTestCase
         $this->instance->shouldNotReceive('outputVersions');
         $this->output->shouldReceive('writeln')->once(); // some error message
         $this->execute();
+    }
+
+    /**
+     * testOutputVersions
+     */
+    public function testOutputVersions()
+    {
+        $lastId = '1'; // will always be a string
+        $versions = m::mock(LinkedVersions::class);
+        $versions->shouldReceive('last->getId')->once()->andReturn($lastId);
+        $this->output->shouldReceive('writeln')->with($lastId)->once();
+        $this->instance->outputVersions($versions, $this->output);
     }
 }
