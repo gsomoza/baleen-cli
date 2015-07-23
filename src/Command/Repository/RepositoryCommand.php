@@ -79,8 +79,8 @@ abstract class RepositoryCommand extends AbstractCommand
     {
         if (!$this->versions) {
             $versions = $this->repository->fetchAll();
-            if ($this->comparator) {
-                $versions->sortWith($this->comparator);
+            if ($this->getComparator()) {
+                $versions->sortWith($this->getComparator());
             }
             $this->versions = $versions;
         }
