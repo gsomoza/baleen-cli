@@ -51,6 +51,7 @@ class ListCommandTest extends CommandTestCase
             $instance->getDefinition()->hasOption('newest-first'),
             sprintf('Expected instance of "%s" to have an option called "newest-first"', RepositoryCommand::class)
         );
+        $this->assertNotEmpty($instance->getDescription());
     }
 
     /**

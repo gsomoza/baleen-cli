@@ -19,6 +19,8 @@
 
 namespace BaleenTest\Baleen\Command\Storage;
 
+use Baleen\Cli\Command\Storage\LatestCommand;
+use Baleen\Cli\Command\Storage\StorageCommand;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
@@ -32,6 +34,21 @@ use Mockery as m;
 class LatestCommandTest extends CommandTestCase
 {
 
+    public function setUp()
+    {
+        parent::setUp();
+        $this->instance = m::mock(LatestCommand::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+    }
+
+    public function testConstructor()
+    {
+        $instance = new LatestCommand();
+        $this->assertInstanceOf(StorageCommand::class, $instance);
+        $this->assertEquals(LatestCommand::COMMAND_NAME, $instance->getName());
+        $this->assertNotEmpty($instance->getDescription());
+    }
 
     /**
      * Test configure()
@@ -42,7 +59,6 @@ class LatestCommandTest extends CommandTestCase
         $this->instance->configure();
         $this->assertCommandIsNamedProperly($this->instance);
     }
-
 
     /**
      * Test execute()

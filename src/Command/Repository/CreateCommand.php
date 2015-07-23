@@ -40,6 +40,7 @@ class CreateCommand extends RepositoryCommand
     public function configure()
     {
         $this
+            ->setDescription('Creates a new migration file.')
             ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
             ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
             ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')
@@ -72,7 +73,7 @@ class CreateCommand extends RepositoryCommand
         $namespace = rtrim($namespace, '\\');
 
         $title = $input->getArgument('title');
-        $title = preg_replace('/[^A-Za-z\d\s]+/', '', $title);
+        $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
         $className = ['v' . $timestamp];
         if (!empty($title)) {
             $className[] = $title;
@@ -131,14 +132,14 @@ class CreateCommand extends RepositoryCommand
             'fileName' => $className . '.php',
             'classes' => [$class]
         ]);
-        $fileName = $this->config->getMigrationsDirectory() . DIRECTORY_SEPARATOR . $file->getFilename();
+        $relativePath = $this->config->getMigrationsDirectory() . DIRECTORY_SEPARATOR . $file->getFilename();
         $contents = $file->generate();
-        if ($this->getFilesystem()->has($fileName)) {
+        if ($this->getFilesystem()->has($relativePath)) {
             throw new CliException(sprintf(
-                'Could not generate migration. File already exists: %s', $fileName
+                'Could not generate migration. File already exists: %s', $relativePath
             ));
         }
-        $result = $this->getFilesystem()->write($fileName, $contents);
-        return $result ? $fileName : false;
+        $result = $this->getFilesystem()->write($relativePath, $contents);
+        return $result ? $relativePath : false;
     }
 }
