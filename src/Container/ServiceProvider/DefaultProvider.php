@@ -65,7 +65,8 @@ class DefaultProvider extends ServiceProvider
             ->invokeMethod('setConfig', [AppConfigProvider::SERVICE_CONFIG]);
 
         $container->inflector(RepositoryCommand::class)
-            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY]);
+            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
+            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
 
         $container->inflector(StorageCommand::class)
             ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);

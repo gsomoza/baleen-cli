@@ -60,7 +60,15 @@ class AppConfig
      */
     public function getMigrationsDirectoryPath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->config['migrations']['directory'];
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getMigrationsDirectory();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMigrationsDirectory()
+    {
+        return $this->config['migrations']['directory'];
     }
 
     /**
