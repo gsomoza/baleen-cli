@@ -23,6 +23,8 @@ use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use League\Container\ServiceProvider;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 
 /**
  * Class RepositoryProvider
@@ -31,6 +33,7 @@ use League\Container\ServiceProvider;
 class RepositoryProvider extends ServiceProvider
 {
     const SERVICE_REPOSITORY = 'repository';
+    const SERVICE_FILESYSTEM = 'repository-filesystem';
 
     protected $provides = [
         self::SERVICE_REPOSITORY
@@ -42,6 +45,12 @@ class RepositoryProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
+
+        $container->singleton(self::SERVICE_FILESYSTEM, function (AppConfig $appConfig) {
+            $adapter = new Local(dirname($appConfig->getConfigFilePath()));
+            return new Filesystem($adapter);
+        })->withArgument(AppConfigProvider::SERVICE_CONFIG);
+
         $container->singleton(self::SERVICE_REPOSITORY, function (AppConfig $config) {
             $migrationsDir = $config->getMigrationsDirectoryPath();
             if (!is_dir($migrationsDir)) {
@@ -58,7 +67,6 @@ class RepositoryProvider extends ServiceProvider
             $autoloader = $this->getContainer()->get(DefaultProvider::SERVICE_AUTOLOADER);
             $autoloader->addPsr4($config->getMigrationsNamespace() . '\\', $migrationsDir);
             return new DirectoryRepository($migrationsDir);
-        })
-        ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+        })->withArgument(AppConfigProvider::SERVICE_CONFIG);
     }
 }

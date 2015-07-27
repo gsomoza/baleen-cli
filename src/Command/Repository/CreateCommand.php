@@ -21,6 +21,7 @@ namespace Baleen\Cli\Command\Repository;
 
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
+use League\Flysystem\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,14 +54,14 @@ class CreateCommand extends RepositoryCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $directory = $this->config->getMigrationsDirectoryPath();
-
-        if (!file_exists($directory)) {
+        $directory = $this->config->getMigrationsDirectory();
+        if (!$this->getFilesystem()->has($directory)) {
             throw new CliException(sprintf(
                 'Migrations directory "%s" does not exist.',
                 $directory
             ));
         }
+
         $namespace = $input->getOption('namespace');
         $editorCmd = $input->getOption('editor-cmd');
 
@@ -77,10 +78,10 @@ class CreateCommand extends RepositoryCommand
             $className[] = $title;
         }
 
-        $result = $this->generate(implode('_', $className), $directory, $namespace);
+        $result = $this->generate(implode('_', $className), $namespace);
         if ($result) {
             $output->writeln(sprintf(
-                'Created new Migration file at "<info>%s</info>"',
+                'Created new Migration file at "<info>./%s</info>"',
                 $result
             ));
             if ($editorCmd) {
@@ -96,12 +97,11 @@ class CreateCommand extends RepositoryCommand
 
     /**
      * @param string $className
-     * @param string $directory
      * @param string $namespace
      * @return string|false
      * @throws CliException
      */
-    protected function generate($className, $directory = null, $namespace = null)
+    protected function generate($className, $namespace = null)
     {
         $class = new ClassGenerator(
             $className,
@@ -116,13 +116,29 @@ class CreateCommand extends RepositoryCommand
             ]
         );
         $class->addUse(SimpleMigration::class);
+        return $this->writeClass($class);
+    }
+
+    /**
+     * @param ClassGenerator $class
+     * @return array
+     * @throws CliException
+     */
+    protected function writeClass(ClassGenerator $class)
+    {
+        $className = $class->getName();
         $file = new FileGenerator([
             'fileName' => $className . '.php',
             'classes' => [$class]
         ]);
+        $fileName = $this->config->getMigrationsDirectory() . DIRECTORY_SEPARATOR . $file->getFilename();
         $contents = $file->generate();
-        $filePath = $directory . DIRECTORY_SEPARATOR . $file->getFilename();
-        $result = file_put_contents($filePath, $contents);
-        return $result ? $filePath : false;
+        if ($this->getFilesystem()->has($fileName)) {
+            throw new CliException(sprintf(
+                'Could not generate migration. File already exists: %s', $fileName
+            ));
+        }
+        $result = $this->getFilesystem()->write($fileName, $contents);
+        return $result ? $fileName : false;
     }
 }

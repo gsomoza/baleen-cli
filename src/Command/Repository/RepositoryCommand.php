@@ -23,6 +23,7 @@ use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
+use League\Flysystem\Filesystem;
 
 /**
  * Class RepositoryCommand
@@ -35,6 +36,25 @@ abstract class RepositoryCommand extends AbstractCommand
 
     /** @var LinkedVersions */
     protected $versions;
+
+    /** @var Filesystem */
+    protected $filesystem;
+
+    /**
+     * @return Filesystem
+     */
+    public function getFilesystem()
+    {
+        return $this->filesystem;
+    }
+
+    /**
+     * @param Filesystem $filesystem
+     */
+    public function setFilesystem(Filesystem $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
 
     /**
      * @return RepositoryInterface

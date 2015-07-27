@@ -21,7 +21,8 @@
         "baleen/migrations": "dev-master",
         "symfony/yaml": "^2.7",
         "symfony/config": "^2.7",
-        "league/container": "^1.3"
+        "league/container": "^1.3",
+        "league/flysystem": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
