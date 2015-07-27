@@ -20,6 +20,7 @@
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\ConfigFileStorage;
 use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
 use Mockery as m;
 
@@ -29,14 +30,35 @@ use Mockery as m;
  */
 class AppConfigProviderTest extends ServiceProviderTestCase
 {
-    public function testRegister()
+    /**
+     * @param bool|false $isInitialized
+     * @dataProvider registerProvider
+     */
+    public function testRegister($isInitialized = false)
     {
+        $fileStorage = m::mock(ConfigFileStorage::class);
+        $fileStorage->shouldReceive('isInitialized')->once()->andReturn($isInitialized);
+        if ($isInitialized) {
+            $appConfigMock = m::mock(AppConfig::class);
+            $fileStorage->shouldReceive('load')->with(m::type('string'))->once()->andReturn($appConfigMock);
+        } else {
+            $fileStorage->shouldNotReceive('load');
+        }
+
         $this->setInstance(m::mock(AppConfigProvider::class)->makePartial());
 
         $this->assertSingletonProvided(
             AppConfigProvider::SERVICE_CONFIG,
-            $this->assertCallbackInstanceOf(AppConfig::class));
+            $this->assertCallbackInstanceOf(AppConfig::class, $fileStorage)
+        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG_STORAGE);
 
         $this->instance->register();
+    }
+
+    public function registerProvider()
+    {
+        return [
+            [true], [false]
+        ];
     }
 }

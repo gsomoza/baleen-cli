@@ -87,6 +87,9 @@ class AppConfig
         return getcwd() . DIRECTORY_SEPARATOR . $this->getStorageFile();
     }
 
+    /**
+     * @return mixed
+     */
     public function getStorageFile()
     {
         return $this->config['storage_file'];
@@ -100,41 +103,19 @@ class AppConfig
         return getcwd() . DIRECTORY_SEPARATOR . $this->getConfigFileName();
     }
 
+    /**
+     * @return string
+     */
     public function getConfigFileName()
     {
         return self::CONFIG_FILE_NAME;
     }
 
-    public function write(array $data = null)
-    {
-        if (null === $data) {
-            $data = $this->config;
-        }
-        $configFile = $this->getConfigFilePath();
-        return file_put_contents($configFile, Yaml::dump(['baleen' => $data]));
-    }
-
     /**
-     * @param string $configFile
-     * @return static
-     * @throws CliException
+     * @return array
      */
-    public static function loadFromFile($configFile)
+    public function toArray()
     {
-        if (!is_file($configFile) || !is_readable($configFile)) {
-            throw new CliException(sprintf(
-                'Configuration file "%s" could not be read.',
-                $configFile
-            ));
-        }
-        $rawConfig = Yaml::parse(file_get_contents($configFile));
-
-        $processor = new Processor();
-        $definition = new ConfigurationDefinition();
-        $config = $processor->processConfiguration(
-            $definition,
-            $rawConfig
-        );
-        return new static($config);
+        return $this->config;
     }
 }

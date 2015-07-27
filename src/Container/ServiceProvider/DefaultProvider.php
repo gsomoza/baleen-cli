@@ -23,6 +23,7 @@ use Baleen\Cli\Application;
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\Repository\RepositoryCommand;
 use Baleen\Cli\Command\Storage\StorageCommand;
+use Baleen\Cli\Command\Util\HasConfigStorageInterface;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
@@ -70,6 +71,9 @@ class DefaultProvider extends ServiceProvider
 
         $container->inflector(StorageCommand::class)
             ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
+
+        $container->inflector(HasConfigStorageInterface::class)
+            ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
 
         $container->singleton(Application::class, null, true)
             ->withArguments([

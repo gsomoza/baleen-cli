@@ -20,7 +20,10 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\ConfigFileStorage;
 use League\Container\ServiceProvider;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 
 /**
  * Class AppConfigProvider
@@ -29,6 +32,7 @@ use League\Container\ServiceProvider;
 class AppConfigProvider extends ServiceProvider
 {
     const SERVICE_CONFIG = 'config';
+    const SERVICE_CONFIG_STORAGE = 'config-writer';
 
     protected $provides = [
         self::SERVICE_CONFIG
@@ -43,11 +47,19 @@ class AppConfigProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->singleton(self::SERVICE_CONFIG, function () {
-            $configFile = getcwd() . DIRECTORY_SEPARATOR . AppConfig::CONFIG_FILE_NAME;
-            return file_exists($configFile) ?
-                AppConfig::loadFromFile($configFile) :
-                new AppConfig();
+        $baseDir = getcwd();
+        $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function() use ($baseDir) {
+            $configFilesystem = new Filesystem(new Local($baseDir));
+            return new ConfigFileStorage($configFilesystem);
         });
+        $this->getContainer()->singleton(
+            self::SERVICE_CONFIG,
+            function (ConfigFileStorage $configStorage) use ($baseDir) {
+                return $configStorage->isInitialized(AppConfig::CONFIG_FILE_NAME) ?
+                       // its important to call "load" and not just "read"
+                       $configStorage->load(AppConfig::CONFIG_FILE_NAME) :
+                       new AppConfig();
+            }
+        )->withArgument(self::SERVICE_CONFIG_STORAGE);
     }
 }
