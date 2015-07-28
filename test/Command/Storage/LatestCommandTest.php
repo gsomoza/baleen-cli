@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command\Storage;
 
 use Baleen\Cli\Command\Storage\LatestCommand;
-use Baleen\Cli\Command\Storage\StorageCommand;
+use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
@@ -45,7 +45,7 @@ class LatestCommandTest extends CommandTestCase
     public function testConstructor()
     {
         $instance = new LatestCommand();
-        $this->assertInstanceOf(StorageCommand::class, $instance);
+        $this->assertInstanceOf(AbstractStorageCommand::class, $instance);
         $this->assertEquals(LatestCommand::COMMAND_NAME, $instance->getName());
         $this->assertNotEmpty($instance->getDescription());
     }

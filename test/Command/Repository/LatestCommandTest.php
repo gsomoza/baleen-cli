@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\LatestCommand;
-use Baleen\Cli\Command\Repository\RepositoryCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Version as V;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
@@ -50,7 +50,7 @@ class LatestCommandTest extends CommandTestCase
     public function testConstructor()
     {
         $instance = new LatestCommand();
-        $this->assertInstanceOf(RepositoryCommand::class, $instance);
+        $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
         $this->assertSame(LatestCommand::COMMAND_NAME, $instance->getName());
         $this->assertNotEmpty($instance->getDescription());
     }

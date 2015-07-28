@@ -111,11 +111,11 @@ class ConfigFileStorage
             $pathOrConfig = $this->config;
         }
         if (is_object($pathOrConfig) && $pathOrConfig instanceof AppConfig) {
-            $path = $pathOrConfig->getConfigFilePath();
+            $path = $pathOrConfig->getConfigFileName();
         } else {
             $path = $pathOrConfig;
         }
-        return $this->filesystem->has($path);
+        return null === $path ? false : $this->filesystem->has($path);
     }
 
     /**
@@ -123,6 +123,9 @@ class ConfigFileStorage
      */
     public function getConfig()
     {
+        if (null === $this->config) {
+            $this->config = new AppConfig();
+        }
         return $this->config;
     }
 
@@ -144,6 +147,6 @@ class ConfigFileStorage
      */
     public function getConfigFileName()
     {
-        return $this->config->getConfigFileName();
+        return $this->getConfig()->getConfigFileName();
     }
 }

@@ -19,7 +19,7 @@
 
 namespace BaleenTest\Baleen\Command\Storage;
 
-use Baleen\Cli\Command\Storage\StorageCommand;
+use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Migrations\Storage\StorageInterface;
 use BaleenTest\Baleen\Command\CommandTestCase;
 use Mockery as m;
@@ -34,8 +34,8 @@ class StorageCommandTest extends CommandTestCase
     public function testSetGetStorage()
     {
         $storage = m::mock(StorageInterface::class);
-        /** @var StorageCommand|m\Mock $instance */
-        $instance = m::mock(StorageCommand::class)->makePartial();
+        /** @var AbstractStorageCommand|m\Mock $instance */
+        $instance = m::mock(AbstractStorageCommand::class)->makePartial();
         $instance->setStorage($storage);
         $this->assertSame($storage, $instance->getStorage());
     }

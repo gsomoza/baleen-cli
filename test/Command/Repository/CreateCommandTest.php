@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Command\Repository\RepositoryCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
@@ -53,7 +53,7 @@ class CreateCommandTest extends CommandTestCase
     public function testConstructor()
     {
         $instance = new CreateCommand();
-        $this->assertInstanceOf(RepositoryCommand::class, $instance);
+        $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
         $this->assertEquals(CreateCommand::COMMAND_NAME, $instance->getName());
         $this->assertNotEmpty($instance->getDescription());
     }

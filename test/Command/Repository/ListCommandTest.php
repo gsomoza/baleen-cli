@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\ListCommand;
-use Baleen\Cli\Command\Repository\RepositoryCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
@@ -45,11 +45,11 @@ class ListCommandTest extends CommandTestCase
     public function testConstructor()
     {
         $instance = new ListCommand();
-        $this->assertInstanceOf(RepositoryCommand::class, $instance);
+        $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
         $this->assertEquals(ListCommand::COMMAND_NAME, $instance->getName());
         $this->assertTrue(
             $instance->getDefinition()->hasOption('newest-first'),
-            sprintf('Expected instance of "%s" to have an option called "newest-first"', RepositoryCommand::class)
+            sprintf('Expected instance of "%s" to have an option called "newest-first"', AbstractRepositoryCommand::class)
         );
         $this->assertNotEmpty($instance->getDescription());
     }

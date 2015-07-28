@@ -28,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ListCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ListCommand extends RepositoryCommand
+class ListCommand extends AbstractRepositoryCommand
 {
     const COMMAND_NAME = 'migrations:list';
 

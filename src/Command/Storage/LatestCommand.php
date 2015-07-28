@@ -29,7 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ListCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends StorageCommand
+class LatestCommand extends AbstractStorageCommand
 {
     const COMMAND_NAME = 'versions:latest';
 

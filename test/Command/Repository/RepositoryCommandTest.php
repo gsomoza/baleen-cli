@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\Repository\RepositoryCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
@@ -41,7 +41,7 @@ class RepositoryCommandTest extends CommandTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->instance = m::mock(RepositoryCommand::class)
+        $this->instance = m::mock(AbstractRepositoryCommand::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
     }

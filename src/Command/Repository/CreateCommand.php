@@ -33,7 +33,7 @@ use Zend\Code\Generator\MethodGenerator;
  * Class CreateCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class CreateCommand extends RepositoryCommand
+class CreateCommand extends AbstractRepositoryCommand
 {
     const COMMAND_NAME = 'migrations:create';
 

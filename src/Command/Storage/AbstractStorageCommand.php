@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -14,31 +15,37 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <http://www.doctrine-project.org>.
+ * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Command\Util;
+namespace Baleen\Cli\Command\Storage;
 
-use Baleen\Cli\Config\ConfigFileStorage;
+use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Migrations\Timeline;
 
-trait HasConfigStorageTrait
+/**
+ * Class AbstractStorageCommand
+ * @author Gabriel Somoza <gabriel@strategery.io>
+ */
+abstract class AbstractStorageCommand extends AbstractCommand
 {
-    /** @var ConfigFileStorage */
-    protected $configStorage;
+    /** @var StorageInterface */
+    protected $storage;
 
     /**
-     * @return ConfigFileStorage
+     * @return StorageInterface
      */
-    public function getConfigStorage()
+    public function getStorage()
     {
-        return $this->configStorage;
+        return $this->storage;
     }
 
     /**
-     * @param ConfigFileStorage $configStorage
+     * @param StorageInterface $storage
      */
-    public function setConfigStorage($configStorage)
+    public function setStorage(StorageInterface $storage = null)
     {
-        $this->configStorage = $configStorage;
+        $this->storage = $storage;
     }
 }
