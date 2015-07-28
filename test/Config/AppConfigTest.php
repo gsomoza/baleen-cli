@@ -36,13 +36,15 @@ class AppConfigTest extends BaseTestCase
     public function testDefaults()
     {
         $conf = new AppConfig();
-        $this->assertEquals([
-            'migrations'   => [
+        $expected = [
+            'migrations' => [
                 'directory' => 'migrations',
                 'namespace' => 'Migrations',
             ],
             'storage_file' => AppConfig::VERSIONS_FILE_NAME,
-        ], $conf->getDefaults());
+        ];
+        $this->assertEquals($expected, $conf->getDefaults());
+        $this->assertEquals($expected, $conf->toArray());
     }
 
     /**
@@ -97,10 +99,5 @@ class AppConfigTest extends BaseTestCase
         $configFileName = AppConfig::CONFIG_FILE_NAME;
         $instance = new AppConfig();
         $this->assertContains($configFileName, $instance->getConfigFilePath());
-    }
-
-    public function testWrite()
-    {
-
     }
 }
