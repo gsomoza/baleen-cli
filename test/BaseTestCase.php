@@ -28,18 +28,44 @@ use Mockery as m;
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * tearDown - clean up Mockery
+     */
     public function tearDown()
     {
         m::close();
     }
 
-    public function propVal($propName, $instance)
+    /**
+     * @param $propName
+     * @param $instance
+     * @return mixed
+     */
+    public function getPropVal($propName, $instance)
     {
         $prop = new \ReflectionProperty($instance, $propName);
         $prop->setAccessible(true);
         return $prop->getValue($instance);
     }
 
+    /**
+     * @param $propName
+     * @param $value
+     * @param $instance
+     */
+    public function setPropVal($propName, $value, $instance)
+    {
+        $prop = new \ReflectionProperty($instance, $propName);
+        $prop->setAccessible(true);
+        $prop->setValue($instance, $value);
+    }
+
+    /**
+     * @param $methodName
+     * @param $instance
+     * @param $args
+     * @return mixed
+     */
     public function invokeMethod($methodName, $instance, $args)
     {
         $method = new \ReflectionMethod($instance, $methodName);

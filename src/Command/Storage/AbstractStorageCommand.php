@@ -25,10 +25,10 @@ use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
 
 /**
- * Class StorageCommand
+ * Class AbstractStorageCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class StorageCommand extends AbstractCommand
+abstract class AbstractStorageCommand extends AbstractCommand
 {
     /** @var StorageInterface */
     protected $storage;

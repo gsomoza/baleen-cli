@@ -17,26 +17,12 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Command;
-
-use BaleenTest\Baleen\Command\InitCommandTest;
-
-/**
- * Mock for PHP's file_exists
- */
-function file_exists() {
-    $result = InitCommandTest::$fileExistsResult;
-    if (null === $result) {
-        $result = call_user_func_array('file_exists', func_get_args());
-    }
-    return $result;
-}
-
 namespace BaleenTest\Baleen\Command;
 
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\InitCommand;
 use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\ConfigFileStorage;
 use Mockery as m;
 
 /**
@@ -46,7 +32,8 @@ use Mockery as m;
 class InitCommandTest extends CommandTestCase
 {
 
-    public static $fileExistsResult = null;
+    /** @var ConfigFileStorage|m\Mock */
+    protected $configStorage;
 
     /**
      * setUp
@@ -55,12 +42,8 @@ class InitCommandTest extends CommandTestCase
     {
         parent::setUp();
         $this->instance = m::mock(InitCommand::class)->makePartial();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-        self::$fileExistsResult = null;
+        $this->configStorage = m::mock(ConfigFileStorage::class);
+        $this->instance->setConfigStorage($this->configStorage);
     }
 
     /**
@@ -79,21 +62,20 @@ class InitCommandTest extends CommandTestCase
      */
     public function testExecute($writeResult)
     {
-        // not important for this test
-        $confFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.yml';
-
+        $configFileName = '.baleen.yml';
         /** @var m\Mock|AppConfig $config */
         $config = m::mock(AppConfig::class);
-        $config->shouldReceive('getConfigFilePath')->andReturn($confFile);
-        $config->shouldReceive('getConfigFileName')->andReturn(pathinfo($confFile, PATHINFO_FILENAME));
-        $config->shouldReceive('write')->once()->andReturn($writeResult);
+        $this->instance->setConfig($config);
 
         $resultMessage = $writeResult ? 'created at' : 'Could not create';
         $this->output->shouldReceive('writeln')->with(m::on(function($message) use ($resultMessage) {
             return strpos($message, $resultMessage) !== false;
         }))->once();
 
-        $this->instance->setConfig($config);
+
+        $this->configStorage->shouldReceive('isInitialized')->once()->andReturn(false);
+        $this->configStorage->shouldReceive('getConfigFileName')->once()->andReturn($configFileName);
+        $this->configStorage->shouldReceive('write')->once()->andReturn($writeResult);
 
         $this->execute();
     }
@@ -116,14 +98,12 @@ class InitCommandTest extends CommandTestCase
     {
         /** @var m\Mock|AppConfig $config */
         $config = m::mock(AppConfig::class);
-        $config->shouldReceive('getConfigFilePath');
-        $config->shouldReceive('getConfigFileName');
         $this->instance->setConfig($config);
 
         $this->output->shouldReceive('writeln')->with('/already initiali[zs]ed/')->once();
         $config->shouldNotReceive('write');
 
-        self::$fileExistsResult = true;
+        $this->configStorage->shouldReceive('isInitialized')->once()->andReturn(true);
 
         $this->execute();
     }

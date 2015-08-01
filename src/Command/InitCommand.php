@@ -19,10 +19,10 @@
 
 namespace Baleen\Cli\Command;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Command\Util\HasConfigStorageInterface;
+use Baleen\Cli\Config\ConfigFileStorage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class InitCommand
@@ -31,6 +31,25 @@ use Symfony\Component\Yaml\Yaml;
 class InitCommand extends AbstractCommand
 {
     const COMMAND_NAME = 'init';
+
+    /** @var ConfigFileStorage */
+    protected $configStorage;
+
+    /**
+     * @return ConfigFileStorage
+     */
+    public function getConfigStorage()
+    {
+        return $this->configStorage;
+    }
+
+    /**
+     * @param ConfigFileStorage $configStorage
+     */
+    public function setConfigStorage($configStorage)
+    {
+        $this->configStorage = $configStorage;
+    }
 
     public function configure()
     {
@@ -43,23 +62,23 @@ class InitCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = $this->config->getConfigFilePath();
-        $relativePath = $this->config->getConfigFileName();
-        if (file_exists($path)) {
+        if ($this->getConfigStorage()->isInitialized()) {
             $output->writeln('Baleen is already initialised!');
             return;
         }
 
-        $result = $this->config->write();
+        $relativePath = $this->getConfigStorage()->getConfigFileName();
+        $result = $this->getConfigStorage()->write();
 
         if ($result !== false) {
-            $output->writeln(sprintf('Config file created at "<info>%s</info>".', $relativePath));
+            $message = sprintf('Config file created at "<info>%s</info>".', $relativePath);
         } else {
-            $output->writeln(sprintf(
+            $message = sprintf(
                 '<error>Error: Could not create and write file "<info>%s</info>". ' .
                 'Please check file and directory permissions.</error>',
                 $relativePath
-            ));
+            );
         }
+        $output->writeln($message);
     }
 }

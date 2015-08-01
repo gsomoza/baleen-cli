@@ -50,7 +50,6 @@ class CommandTestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->instance = m::mock(LatestCommand::class)->makePartial();
         $this->input = m::mock(InputInterface::class);
         $this->output = m::mock(OutputInterface::class);
         $this->storage = m::mock(StorageInterface::class);

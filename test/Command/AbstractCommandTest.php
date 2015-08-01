@@ -47,7 +47,7 @@ class AbstractCommandTest extends CommandTestCase
         $config = m::mock(AppConfig::class);
         $this->instance->setConfig($config);
 
-        $this->assertSame($config, $this->propVal('config', $this->instance));
+        $this->assertSame($config, $this->getPropVal('config', $this->instance));
     }
 
     public function testConfigure()

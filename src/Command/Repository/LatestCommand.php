@@ -27,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ListCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends ListCommand
+class LatestCommand extends AbstractRepositoryCommand
 {
     const COMMAND_NAME = 'migrations:latest';
 

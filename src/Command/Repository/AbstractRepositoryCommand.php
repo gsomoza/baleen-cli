@@ -26,10 +26,10 @@ use Baleen\Migrations\Version\Collection\LinkedVersions;
 use League\Flysystem\Filesystem;
 
 /**
- * Class RepositoryCommand
+ * Class AbstractRepositoryCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class RepositoryCommand extends AbstractCommand
+abstract class AbstractRepositoryCommand extends AbstractCommand
 {
     /** @var RepositoryInterface */
     protected $repository;
@@ -79,8 +79,8 @@ abstract class RepositoryCommand extends AbstractCommand
     {
         if (!$this->versions) {
             $versions = $this->repository->fetchAll();
-            if ($this->comparator) {
-                $versions->sortWith($this->comparator);
+            if ($this->getComparator()) {
+                $versions->sortWith($this->getComparator());
             }
             $this->versions = $versions;
         }
