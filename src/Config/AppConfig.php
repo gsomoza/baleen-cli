@@ -32,6 +32,9 @@ class AppConfig
     const CONFIG_FILE_NAME = '.baleen.yml';
     const VERSIONS_FILE_NAME = '.baleen_versions';
 
+    /** @var array */
+    private $config;
+
     /**
      * @return array
      */

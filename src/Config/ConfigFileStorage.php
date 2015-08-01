@@ -92,7 +92,7 @@ class ConfigFileStorage
      */
     public function write($file = null)
     {
-        if (null === $this->config) {
+        if (!$this->isLoaded()) {
             throw new CliException('Configuration file not loaded. Nothing to write!');
         }
         if (null === $file) {
@@ -139,7 +139,7 @@ class ConfigFileStorage
 
     public function isLoaded()
     {
-        return null === $this->config;
+        return null !== $this->config;
     }
 
     /**
