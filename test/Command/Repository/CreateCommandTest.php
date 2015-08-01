@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Baleen\Command\Repository;
 
-use Baleen\Cli\Command\Repository\CreateCommand;
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
+use Baleen\Cli\Command\Repository\CreateCommand;
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
@@ -29,7 +29,6 @@ use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Filesystem;
 use Mockery as m;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\FileGenerator;
 
 /**
  * Class CreateCommandTest
@@ -69,7 +68,7 @@ class CreateCommandTest extends CommandTestCase
         $self = $this;
         $this->instance
             ->shouldReceive('writeClass')
-            ->with(m::on(function(ClassGenerator $generator) use ($self, $className, $namespace) {
+            ->with(m::on(function (ClassGenerator $generator) use ($self, $className, $namespace) {
                 $self->assertEquals($className, $generator->getName());
                 $self->assertEquals($namespace, $generator->getNamespaceName());
                 $self->assertTrue(in_array(SimpleMigration::class, $generator->getUses()));
