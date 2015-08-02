@@ -76,7 +76,7 @@ class DefaultProvider extends ServiceProvider
         $container->inflector(InitCommand::class)
             ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
 
-        $container->singleton(Application::class, null, true)
+        $container->singleton(Application::class)
             ->withArguments([
                 CommandsProvider::SERVICE_COMMANDS,
                 HelperSetProvider::SERVICE_HELPERSET,

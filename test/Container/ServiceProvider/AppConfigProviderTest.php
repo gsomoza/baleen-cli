@@ -52,6 +52,11 @@ class AppConfigProviderTest extends ServiceProviderTestCase
             $this->assertCallbackInstanceOf(AppConfig::class, $fileStorage)
         )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG_STORAGE);
 
+        $this->assertSingletonProvided(
+            AppConfigProvider::SERVICE_CONFIG_STORAGE,
+            $this->assertCallbackInstanceOf(ConfigFileStorage::class)
+        );
+
         $this->instance->register();
     }
 

@@ -1,6 +1,11 @@
 # Baleen CLI
 [![Build Status](https://travis-ci.org/baleen/cli.svg?branch=master)](https://travis-ci.org/baleen/cli)
+[![Code Coverage](https://scrutinizer-ci.com/g/baleen/cli/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/baleen/cli/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/baleen/cli/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/baleen/cli/?branch=master)
+[![Packagist](https://img.shields.io/packagist/v/baleen/migrations.svg)](https://packagist.org/packages/baleen/cli)
+
+[![Author](http://img.shields.io/badge/author-@gabriel_somoza-blue.svg)](https://twitter.com/gabriel_somoza)
+[![License](https://img.shields.io/packagist/l/baleen/cli.svg)](https://github.com/baleen/cli/blob/master/LICENSE)
 
 Generic, customisable command-line wrapper for Baleen Migrations.
 

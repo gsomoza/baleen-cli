@@ -5,7 +5,7 @@ language: php
 
 php:
   - 5.5
-  - 5.6
+  #- 5.6 # included in the matrix below, which also sets the "cover" env var to "yes"
   - 7.0
   - hhvm
  
@@ -16,10 +16,13 @@ matrix:
   include:
     - php: 5.5
       env: deps=low
+    - php: 5.6
+      env: cover=yes
 
 env:
   global:
     - deps=no
+    - cover=no
 
 install:
   - if [ "$deps" = "no" ]; then composer $flag install; fi;
@@ -27,7 +30,8 @@ install:
 
 script:
   - mkdir -p build/logs
-  - ./vendor/bin/phpunit --coverage-clover build/logs/coverage.xml
+  - if [ "$cover" = "no" ]; then ./vendor/bin/phpunit ; fi;
+  - if [ "$cover" = "yes" ]; then ./vendor/bin/phpunit --coverage-clover build/logs/coverage.xml ; fi;
 
 before_install:
   - composer self-update
