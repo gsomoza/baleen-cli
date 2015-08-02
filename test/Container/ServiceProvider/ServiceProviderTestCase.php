@@ -22,6 +22,7 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 use Baleen\Cli\Config\AppConfig;
 use BaleenTest\Baleen\BaseTestCase;
 use League\Container\Container;
+use League\Container\Definition\AbstractDefinition;
 use League\Container\Definition\Factory;
 use League\Container\ServiceProvider;
 use Mockery as m;
@@ -162,5 +163,26 @@ class ServiceProviderTestCase extends BaseTestCase
             $callback = $callback->bindTo($self, $factory);
             return $callback->__invoke($factory);
         };
+    }
+
+    /**
+     * @param $name
+     */
+    protected function assertRegistersProvider($name)
+    {
+        $this->getContainer()->shouldReceive('addServiceProvider')->with($name)->once();
+    }
+
+    /**
+     * @param $name
+     * @param array $withMethods
+     */
+    protected function assertRegistersInflector($name, $withMethods = [])
+    {
+        $definitionMock = m::mock();
+        foreach ($withMethods as $method => $result) {
+            $definitionMock->shouldReceive('invokeMethod')->once()->with($method, $result)->andReturn($definitionMock);
+        }
+        $this->getContainer()->shouldReceive('inflector')->with($name)->once()->andReturn($definitionMock);
     }
 }
