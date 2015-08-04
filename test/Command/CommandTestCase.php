@@ -25,6 +25,7 @@ use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\MigratedVersions;
 use BaleenTest\Baleen\BaseTestCase;
 use Mockery as m;
+use Mockery\Matcher\MatcherAbstract;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -73,7 +74,8 @@ class CommandTestCase extends BaseTestCase
      */
     protected function assertCommandIsNamedProperly(Command $command)
     {
-        $this->assertEquals(LatestCommand::COMMAND_NAME, $command->getName());
+        $this->assertNotEmpty(LatestCommand::COMMAND_NAME);
+        $this->assertContains(LatestCommand::COMMAND_NAME, $command->getName());
     }
 
     /**
@@ -98,5 +100,42 @@ class CommandTestCase extends BaseTestCase
             $version->setMigrated(true);
         }
         return new MigratedVersions($versions);
+    }
+
+    /**
+     * @param Command $instance
+     * @param $name
+     */
+    protected function assertHasArgument(Command $instance, $name)
+    {
+        $this->assertTrue(
+            $instance->getDefinition()->hasArgument($name),
+            sprintf("Expected command to have an argument named '%s'.", $name)
+        );
+    }
+
+    /**
+     * @param Command $instance
+     * @param $name
+     */
+    protected function assertHasOption(Command $instance, $name)
+    {
+        $this->assertTrue(
+            $instance->getDefinition()->hasOption($name),
+            sprintf("Expected command to have an argument named '%s'.", $name)
+        );
+    }
+
+    /**
+     * @param mixed $result
+     * @param MatcherAbstract $validator
+     */
+    protected function assertQuestionAsked($result = null, MatcherAbstract $validator = null)
+    {
+        $helper = m::mock();
+        $helper->shouldReceive('ask')->with($this->input, $this->output, m::on(function($param) use ($validator) {
+            return null !== $validator ? $validator->match($param) : true;
+        }))->once()->andReturn($result);
+        $this->instance->shouldReceive('getHelper')->with('question')->andReturn($helper);
     }
 }

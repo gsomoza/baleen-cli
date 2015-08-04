@@ -53,7 +53,8 @@ class CreateCommandTest extends CommandTestCase
     {
         $instance = new CreateCommand();
         $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
-        $this->assertEquals(CreateCommand::COMMAND_NAME, $instance->getName());
+        $this->assertNotEmpty(CreateCommand::COMMAND_NAME);
+        $this->assertContains(CreateCommand::COMMAND_NAME, $instance->getName());
         $this->assertNotEmpty($instance->getDescription());
     }
 

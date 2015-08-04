@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LatestCommand extends AbstractStorageCommand
 {
-    const COMMAND_NAME = 'versions:latest';
+    const COMMAND_NAME = 'latest';
 
     /**
      * @inheritdoc

@@ -29,7 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LatestCommand extends AbstractRepositoryCommand
 {
-    const COMMAND_NAME = 'migrations:latest';
+    const COMMAND_NAME = 'latest';
 
     public function configure()
     {

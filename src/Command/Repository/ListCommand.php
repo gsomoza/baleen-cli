@@ -30,7 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractRepositoryCommand
 {
-    const COMMAND_NAME = 'migrations:list';
+    const COMMAND_NAME = 'list';
 
     public function configure()
     {

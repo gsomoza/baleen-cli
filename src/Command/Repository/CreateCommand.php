@@ -35,7 +35,7 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class CreateCommand extends AbstractRepositoryCommand
 {
-    const COMMAND_NAME = 'migrations:create';
+    const COMMAND_NAME = 'create';
 
     public function configure()
     {
