@@ -36,7 +36,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MigrateCommand extends AbstractTimelineCommand
 {
 
-    const COMMAND_NAME = 'migrate';
+    const COMMAND_NAME = self::COMMAND_ALIAS;
+    const COMMAND_ALIAS = 'migrate';
+    const ARG_TARGET = 'target';
+    const OPT_STRATEGY = 'strategy';
 
     /** @var OutputInterface */
     protected $output;
@@ -56,9 +59,9 @@ class MigrateCommand extends AbstractTimelineCommand
         parent::configure();
 
         $this->setDescription('Migrates all versions up to and including the specified target.')
-            ->setAliases(['migrate'])
-            ->addArgument('target', InputArgument::OPTIONAL, 'The target version to migrate to.', 'latest')
-            ->addOption('strategy', 's', InputOption::VALUE_REQUIRED, 'Strategy to migrate with (up/down/both).', 'up');
+            ->setAliases([self::COMMAND_ALIAS])
+            ->addArgument(self::ARG_TARGET, InputArgument::OPTIONAL, 'The target version to migrate to.', 'latest')
+            ->addOption(self::OPT_STRATEGY, 's', InputOption::VALUE_REQUIRED, 'Strategy to migrate with (up/down/both).', 'up');
     }
 
 
@@ -67,12 +70,11 @@ class MigrateCommand extends AbstractTimelineCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $targetArg = $input->getArgument('target');
+        $targetArg = $input->getArgument(self::ARG_TARGET);
         $strategy = $this->getStrategyOption($input);
 
         $options = new Options(Options::DIRECTION_UP); // this value will get replaced by timeline later
         $options->setDryRun($input->getOption(self::OPT_DRY_RUN));
-        //$options->setForced($input->getOption('force'));
 
         $this->attachEvents($output);
 
@@ -114,7 +116,10 @@ class MigrateCommand extends AbstractTimelineCommand
     public function onCollectionBefore(CollectionEvent $event)
     {
         $target = $event->getTarget();
-        $this->output->writeln(sprintf('<info>[START]</info> Migrating towards <comment>%s</comment>:', $target));
+        $this->output->writeln(sprintf(
+            '<info>[START]</info> Migrating towards <comment>%s</comment>:',
+            $target->getId()
+        ));
     }
 
     /**
@@ -132,7 +137,7 @@ class MigrateCommand extends AbstractTimelineCommand
      */
     protected function getStrategyOption(InputInterface $input)
     {
-        $strategy = strtolower($input->getOption('strategy'));
+        $strategy = strtolower($input->getOption(self::OPT_STRATEGY));
         if (!isset($this->strategies[$strategy])) {
             throw new CliException(sprintf(
                     'Unknown strategy "%s". Must be one of: %s',

@@ -127,6 +127,15 @@ class CommandTestCase extends BaseTestCase
     }
 
     /**
+     * @param Command $instance
+     * @param $alias
+     */
+    protected function assertHasAlias(Command $instance, $alias)
+    {
+        $this->assertContains($alias, $instance->getAliases());
+    }
+
+    /**
      * @param mixed $result
      * @param MatcherAbstract $validator
      */

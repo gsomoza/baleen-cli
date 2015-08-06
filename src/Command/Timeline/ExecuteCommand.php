@@ -33,6 +33,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class ExecuteCommand extends AbstractTimelineCommand
 {
     const COMMAND_NAME = 'execute';
+    const COMMAND_ALIAS = 'exec';
     const ARG_VERSION = 'version';
     const ARG_DIRECTION = 'up';
     const OPT_DOWN = 'down';
@@ -44,7 +45,7 @@ class ExecuteCommand extends AbstractTimelineCommand
     {
         parent::configure();
         $this->setDescription('Execute a single migration version up or down manually.')
-            ->setAliases(['run'])
+            ->setAliases(['exec'])
             ->addArgument(self::ARG_VERSION, InputArgument::REQUIRED, 'The version to execute.')
             ->addArgument(
                 self::ARG_DIRECTION,

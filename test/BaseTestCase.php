@@ -66,7 +66,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      * @param $args
      * @return mixed
      */
-    public function invokeMethod($methodName, $instance, $args)
+    public function invokeMethod($methodName, $instance, $args = [])
     {
         $method = new \ReflectionMethod($instance, $methodName);
         $method->setAccessible(true);

@@ -52,6 +52,8 @@ class ExecuteCommandTest extends CommandTestCase
     public function testConfigure()
     {
         $instance = new ExecuteCommand();
+        $this->assertContains(ExecuteCommand::COMMAND_NAME, $instance->getName());
+        $this->assertHasAlias($instance, 'exec');
         $this->assertHasArgument($instance, ExecuteCommand::ARG_VERSION);
         $this->assertHasArgument($instance, ExecuteCommand::ARG_DIRECTION);
         $this->assertHasOption($instance, ExecuteCommand::OPT_DOWN);
