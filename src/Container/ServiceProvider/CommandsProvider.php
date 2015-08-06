@@ -26,6 +26,7 @@ use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
 use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
 use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatest;
 use Baleen\Cli\Command\Timeline\ExecuteCommand;
+use Baleen\Cli\Command\Timeline\MigrateCommand;
 use League\Container\ServiceProvider;
 
 /**
@@ -44,6 +45,7 @@ class CommandsProvider extends ServiceProvider
         RepositoryList::class,
         CreateCommand::class,
         ExecuteCommand::class,
+        MigrateCommand::class,
     ];
 
     /**
@@ -65,6 +67,7 @@ class CommandsProvider extends ServiceProvider
         $container->add(CreateCommand::class);
         // timeline
         $container->add(ExecuteCommand::class);
+        $container->add(MigrateCommand::class);
         // other
         $container->add(InitCommand::class);
 
