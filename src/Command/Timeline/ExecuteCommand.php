@@ -44,6 +44,7 @@ class ExecuteCommand extends AbstractTimelineCommand
     {
         parent::configure();
         $this->setDescription('Execute a single migration version up or down manually.')
+            ->setAliases(['run'])
             ->addArgument(self::ARG_VERSION, InputArgument::REQUIRED, 'The version to execute.')
             ->addArgument(
                 self::ARG_DIRECTION,

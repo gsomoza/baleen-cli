@@ -41,6 +41,7 @@ class CreateCommand extends AbstractRepositoryCommand
     {
         $this
             ->setDescription('Creates a new migration file.')
+            ->setAliases(['create'])
             ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
             ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
             ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')

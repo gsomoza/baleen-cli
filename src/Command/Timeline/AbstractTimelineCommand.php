@@ -41,7 +41,7 @@ abstract class AbstractTimelineCommand extends AbstractCommand
     public function configure()
     {
         parent::configure();
-        $this->addOption(self::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, 'Execute the migration as a dry run.');
+        $this->addOption(self::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, 'Execute the migration on dry-run mode.');
     }
 
     /**
