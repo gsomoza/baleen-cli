@@ -51,7 +51,8 @@ class LatestCommandTest extends CommandTestCase
     {
         $instance = new LatestCommand();
         $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
-        $this->assertSame(LatestCommand::COMMAND_NAME, $instance->getName());
+        $this->assertNotEmpty(LatestCommand::COMMAND_NAME);
+        $this->assertContains(LatestCommand::COMMAND_NAME, $instance->getName());
         $this->assertNotEmpty($instance->getDescription());
     }
 

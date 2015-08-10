@@ -35,12 +35,13 @@ use Zend\Code\Generator\MethodGenerator;
  */
 class CreateCommand extends AbstractRepositoryCommand
 {
-    const COMMAND_NAME = 'migrations:create';
+    const COMMAND_NAME = 'create';
 
     public function configure()
     {
         $this
             ->setDescription('Creates a new migration file.')
+            ->setAliases(['create'])
             ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
             ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
             ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')

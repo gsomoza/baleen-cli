@@ -30,6 +30,8 @@ use Baleen\Migrations\Timeline;
  */
 abstract class AbstractStorageCommand extends AbstractCommand
 {
+    const COMMAND_GROUP = 'versions';
+
     /** @var StorageInterface */
     protected $storage;
 

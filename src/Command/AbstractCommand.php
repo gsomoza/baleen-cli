@@ -29,7 +29,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AbstractCommand extends Command
 {
+    /** Overwrite these two constants in implementation classes */
     const COMMAND_NAME = '';
+    const COMMAND_GROUP = '';
 
     /** @var AppConfig */
     protected $config;
@@ -44,7 +46,8 @@ class AbstractCommand extends Command
 
     public function configure()
     {
-        $this->setName(static::COMMAND_NAME);
+        $name = implode(':', array_filter([static::COMMAND_GROUP, static::COMMAND_NAME]));
+        $this->setName($name);
     }
 
     /**

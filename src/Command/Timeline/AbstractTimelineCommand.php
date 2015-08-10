@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,26 +17,46 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Command;
+namespace Baleen\Cli\Command\Timeline;
 
+use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Migrations\Timeline;
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class TimelineCommand
+ * Class AbstractTimelineCommand
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class TimelineCommand extends Command
+abstract class AbstractTimelineCommand extends AbstractCommand
 {
+    const COMMAND_GROUP = 'timeline';
+    const OPT_DRY_RUN = 'dry-run';
+
     /** @var Timeline */
     protected $timeline;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function __construct(Timeline $timeline)
+    public function configure()
+    {
+        parent::configure();
+        $this->addOption(self::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, 'Execute the migration on dry-run mode.');
+    }
+
+    /**
+     * @return Timeline
+     */
+    public function getTimeline()
+    {
+        return $this->timeline;
+    }
+
+    /**
+     * @param Timeline $timeline
+     */
+    public function setTimeline(Timeline $timeline)
     {
         $this->timeline = $timeline;
-        parent::__construct(null);
     }
 }

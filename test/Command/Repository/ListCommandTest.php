@@ -46,7 +46,8 @@ class ListCommandTest extends CommandTestCase
     {
         $instance = new ListCommand();
         $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
-        $this->assertEquals(ListCommand::COMMAND_NAME, $instance->getName());
+        $this->assertNotEmpty(ListCommand::COMMAND_NAME);
+        $this->assertContains(ListCommand::COMMAND_NAME, $instance->getName());
         $this->assertTrue(
             $instance->getDefinition()->hasOption('newest-first'),
             sprintf('Expected instance of "%s" to have an option called "newest-first"', AbstractRepositoryCommand::class)

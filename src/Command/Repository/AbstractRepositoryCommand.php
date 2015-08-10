@@ -31,6 +31,8 @@ use League\Flysystem\Filesystem;
  */
 abstract class AbstractRepositoryCommand extends AbstractCommand
 {
+    const COMMAND_GROUP = 'migrations';
+
     /** @var RepositoryInterface */
     protected $repository;
 
