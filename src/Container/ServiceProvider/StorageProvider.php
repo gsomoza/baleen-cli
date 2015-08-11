@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -25,7 +26,8 @@ use Baleen\Migrations\Storage\FileStorage;
 use League\Container\ServiceProvider;
 
 /**
- * Class StorageProvider
+ * Class StorageProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class StorageProvider extends ServiceProvider
@@ -33,7 +35,7 @@ class StorageProvider extends ServiceProvider
     const SERVICE_STORAGE = 'storage';
 
     protected $provides = [
-        self::SERVICE_STORAGE
+        self::SERVICE_STORAGE,
     ];
 
     /**
@@ -51,8 +53,9 @@ class StorageProvider extends ServiceProvider
                     $config->getStorageFile()
                 ));
             }
+
             return new FileStorage($storageFile);
         })
-        ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+            ->withArgument(AppConfigProvider::SERVICE_CONFIG);
     }
 }

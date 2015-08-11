@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -26,7 +27,8 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
 /**
- * Class AppConfigProvider
+ * Class AppConfigProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class AppConfigProvider extends ServiceProvider
@@ -36,27 +38,26 @@ class AppConfigProvider extends ServiceProvider
     const BALEEN_BASE_DIR = 'baleen_base_dir';
 
     protected $provides = [
-        self::SERVICE_CONFIG
+        self::SERVICE_CONFIG,
     ];
 
     /**
      * Use the register method to register items with the container via the
      * protected $this->container property or the `getContainer` method
      * from the ContainerAwareTrait.
-     *
-     * @return void
      */
     public function register()
     {
         $baseDir = getcwd();
         $baleenBaseDir = $this->getContainer()->get(self::BALEEN_BASE_DIR);
-        $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function() use ($baseDir, $baleenBaseDir) {
+        $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function () use ($baseDir, $baleenBaseDir) {
             $configFilesystem = new Filesystem(new Local($baseDir));
             $defaultFilePath = implode(DIRECTORY_SEPARATOR, [$baleenBaseDir, 'config', 'defaults.php']);
             $defaultConfig = [];
             if (file_exists($defaultFilePath) && is_readable($defaultFilePath)) {
                 $defaultConfig = include $defaultFilePath;
             }
+
             return new ConfigFileStorage($configFilesystem, $defaultConfig);
         });
         $this->getContainer()->singleton(

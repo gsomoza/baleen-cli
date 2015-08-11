@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,7 +25,8 @@ use Baleen\Migrations\Timeline;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class AbstractTimelineCommand
+ * Class AbstractTimelineCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 abstract class AbstractTimelineCommand extends AbstractCommand

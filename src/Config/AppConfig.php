@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -19,12 +20,9 @@
 
 namespace Baleen\Cli\Config;
 
-use Baleen\Cli\Exception\CliException;
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\Yaml\Yaml;
-
 /**
- * Class AppConfig
+ * Class AppConfig.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class AppConfig
@@ -36,20 +34,6 @@ class AppConfig
     private $config;
 
     /**
-     * @return array
-     */
-    public function getDefaults()
-    {
-        return [
-            'migrations'   => [
-                'directory' => 'migrations',
-                'namespace' => 'Migrations',
-            ],
-            'storage_file' => self::VERSIONS_FILE_NAME,
-        ];
-    }
-
-    /**
      * @inheritDoc
      */
     public function __construct(array $config = [])
@@ -59,7 +43,22 @@ class AppConfig
     }
 
     /**
-     * getProviders
+     * @return array
+     */
+    public function getDefaults()
+    {
+        return [
+            'migrations' => [
+                'directory' => 'migrations',
+                'namespace' => 'Migrations',
+            ],
+            'storage_file' => self::VERSIONS_FILE_NAME,
+        ];
+    }
+
+    /**
+     * getProviders.
+     *
      * @return array
      */
     public function getProviders()
@@ -72,7 +71,7 @@ class AppConfig
      */
     public function getMigrationsDirectoryPath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getMigrationsDirectory();
+        return getcwd().DIRECTORY_SEPARATOR.$this->getMigrationsDirectory();
     }
 
     /**
@@ -96,7 +95,7 @@ class AppConfig
      */
     public function getStorageFilePath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getStorageFile();
+        return getcwd().DIRECTORY_SEPARATOR.$this->getStorageFile();
     }
 
     /**
@@ -112,7 +111,7 @@ class AppConfig
      */
     public function getConfigFilePath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getConfigFileName();
+        return getcwd().DIRECTORY_SEPARATOR.$this->getConfigFileName();
     }
 
     /**

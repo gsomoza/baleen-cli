@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -21,12 +22,12 @@ namespace Baleen\Cli\Command\Repository;
 
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Migrations\Repository\RepositoryInterface;
-use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
 use League\Flysystem\Filesystem;
 
 /**
- * Class AbstractRepositoryCommand
+ * Class AbstractRepositoryCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 abstract class AbstractRepositoryCommand extends AbstractCommand
@@ -86,6 +87,7 @@ abstract class AbstractRepositoryCommand extends AbstractCommand
             }
             $this->versions = $versions;
         }
+
         return $this->versions;
     }
 }

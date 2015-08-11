@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,12 +21,19 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
+use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
+use Baleen\Cli\Command\Storage\AbstractStorageCommand;
+use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
 /**
- * Class DefaultProvider
+ * Class DefaultProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class DefaultProvider extends ServiceProvider
 {
@@ -40,8 +48,6 @@ class DefaultProvider extends ServiceProvider
      * Use the register method to register items with the container via the
      * protected $this->container property or the `getContainer` method
      * from the ContainerAwareTrait.
-     *
-     * @return void
      */
     public function register()
     {
@@ -58,5 +64,23 @@ class DefaultProvider extends ServiceProvider
             ]);
 
         $container->singleton(DefaultComparator::class);
+
+        // register inflectors for the different types of commands
+        $container->inflector(AbstractRepositoryCommand::class)
+            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
+            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
+
+        $container->inflector(AbstractCommand::class)
+            ->invokeMethod('setComparator', [DefaultComparator::class])
+            ->invokeMethod('setConfig', [AppConfigProvider::SERVICE_CONFIG]);
+
+        $container->inflector(AbstractStorageCommand::class)
+            ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
+
+        $container->inflector(AbstractTimelineCommand::class)
+            ->invokeMethod('setTimeline', [TimelineProvider::SERVICE_TIMELINE]);
+
+        $container->inflector(InitCommand::class)
+            ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
     }
 }

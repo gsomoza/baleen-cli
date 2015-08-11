@@ -21,7 +21,8 @@
 namespace Baleen\Cli\Exception;
 
 /**
- * Class CliException
+ * Class CliException.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class CliException extends \Exception

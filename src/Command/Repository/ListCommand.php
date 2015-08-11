@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -25,7 +26,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ListCommand
+ * Class ListCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ListCommand extends AbstractRepositoryCommand
@@ -62,13 +64,13 @@ class ListCommand extends AbstractRepositoryCommand
     }
 
     /**
-     * @param LinkedVersions $versions
+     * @param LinkedVersions  $versions
      * @param OutputInterface $output
      */
     protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
     {
         foreach ($versions as $version) {
-            $output->writeln('<comment>(' . $version->getId() . ')</comment> ' . get_class($version->getMigration()));
+            $output->writeln('<comment>('.$version->getId().')</comment> '.get_class($version->getMigration()));
         }
     }
 }

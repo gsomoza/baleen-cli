@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,18 +19,19 @@
  */
 
 namespace Baleen\Cli\Config;
+
 use Baleen\Cli\Exception\CliException;
 use League\Flysystem\FilesystemInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class ConfigFileStorage
+ * Class ConfigFileStorage.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ConfigFileStorage
 {
-
     /** @var FilesystemInterface */
     protected $filesystem;
 
@@ -42,13 +44,14 @@ class ConfigFileStorage
     /** @var Processor */
     protected $processor;
 
-    /** @var ConfigurationDefinition  */
+    /** @var ConfigurationDefinition */
     protected $definition;
 
     /**
      * ConfigFileStorage constructor.
+     *
      * @param FilesystemInterface $filesystem
-     * @param array $defaultConfig
+     * @param array               $defaultConfig
      */
     public function __construct(FilesystemInterface $filesystem, array $defaultConfig = [])
     {
@@ -61,7 +64,9 @@ class ConfigFileStorage
 
     /**
      * @param $file
+     *
      * @return AppConfig
+     *
      * @throws CliException
      */
     public function read($file = null)
@@ -85,25 +90,32 @@ class ConfigFileStorage
             $this->definition,
             $configs
         );
+
         return new AppConfig($config);
     }
 
     /**
-     * Reads the file and loads the config into this instance
+     * Reads the file and loads the config into this instance.
+     *
      * @param null $file
+     *
      * @return AppConfig
+     *
      * @throws CliException
      */
     public function load($file = null)
     {
         $config = $this->read($file);
         $this->setConfig($config);
+
         return $config;
     }
 
     /**
      * @param null $file
+     *
      * @return bool
+     *
      * @throws CliException
      */
     public function write($file = null)
@@ -115,11 +127,13 @@ class ConfigFileStorage
             $file = $this->config->getConfigFileName();
         }
         $contents = Yaml::dump(['baleen' => $this->config->toArray()]);
+
         return $this->filesystem->write($file, $contents);
     }
 
     /**
      * @param $pathOrConfig
+     *
      * @return bool
      */
     public function isInitialized($pathOrConfig = null)
@@ -132,6 +146,7 @@ class ConfigFileStorage
         } else {
             $path = $pathOrConfig;
         }
+
         return null === $path ? false : $this->filesystem->has($path);
     }
 
@@ -143,6 +158,7 @@ class ConfigFileStorage
         if (null === $this->config) {
             $this->config = new AppConfig();
         }
+
         return $this->config;
     }
 

@@ -24,7 +24,8 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Class ConfigurationDefinition
+ * Class ConfigurationDefinition.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ConfigurationDefinition implements ConfigurationInterface
@@ -40,17 +41,18 @@ class ConfigurationDefinition implements ConfigurationInterface
         $root = $builder->root('baleen');
         $root->children()
             ->arrayNode('providers')
-                ->useAttributeAsKey('name')
-                ->prototype('scalar')->end()
+            ->useAttributeAsKey('name')
+            ->prototype('scalar')->end()
             ->end()
             ->arrayNode('migrations')
-                ->children()
-                    ->scalarNode('directory')->defaultValue('migrations')->end()
-                    ->scalarNode('namespace')->defaultValue('Migrations')->end()
-                ->end()
+            ->children()
+            ->scalarNode('directory')->defaultValue('migrations')->end()
+            ->scalarNode('namespace')->defaultValue('Migrations')->end()
+            ->end()
             ->end()
             ->scalarNode('storage_file')->defaultValue('.baleen_versions')->end()
-        ->end();
+            ->end();
+
         return $builder;
     }
 }

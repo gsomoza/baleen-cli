@@ -126,8 +126,8 @@ class ConfigFileStorageTest extends BaseTestCase
     public function yamlFixtures()
     {
         return [
-            ["baleen:\n  test: that\n  foo: bar", false],
-            ["baleen: { migrations: { directory: migrations, namespace: Migrations }, storage_file: .baleen_versions }", true],
+            ["test: that\nfoo: bar", false],
+            ["migrations: { directory: migrations, namespace: Migrations }\nstorage_file: .baleen_versions", true],
         ];
     }
 

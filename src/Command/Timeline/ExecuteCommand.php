@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,6 +19,7 @@
  */
 
 namespace Baleen\Cli\Command\Timeline;
+
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Input\InputArgument;
@@ -27,7 +29,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Class ExecuteCommand
+ * Class ExecuteCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ExecuteCommand extends AbstractTimelineCommand
@@ -53,8 +56,7 @@ class ExecuteCommand extends AbstractTimelineCommand
                 'Direction in which to execute the migration.',
                 Options::DIRECTION_UP
             )
-            ->addOption(self::OPT_DOWN, null, InputOption::VALUE_NONE, 'Execute the migration down.')
-        ;
+            ->addOption(self::OPT_DOWN, null, InputOption::VALUE_NONE, 'Execute the migration down.');
     }
 
     /**
@@ -74,7 +76,7 @@ class ExecuteCommand extends AbstractTimelineCommand
 
         $canExecute = true;
         if ($input->isInteractive()) {
-            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that ' .
+            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that '.
                 'could result in schema changes and data lost.');
             $question = sprintf('Are you sure you wish to migrate "%s" (y/n)? ', $direction);
             $canExecute = $this->getHelper('question')->ask($input, $output, new ConfirmationQuestion($question));
