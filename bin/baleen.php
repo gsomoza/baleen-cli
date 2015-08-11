@@ -51,7 +51,17 @@ use League\Container\Container;
 
 $container = new Container();
 $container->add(DefaultProvider::SERVICE_AUTOLOADER, $composerAutoloader);
-$container->addServiceProvider(new DefaultProvider());
+
+$defaultProviders = include implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'config', 'providers.php']);
+/** @var \Baleen\Cli\Config\AppConfig $config */
+$config = $container->get('AppConfig');
+$customProviders = include implode(DIRECTORY_SEPARATOR, $config->getConfigFilePath());
+
+$providers = array_merge_recursive($defaultProviders, $customProviders);
+
+foreach ($providers as $provider) {
+    $container->addServiceProvider($provider);
+}
 
 /** @var Application $app */
 $app = $container->get(Application::class);
