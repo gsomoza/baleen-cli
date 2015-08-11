@@ -36,13 +36,27 @@ class ConfigFileStorage
     /** @var AppConfig */
     protected $config;
 
+    /** @var array */
+    protected $defaultConfig;
+
+    /** @var Processor */
+    protected $processor;
+
+    /** @var ConfigurationDefinition  */
+    protected $definition;
+
     /**
      * ConfigFileStorage constructor.
      * @param FilesystemInterface $filesystem
+     * @param array $defaultConfig
      */
-    public function __construct(FilesystemInterface $filesystem)
+    public function __construct(FilesystemInterface $filesystem, array $defaultConfig = [])
     {
         $this->filesystem = $filesystem;
+        $this->defaultConfig = $defaultConfig;
+
+        $this->processor = new Processor();
+        $this->definition = new ConfigurationDefinition();
     }
 
     /**
@@ -61,13 +75,15 @@ class ConfigFileStorage
                 $file
             ));
         }
-        $rawConfig = Yaml::parse($this->filesystem->read($file));
+        $configs = [];
+        if (!empty($this->defaultConfig)) {
+            $configs[] = $this->defaultConfig;
+        }
+        $configs[] = Yaml::parse($this->filesystem->read($file));
 
-        $processor = new Processor();
-        $definition = new ConfigurationDefinition();
-        $config = $processor->processConfiguration(
-            $definition,
-            $rawConfig
+        $config = $this->processor->processConfiguration(
+            $this->definition,
+            $configs
         );
         return new AppConfig($config);
     }
@@ -98,7 +114,8 @@ class ConfigFileStorage
         if (null === $file) {
             $file = $this->config->getConfigFileName();
         }
-        return $this->filesystem->write($file, Yaml::dump(['baleen' => $this->config->toArray()]));
+        $contents = Yaml::dump(['baleen' => $this->config->toArray()]);
+        return $this->filesystem->write($file, $contents);
     }
 
     /**

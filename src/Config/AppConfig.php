@@ -59,6 +59,15 @@ class AppConfig
     }
 
     /**
+     * getProviders
+     * @return array
+     */
+    public function getProviders()
+    {
+        return $this->config['providers'];
+    }
+
+    /**
      * @return string
      */
     public function getMigrationsDirectoryPath()

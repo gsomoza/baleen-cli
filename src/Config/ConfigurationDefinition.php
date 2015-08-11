@@ -39,6 +39,10 @@ class ConfigurationDefinition implements ConfigurationInterface
         $builder = new TreeBuilder();
         $root = $builder->root('baleen');
         $root->children()
+            ->arrayNode('providers')
+                ->useAttributeAsKey('name')
+                ->prototype('scalar')->end()
+            ->end()
             ->arrayNode('migrations')
                 ->children()
                     ->scalarNode('directory')->defaultValue('migrations')->end()

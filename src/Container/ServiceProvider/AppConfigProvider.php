@@ -33,6 +33,7 @@ class AppConfigProvider extends ServiceProvider
 {
     const SERVICE_CONFIG = 'config';
     const SERVICE_CONFIG_STORAGE = 'config-writer';
+    const BALEEN_BASE_DIR = 'baleen_base_dir';
 
     protected $provides = [
         self::SERVICE_CONFIG
@@ -48,9 +49,15 @@ class AppConfigProvider extends ServiceProvider
     public function register()
     {
         $baseDir = getcwd();
-        $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function() use ($baseDir) {
+        $baleenBaseDir = $this->getContainer()->get(self::BALEEN_BASE_DIR);
+        $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function() use ($baseDir, $baleenBaseDir) {
             $configFilesystem = new Filesystem(new Local($baseDir));
-            return new ConfigFileStorage($configFilesystem);
+            $defaultFilePath = implode(DIRECTORY_SEPARATOR, [$baleenBaseDir, 'config', 'defaults.php']);
+            $defaultConfig = [];
+            if (file_exists($defaultFilePath) && is_readable($defaultFilePath)) {
+                $defaultConfig = include $defaultFilePath;
+            }
+            return new ConfigFileStorage($configFilesystem, $defaultConfig);
         });
         $this->getContainer()->singleton(
             self::SERVICE_CONFIG,

@@ -19,6 +19,7 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;
@@ -36,7 +37,8 @@ class RepositoryProvider extends ServiceProvider
     const SERVICE_FILESYSTEM = 'repository-filesystem';
 
     protected $provides = [
-        self::SERVICE_REPOSITORY
+        self::SERVICE_REPOSITORY,
+        self::SERVICE_REPOSITORY,
     ];
 
     /**

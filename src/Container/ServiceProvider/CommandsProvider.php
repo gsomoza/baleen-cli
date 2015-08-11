@@ -20,13 +20,18 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
+use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
-use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
 use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatest;
+use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
+use Baleen\Cli\Command\Storage\AbstractStorageCommand;
+use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
+use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\Command\Timeline\ExecuteCommand;
 use Baleen\Cli\Command\Timeline\MigrateCommand;
+use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
 /**
@@ -81,5 +86,23 @@ class CommandsProvider extends ServiceProvider
             }
             return $commands;
         });
+
+        // register inflectors for the different types of commands
+        $container->inflector(AbstractRepositoryCommand::class)
+            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
+            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
+
+        $container->inflector(AbstractCommand::class)
+            ->invokeMethod('setComparator', [DefaultComparator::class])
+            ->invokeMethod('setConfig', [AppConfigProvider::SERVICE_CONFIG]);
+
+        $container->inflector(AbstractStorageCommand::class)
+            ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
+
+        $container->inflector(AbstractTimelineCommand::class)
+            ->invokeMethod('setTimeline', [TimelineProvider::SERVICE_TIMELINE]);
+
+        $container->inflector(InitCommand::class)
+            ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
     }
 }

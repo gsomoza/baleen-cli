@@ -20,12 +20,6 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
-use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitCommand;
-use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
-use Baleen\Cli\Command\Storage\AbstractStorageCommand;
-use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
-use Baleen\Cli\Command\Util\HasConfigStorageInterface;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
@@ -56,30 +50,6 @@ class DefaultProvider extends ServiceProvider
         if ($container->isRegistered(Application::class)) {
             return; // only needs to be executed once
         }
-
-        $container->addServiceProvider(new AppConfigProvider());
-        $container->addServiceProvider(new StorageProvider());
-        $container->addServiceProvider(new RepositoryProvider());
-        $container->addServiceProvider(new TimelineProvider());
-        $container->addServiceProvider(new HelperSetProvider());
-        $container->addServiceProvider(new CommandsProvider());
-
-        $container->inflector(AbstractCommand::class)
-            ->invokeMethod('setComparator', [DefaultComparator::class])
-            ->invokeMethod('setConfig', [AppConfigProvider::SERVICE_CONFIG]);
-
-        $container->inflector(AbstractRepositoryCommand::class)
-            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
-            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
-
-        $container->inflector(AbstractStorageCommand::class)
-            ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
-
-        $container->inflector(AbstractTimelineCommand::class)
-            ->invokeMethod('setTimeline', [TimelineProvider::SERVICE_TIMELINE]);
-
-        $container->inflector(InitCommand::class)
-            ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
 
         $container->singleton(Application::class)
             ->withArguments([
