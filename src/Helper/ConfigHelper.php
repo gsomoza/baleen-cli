@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -23,7 +24,8 @@ use Baleen\Cli\Config\AppConfig;
 use Symfony\Component\Console\Helper\Helper;
 
 /**
- * Class ConfigHelper
+ * Class ConfigHelper.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ConfigHelper extends Helper

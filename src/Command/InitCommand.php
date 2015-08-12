@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -19,13 +20,13 @@
 
 namespace Baleen\Cli\Command;
 
-use Baleen\Cli\Command\Util\HasConfigStorageInterface;
 use Baleen\Cli\Config\ConfigFileStorage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class InitCommand
+ * Class InitCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class InitCommand extends AbstractCommand
@@ -64,6 +65,7 @@ class InitCommand extends AbstractCommand
     {
         if ($this->getConfigStorage()->isInitialized()) {
             $output->writeln('Baleen is already initialised!');
+
             return;
         }
 
@@ -74,7 +76,7 @@ class InitCommand extends AbstractCommand
             $message = sprintf('Config file created at "<info>%s</info>".', $relativePath);
         } else {
             $message = sprintf(
-                '<error>Error: Could not create and write file "<info>%s</info>". ' .
+                '<error>Error: Could not create and write file "<info>%s</info>". '.
                 'Please check file and directory permissions.</error>',
                 $relativePath
             );

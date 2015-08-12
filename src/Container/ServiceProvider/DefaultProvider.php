@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -25,13 +26,14 @@ use Baleen\Cli\Command\InitCommand;
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
-use Baleen\Cli\Command\Util\HasConfigStorageInterface;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
 /**
- * Class DefaultProvider
+ * Class DefaultProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class DefaultProvider extends ServiceProvider
 {
@@ -46,8 +48,6 @@ class DefaultProvider extends ServiceProvider
      * Use the register method to register items with the container via the
      * protected $this->container property or the `getContainer` method
      * from the ContainerAwareTrait.
-     *
-     * @return void
      */
     public function register()
     {
@@ -57,20 +57,22 @@ class DefaultProvider extends ServiceProvider
             return; // only needs to be executed once
         }
 
-        $container->addServiceProvider(new AppConfigProvider());
-        $container->addServiceProvider(new StorageProvider());
-        $container->addServiceProvider(new RepositoryProvider());
-        $container->addServiceProvider(new TimelineProvider());
-        $container->addServiceProvider(new HelperSetProvider());
-        $container->addServiceProvider(new CommandsProvider());
+        $container->singleton(Application::class)
+            ->withArguments([
+                CommandsProvider::SERVICE_COMMANDS,
+                HelperSetProvider::SERVICE_HELPERSET,
+            ]);
+
+        $container->singleton(DefaultComparator::class);
+
+        // register inflectors for the different types of commands
+        $container->inflector(AbstractRepositoryCommand::class)
+            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
+            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
 
         $container->inflector(AbstractCommand::class)
             ->invokeMethod('setComparator', [DefaultComparator::class])
             ->invokeMethod('setConfig', [AppConfigProvider::SERVICE_CONFIG]);
-
-        $container->inflector(AbstractRepositoryCommand::class)
-            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
-            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
 
         $container->inflector(AbstractStorageCommand::class)
             ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
@@ -80,13 +82,5 @@ class DefaultProvider extends ServiceProvider
 
         $container->inflector(InitCommand::class)
             ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
-
-        $container->singleton(Application::class)
-            ->withArguments([
-                CommandsProvider::SERVICE_COMMANDS,
-                HelperSetProvider::SERVICE_HELPERSET,
-            ]);
-
-        $container->singleton(DefaultComparator::class);
     }
 }

@@ -47,6 +47,12 @@ class AppConfigProviderTest extends ServiceProviderTestCase
 
         $this->setInstance(m::mock(AppConfigProvider::class)->makePartial());
 
+        $this->getInstance()->getContainer()
+            ->shouldReceive('get')
+            ->with(AppConfigProvider::BALEEN_BASE_DIR)
+            ->once()
+            ->andReturn(__DIR__);
+
         $this->assertSingletonProvided(
             AppConfigProvider::SERVICE_CONFIG,
             $this->assertCallbackInstanceOf(AppConfig::class, $fileStorage)

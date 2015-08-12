@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -25,7 +26,8 @@ use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 
 /**
- * Class HelperSetProvider
+ * Class HelperSetProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class HelperSetProvider extends ServiceProvider
@@ -48,6 +50,7 @@ class HelperSetProvider extends ServiceProvider
             $helperSet = new HelperSet();
             $helperSet->set($container->get(QuestionHelper::class), 'question');
             $helperSet->set($container->get(ConfigHelper::class));
+
             return $helperSet;
         })
         ->withArgument(AppConfigProvider::SERVICE_CONFIG);

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -27,7 +28,8 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
 /**
- * Class RepositoryProvider
+ * Class RepositoryProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class RepositoryProvider extends ServiceProvider
@@ -36,7 +38,8 @@ class RepositoryProvider extends ServiceProvider
     const SERVICE_FILESYSTEM = 'repository-filesystem';
 
     protected $provides = [
-        self::SERVICE_REPOSITORY
+        self::SERVICE_REPOSITORY,
+        self::SERVICE_REPOSITORY,
     ];
 
     /**
@@ -48,6 +51,7 @@ class RepositoryProvider extends ServiceProvider
 
         $container->singleton(self::SERVICE_FILESYSTEM, function (AppConfig $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
+
             return new Filesystem($adapter);
         })->withArgument(AppConfigProvider::SERVICE_CONFIG);
 
@@ -65,7 +69,8 @@ class RepositoryProvider extends ServiceProvider
             // make sure classes in the migration directory are autoloaded
             /** @var \Composer\Autoload\ClassLoader $autoloader */
             $autoloader = $this->getContainer()->get(DefaultProvider::SERVICE_AUTOLOADER);
-            $autoloader->addPsr4($config->getMigrationsNamespace() . '\\', $migrationsDir);
+            $autoloader->addPsr4($config->getMigrationsNamespace().'\\', $migrationsDir);
+
             return new DirectoryRepository($migrationsDir);
         })->withArgument(AppConfigProvider::SERVICE_CONFIG);
     }

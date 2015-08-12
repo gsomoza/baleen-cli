@@ -55,17 +55,6 @@ class DefaultProviderTest extends ServiceProviderTestCase
      */
     public function testRegister()
     {
-        $providers = [
-            AppConfigProvider::class,
-            StorageProvider::class,
-            RepositoryProvider::class,
-            HelperSetProvider::class,
-            CommandsProvider::class,
-        ];
-        foreach ($providers as $provider) {
-            $this->assertRegistersProvider($provider);
-        }
-
         $inflectors = [
             AbstractCommand::class => [
                 'setComparator' => [DefaultComparator::class],

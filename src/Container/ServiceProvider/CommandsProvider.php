@@ -22,15 +22,16 @@ namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Command\InitCommand;
 use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
-use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
 use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatest;
+use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
+use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
 use Baleen\Cli\Command\Timeline\ExecuteCommand;
 use Baleen\Cli\Command\Timeline\MigrateCommand;
 use League\Container\ServiceProvider;
 
 /**
- * Class CommandsProvider
+ * Class CommandsProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class CommandsProvider extends ServiceProvider
@@ -52,8 +53,6 @@ class CommandsProvider extends ServiceProvider
      * Use the register method to register items with the container via the
      * protected $this->container property or the `getContainer` method
      * from the ContainerAwareTrait.
-     *
-     * @return void
      */
     public function register()
     {
@@ -79,6 +78,7 @@ class CommandsProvider extends ServiceProvider
                     $commands[] = $container->get($command);
                 }
             }
+
             return $commands;
         });
     }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,7 +25,8 @@ use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
- * Class Application
+ * Class Application.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class Application extends ConsoleApplication
@@ -44,7 +46,7 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * @param array $commands
+     * @param array     $commands
      * @param HelperSet $helperSet
      */
     protected function init(array $commands, HelperSet $helperSet)

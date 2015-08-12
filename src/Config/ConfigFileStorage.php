@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,36 +19,54 @@
  */
 
 namespace Baleen\Cli\Config;
+
 use Baleen\Cli\Exception\CliException;
 use League\Flysystem\FilesystemInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class ConfigFileStorage
+ * Class ConfigFileStorage.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ConfigFileStorage
 {
-
     /** @var FilesystemInterface */
     protected $filesystem;
 
     /** @var AppConfig */
     protected $config;
 
+    /** @var array */
+    protected $defaultConfig;
+
+    /** @var Processor */
+    protected $processor;
+
+    /** @var ConfigurationDefinition */
+    protected $definition;
+
     /**
      * ConfigFileStorage constructor.
+     *
      * @param FilesystemInterface $filesystem
+     * @param array               $defaultConfig
      */
-    public function __construct(FilesystemInterface $filesystem)
+    public function __construct(FilesystemInterface $filesystem, array $defaultConfig = [])
     {
         $this->filesystem = $filesystem;
+        $this->defaultConfig = $defaultConfig;
+
+        $this->processor = new Processor();
+        $this->definition = new ConfigurationDefinition();
     }
 
     /**
      * @param $file
+     *
      * @return AppConfig
+     *
      * @throws CliException
      */
     public function read($file = null)
@@ -61,33 +80,42 @@ class ConfigFileStorage
                 $file
             ));
         }
-        $rawConfig = Yaml::parse($this->filesystem->read($file));
+        $configs = [];
+        if (!empty($this->defaultConfig)) {
+            $configs[] = $this->defaultConfig;
+        }
+        $configs[] = Yaml::parse($this->filesystem->read($file));
 
-        $processor = new Processor();
-        $definition = new ConfigurationDefinition();
-        $config = $processor->processConfiguration(
-            $definition,
-            $rawConfig
+        $config = $this->processor->processConfiguration(
+            $this->definition,
+            $configs
         );
+
         return new AppConfig($config);
     }
 
     /**
-     * Reads the file and loads the config into this instance
+     * Reads the file and loads the config into this instance.
+     *
      * @param null $file
+     *
      * @return AppConfig
+     *
      * @throws CliException
      */
     public function load($file = null)
     {
         $config = $this->read($file);
         $this->setConfig($config);
+
         return $config;
     }
 
     /**
      * @param null $file
+     *
      * @return bool
+     *
      * @throws CliException
      */
     public function write($file = null)
@@ -98,11 +126,14 @@ class ConfigFileStorage
         if (null === $file) {
             $file = $this->config->getConfigFileName();
         }
-        return $this->filesystem->write($file, Yaml::dump(['baleen' => $this->config->toArray()]));
+        $contents = Yaml::dump(['baleen' => $this->config->toArray()]);
+
+        return $this->filesystem->write($file, $contents);
     }
 
     /**
      * @param $pathOrConfig
+     *
      * @return bool
      */
     public function isInitialized($pathOrConfig = null)
@@ -115,6 +146,7 @@ class ConfigFileStorage
         } else {
             $path = $pathOrConfig;
         }
+
         return null === $path ? false : $this->filesystem->has($path);
     }
 
@@ -126,6 +158,7 @@ class ConfigFileStorage
         if (null === $this->config) {
             $this->config = new AppConfig();
         }
+
         return $this->config;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,7 +17,9 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace Baleen\Cli\Container\ServiceProvider;
+
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline\TimelineFactory;
@@ -25,7 +28,8 @@ use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
 
 /**
- * Class TimelineProvider
+ * Class TimelineProvider.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class TimelineProvider extends ServiceProvider
@@ -47,6 +51,7 @@ class TimelineProvider extends ServiceProvider
                 $available = $repository->fetchAll();
                 $migrated = $storage->fetchAll();
                 $factory = new TimelineFactory($available, $migrated);
+
                 return $factory->create($comparator);
             }
         )->withArguments([

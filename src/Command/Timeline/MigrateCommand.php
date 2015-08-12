@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,6 +19,7 @@
  */
 
 namespace Baleen\Cli\Command\Timeline;
+
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Event\EventInterface;
 use Baleen\Migrations\Event\Timeline\CollectionEvent;
@@ -30,12 +32,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class MigrateCommand
+ * Class MigrateCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class MigrateCommand extends AbstractTimelineCommand
 {
-
     const COMMAND_NAME = self::COMMAND_ALIAS;
     const COMMAND_ALIAS = 'migrate';
     const ARG_TARGET = 'target';
@@ -48,7 +50,7 @@ class MigrateCommand extends AbstractTimelineCommand
     protected $strategies = [
         Options::DIRECTION_UP => 'upTowards',
         Options::DIRECTION_DOWN => 'downTowards',
-        'both' => 'goTowards'
+        'both' => 'goTowards',
     ];
 
     /**
@@ -61,9 +63,14 @@ class MigrateCommand extends AbstractTimelineCommand
         $this->setDescription('Migrates all versions up to and including the specified target.')
             ->setAliases([self::COMMAND_ALIAS])
             ->addArgument(self::ARG_TARGET, InputArgument::OPTIONAL, 'The target version to migrate to.', 'latest')
-            ->addOption(self::OPT_STRATEGY, 's', InputOption::VALUE_REQUIRED, 'Strategy to migrate with (up/down/both).', 'up');
+            ->addOption(
+                self::OPT_STRATEGY,
+                's',
+                InputOption::VALUE_REQUIRED,
+                'Strategy to migrate with (up/down/both).',
+                'up'
+            );
     }
-
 
     /**
      * @inheritDoc
@@ -110,7 +117,8 @@ class MigrateCommand extends AbstractTimelineCommand
     }
 
     /**
-     * onCollectionBefore
+     * onCollectionBefore.
+     *
      * @param CollectionEvent $event
      */
     public function onCollectionBefore(CollectionEvent $event)
@@ -123,7 +131,7 @@ class MigrateCommand extends AbstractTimelineCommand
     }
 
     /**
-     * onCollectionAfter
+     * onCollectionAfter.
      */
     public function onCollectionAfter()
     {
@@ -132,7 +140,9 @@ class MigrateCommand extends AbstractTimelineCommand
 
     /**
      * @param InputInterface $input
+     *
      * @return string
+     *
      * @throws CliException
      */
     protected function getStrategyOption(InputInterface $input)
@@ -140,12 +150,12 @@ class MigrateCommand extends AbstractTimelineCommand
         $strategy = strtolower($input->getOption(self::OPT_STRATEGY));
         if (!isset($this->strategies[$strategy])) {
             throw new CliException(sprintf(
-                    'Unknown strategy "%s". Must be one of: %s',
-                    $strategy,
-                    implode(', ', array_keys($this->strategies))
-                )
-            );
+                'Unknown strategy "%s". Must be one of: %s',
+                $strategy,
+                implode(', ', array_keys($this->strategies))
+            ));
         }
+
         return $this->strategies[$strategy];
     }
 }

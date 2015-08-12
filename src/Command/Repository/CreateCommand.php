@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -21,7 +22,6 @@ namespace Baleen\Cli\Command\Repository;
 
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
-use League\Flysystem\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +30,8 @@ use Zend\Code\Generator\FileGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
- * Class CreateCommand
+ * Class CreateCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class CreateCommand extends AbstractRepositoryCommand
@@ -44,8 +45,7 @@ class CreateCommand extends AbstractRepositoryCommand
             ->setAliases(['create'])
             ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
             ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
-            ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.')
-            ;
+            ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.');
         parent::configure();
     }
 
@@ -75,7 +75,7 @@ class CreateCommand extends AbstractRepositoryCommand
 
         $title = $input->getArgument('title');
         $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
-        $className = ['v' . $timestamp];
+        $className = ['v'.$timestamp];
         if (!empty($title)) {
             $className[] = $title;
         }
@@ -87,20 +87,23 @@ class CreateCommand extends AbstractRepositoryCommand
                 $result
             ));
             if ($editorCmd) {
-                proc_open($editorCmd . ' ' . escapeshellarg($result), array(), $pipes);
+                proc_open($editorCmd.' '.escapeshellarg($result), array(), $pipes);
             }
         } else {
             $output->writeln(
                 'An error occurred creating a new Migration file. Please check directory permissions and configuration.'
             );
         }
+
         return $result;
     }
 
     /**
      * @param string $className
      * @param string $namespace
+     *
      * @return string|false
+     *
      * @throws CliException
      */
     protected function generate($className, $namespace = null)
@@ -118,29 +121,34 @@ class CreateCommand extends AbstractRepositoryCommand
             ]
         );
         $class->addUse(SimpleMigration::class);
+
         return $this->writeClass($class);
     }
 
     /**
      * @param ClassGenerator $class
+     *
      * @return array
+     *
      * @throws CliException
      */
     protected function writeClass(ClassGenerator $class)
     {
         $className = $class->getName();
         $file = new FileGenerator([
-            'fileName' => $className . '.php',
-            'classes' => [$class]
+            'fileName' => $className.'.php',
+            'classes' => [$class],
         ]);
-        $relativePath = $this->config->getMigrationsDirectory() . DIRECTORY_SEPARATOR . $file->getFilename();
+        $relativePath = $this->config->getMigrationsDirectory().DIRECTORY_SEPARATOR.$file->getFilename();
         $contents = $file->generate();
         if ($this->getFilesystem()->has($relativePath)) {
             throw new CliException(sprintf(
-                'Could not generate migration. File already exists: %s', $relativePath
+                'Could not generate migration. File already exists: %s',
+                $relativePath
             ));
         }
         $result = $this->getFilesystem()->write($relativePath, $contents);
+
         return $result ? $relativePath : false;
     }
 }

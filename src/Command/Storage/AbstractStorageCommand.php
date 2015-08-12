@@ -22,10 +22,10 @@ namespace Baleen\Cli\Command\Storage;
 
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Migrations\Storage\StorageInterface;
-use Baleen\Migrations\Timeline;
 
 /**
- * Class AbstractStorageCommand
+ * Class AbstractStorageCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 abstract class AbstractStorageCommand extends AbstractCommand

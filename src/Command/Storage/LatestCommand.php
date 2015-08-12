@@ -21,12 +21,12 @@
 namespace Baleen\Cli\Command\Storage;
 
 use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Version\Collection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ListCommand
+ * Class ListCommand.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class LatestCommand extends AbstractStorageCommand
@@ -50,6 +50,7 @@ class LatestCommand extends AbstractStorageCommand
         $migrated = $this->storage->fetchAll();
         if (count($migrated) === 0) {
             $output->writeln('No migrated versions found in storage.');
+
             return;
         }
         if (!is_callable($this->comparator)) {
