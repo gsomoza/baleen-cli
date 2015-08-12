@@ -1,0 +1,58 @@
+Welcome to Baleen CLI's documentation!
+======================================
+
+Baleen CLI is a command-line wrapper that uses Symfony Console and leverages the power of Baleen Migrations. Its primary
+purpose is to provide an out-of-the-box demo for Baleen Migrations. But thanks to its flexible architecture it can also
+be used as a starting point for your own migrations library.
+
+NOTE: this program is an early release and licensed under the MIT license. Please read the `LICENSE` file attached to
+the source-code before using this program to migrate sensitive data. And of course: always back up your data.
+
+Installation
+------------
+
+Install with Composer:
+
+.. code-block:: bash
+
+   composer.phar install baleen/cli
+
+Configuration
+--------------
+
+Then run the following command on the root directory of the project you want to migrate:
+
+.. code-block:: bash
+
+   ./vendor/bin baleen init
+
+This will create a configuration file called `.baleen.yml` and a storage file at `.baleen_versions`. You should put
+the config file under version control, but not the storage file.
+
+Why a storage file instead of a database table? Baleen is database-agnostic. That's where YOU come in: you can customize
+Baleen CLI to use any other type of storage you can imagine. A local file is just the default we decided to ship with.
+
+Creating Migrations
+-------------------
+
+Creating a migration is very easy, just run:
+
+.. code-block:: bash
+
+   ./vendor/bin baleen create what_it_does # the last argument is optional
+   # or: ./vendor/bin baleen migrations:create what_it_does
+
+A new migration file will be created inside your configured migrations folder.
+
+Note that Baleen CLI uses PSR-4 standards for autoloading the generated migrations out of the configured migrations
+directory. The file names must conform to the following regex: ``YYYYMMDDHHMMSS[_A-Za-z0-9]+``
+
+More advanced users could even overwrite the class generator to fit their needs.
+
+Adding Your Code
+----------------
+
+If you open that file you'll see it has two empty methods: ``up()`` and ``down()``, which will be called when migrating
+upwards or downwards (respectively). You can put any code you want inside those methods - for example code to
+transform your database, an image, a document, etc. - anything you want to migrate!
+
