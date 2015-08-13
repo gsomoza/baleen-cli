@@ -26,6 +26,8 @@ use Baleen\Migrations\Event\Timeline\CollectionEvent;
 use Baleen\Migrations\Event\Timeline\MigrationEvent;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
+use Baleen\Migrations\Version;
+use Baleen\Migrations\Version\Collection\MigratedVersions;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,6 +53,9 @@ class MigrateCommand extends AbstractTimelineCommand
     /** @var ProgressBar */
     protected $progress;
 
+    /** @var bool */
+    protected $saveChanges = true;
+
     /** @var array */
     protected $strategies = [
         Options::DIRECTION_UP => 'upTowards',
@@ -60,6 +65,9 @@ class MigrateCommand extends AbstractTimelineCommand
 
     /** @var bool  */
     protected $trackProgress = true;
+
+    /** @var string */
+    protected $directionPhrase = 'Migrating to';
 
     /**
      * @inheritdoc
@@ -91,16 +99,19 @@ class MigrateCommand extends AbstractTimelineCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $targetArg = $input->getArgument(self::ARG_TARGET);
+        $this->saveChanges = !$input->getOption(self::OPT_NO_STORAGE);
         $strategy = $this->getStrategyOption($input);
 
         $options = new Options(Options::DIRECTION_UP); // this value will get replaced by timeline later
         $options->setDryRun($input->getOption(self::OPT_DRY_RUN));
+        $options->setExceptionOnSkip(false);
 
         $this->trackProgress = ($output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET)
                                 && !$input->getOption(self::OPT_NOPROGRESS);
 
         $this->attachEvents($output);
 
+        /** @var Version\Collection\LinkedVersions $results */
         $this->getTimeline()->$strategy($targetArg, $options);
     }
 
@@ -118,6 +129,20 @@ class MigrateCommand extends AbstractTimelineCommand
             $dispatcher->addListener(EventInterface::MIGRATION_BEFORE, [$this, 'onMigrationBefore']);
             $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'onMigrationAfter']);
         }
+
+        if ($this->saveChanges) {
+            $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'saveVersionListener']);
+        }
+    }
+
+    /**
+     * saveVersionListener
+     * @param MigrationEvent $event
+     */
+    public function saveVersionListener(MigrationEvent $event)
+    {
+        $version = $event->getVersion();
+        $this->getStorage()->update($version);
     }
 
     /**
@@ -155,8 +180,10 @@ class MigrateCommand extends AbstractTimelineCommand
     public function onCollectionBefore(CollectionEvent $event)
     {
         $target = $event->getTarget();
+
         $this->output->writeln(sprintf(
-            '<info>[START]</info> Migrating towards <comment>%s</comment>:',
+            '<info>[START]</info> Migrating %s to <comment>%s</comment>:',
+            $event->getOptions()->isDirectionUp() ? 'up' : 'down',
             $target->getId()
         ));
         if ($this->trackProgress) {
@@ -175,7 +202,7 @@ class MigrateCommand extends AbstractTimelineCommand
             $this->progress->finish();
             $this->output->writeln(''); // new line after progress bar
         }
-        $this->output->writeln('<info>[END]</info> All done!');
+        $this->output->writeln('<info>[END]</info>');
     }
 
     /**

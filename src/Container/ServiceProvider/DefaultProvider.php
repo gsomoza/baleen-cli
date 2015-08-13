@@ -78,7 +78,8 @@ class DefaultProvider extends ServiceProvider
             ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
 
         $container->inflector(AbstractTimelineCommand::class)
-            ->invokeMethod('setTimeline', [TimelineProvider::SERVICE_TIMELINE]);
+            ->invokeMethod('setTimeline', [TimelineProvider::SERVICE_TIMELINE])
+            ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
 
         $container->inflector(InitCommand::class)
             ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
