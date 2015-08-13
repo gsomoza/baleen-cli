@@ -26,6 +26,7 @@ use Baleen\Migrations\Event\Timeline\CollectionEvent;
 use Baleen\Migrations\Event\Timeline\MigrationEvent;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,9 +43,13 @@ class MigrateCommand extends AbstractTimelineCommand
     const COMMAND_ALIAS = 'migrate';
     const ARG_TARGET = 'target';
     const OPT_STRATEGY = 'strategy';
+    const OPT_NOPROGRESS = 'no-progress';
 
     /** @var OutputInterface */
     protected $output;
+
+    /** @var ProgressBar */
+    protected $progress;
 
     /** @var array */
     protected $strategies = [
@@ -52,6 +57,9 @@ class MigrateCommand extends AbstractTimelineCommand
         Options::DIRECTION_DOWN => 'downTowards',
         'both' => 'goTowards',
     ];
+
+    /** @var bool  */
+    protected $trackProgress = true;
 
     /**
      * @inheritdoc
@@ -64,6 +72,11 @@ class MigrateCommand extends AbstractTimelineCommand
             ->setAliases([self::COMMAND_ALIAS])
             ->addArgument(self::ARG_TARGET, InputArgument::OPTIONAL, 'The target version to migrate to.', 'latest')
             ->addOption(
+                self::OPT_NOPROGRESS,
+                null,
+                InputOption::VALUE_NONE,
+                'Show a more detailed log instead of a progress bar.'
+            )->addOption(
                 self::OPT_STRATEGY,
                 's',
                 InputOption::VALUE_REQUIRED,
@@ -83,6 +96,9 @@ class MigrateCommand extends AbstractTimelineCommand
         $options = new Options(Options::DIRECTION_UP); // this value will get replaced by timeline later
         $options->setDryRun($input->getOption(self::OPT_DRY_RUN));
 
+        $this->trackProgress = ($output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET)
+                                && !$input->getOption(self::OPT_NOPROGRESS);
+
         $this->attachEvents($output);
 
         $this->getTimeline()->$strategy($targetArg, $options);
@@ -100,6 +116,7 @@ class MigrateCommand extends AbstractTimelineCommand
             $dispatcher->addListener(EventInterface::COLLECTION_BEFORE, [$this, 'onCollectionBefore']);
             $dispatcher->addListener(EventInterface::COLLECTION_AFTER, [$this, 'onCollectionAfter']);
             $dispatcher->addListener(EventInterface::MIGRATION_BEFORE, [$this, 'onMigrationBefore']);
+            $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'onMigrationAfter']);
         }
     }
 
@@ -108,12 +125,26 @@ class MigrateCommand extends AbstractTimelineCommand
      */
     public function onMigrationBefore(MigrationEvent $event)
     {
-        $version = $event->getVersion();
-        $this->output->writeln(sprintf(
-            '<info>[%s]</info> <comment>%s</comment>',
-            $version->getId(),
-            strtoupper($event->getOptions()->getDirection())
-        ));
+        if (!$this->progress) {
+            $version = $event->getVersion();
+            $this->output->writeln(sprintf(
+                '<info>[%s]</info> <comment>%s</comment>',
+                $version->getId(),
+                strtoupper($event->getOptions()->getDirection())
+            ));
+        }
+    }
+
+    /**
+     * onMigrationAfter
+     * @param MigrationEvent $event
+     */
+    public function onMigrationAfter(MigrationEvent $event)
+    {
+        if ($this->progress) {
+            $runProgress = $event->getProgress();
+            $this->progress->setProgress($runProgress->getCurrent());
+        }
     }
 
     /**
@@ -128,6 +159,11 @@ class MigrateCommand extends AbstractTimelineCommand
             '<info>[START]</info> Migrating towards <comment>%s</comment>:',
             $target->getId()
         ));
+        if ($this->trackProgress) {
+            $this->progress = new ProgressBar($this->output, $event->getProgress()->getTotal());
+            $this->progress->setFormat('verbose');
+            $this->progress->setProgress(0);
+        }
     }
 
     /**
@@ -135,6 +171,10 @@ class MigrateCommand extends AbstractTimelineCommand
      */
     public function onCollectionAfter()
     {
+        if ($this->progress) {
+            $this->progress->finish();
+            $this->output->writeln(''); // new line after progress bar
+        }
         $this->output->writeln('<info>[END]</info> All done!');
     }
 

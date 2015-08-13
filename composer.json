@@ -1,6 +1,7 @@
 {
     "name": "baleen/cli",
     "description": "Console wrapper for Baleen Migrations",
+    "keywords": ["baleen", "cli", "migration", "migrations"],
     "license": "MIT",
     "authors": [
         {
@@ -14,11 +15,13 @@
             "Baleen\\Cli\\": "src/"
         }
     },
-    "bin": ["bin/baleen"],
+    "bin": [
+        "bin/baleen"
+    ],
     "require": {
         "symfony/console": "^2.7",
         "psr/log": "^1.0",
-        "baleen/migrations": "dev-master",
+        "baleen/migrations": "^0.5",
         "symfony/yaml": "^2.7",
         "symfony/config": "^2.7",
         "league/container": "^1.3",
@@ -31,5 +34,8 @@
         "phploc/phploc": "^2.1",
         "phpmd/phpmd": "^2.2",
         "sebastian/phpcpd": "^2.0"
+    },
+    "scripts": {
+        "baleen": "bin/baleen --ansi"
     }
 }
