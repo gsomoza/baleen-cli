@@ -75,8 +75,8 @@ class MigrateCommand extends AbstractTimelineCommand
                 self::OPT_NOPROGRESS,
                 null,
                 InputOption::VALUE_NONE,
-                'Show a more detailed log instead of a progress bar.')
-            ->addOption(
+                'Show a more detailed log instead of a progress bar.'
+            )->addOption(
                 self::OPT_STRATEGY,
                 's',
                 InputOption::VALUE_REQUIRED,
