@@ -82,7 +82,11 @@ class ExecuteCommand extends AbstractTimelineCommand
             $canExecute = $this->getHelper('question')->ask($input, $output, new ConfirmationQuestion($question));
         }
         if ($canExecute) {
-            $this->getTimeline()->runSingle($version, $options);
+            $result = $this->getTimeline()->runSingle($version, $options);
+            if ($result) {
+                $version = $result;
+                $this->getStorage()->update($version);
+            }
             $output->writeln("Version <info>{$version->getId()}</info> migrated <info>$direction</info> successfully.");
         }
     }

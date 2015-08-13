@@ -69,9 +69,10 @@ class MigrateCommandTest extends CommandTestCase
      * testExecute
      * @param $verbosity
      * @param $noProgress
+     * @param $noStorage
      * @dataProvider executeProvider
      */
-    public function testExecute($verbosity, $noProgress)
+    public function testExecute($verbosity, $noProgress, $noStorage)
     {
         // values don't matter here
         $strategy = 'both';
@@ -90,6 +91,7 @@ class MigrateCommandTest extends CommandTestCase
 
         $this->input->shouldReceive('getArgument')->with(MigrateCommand::ARG_TARGET)->once()->andReturn($target);
         $this->input->shouldReceive('getOption')->with(MigrateCommand::OPT_DRY_RUN)->once()->andReturn($dryRun);
+        $this->input->shouldReceive('getOption')->with(MigrateCommand::OPT_NO_STORAGE)->once()->andReturn($noStorage);
         $this->instance->shouldReceive('getStrategyOption')->with($this->input)->andReturn($strategy);
         $this->instance->shouldReceive('attachEvents')->once()->with($this->output);
         $this->instance->shouldReceive('getTimeline->' . $strategy)->once()->with($target, m::type(Options::class));
@@ -97,6 +99,7 @@ class MigrateCommandTest extends CommandTestCase
         $this->execute();
 
         $this->assertEquals($shouldTrackProgress, $this->getPropVal('trackProgress', $this->instance));
+        $this->assertEquals(!$noStorage, $this->getPropVal('saveChanges', $this->instance));
     }
 
     /**
@@ -112,7 +115,8 @@ class MigrateCommandTest extends CommandTestCase
             OutputInterface::VERBOSITY_VERY_VERBOSE,
             OutputInterface::VERBOSITY_DEBUG,
         ];
-        return $this->combinations([$verbosities, [true, false]]);
+        $trueFalse = [true, false];
+        return $this->combinations([$verbosities, $trueFalse, $trueFalse]);
     }
 
     /**
@@ -149,7 +153,7 @@ class MigrateCommandTest extends CommandTestCase
      */
     public function testOnCollectionAfter()
     {
-        $this->output->shouldReceive('writeln')->with('/done/')->once();
+        $this->output->shouldReceive('writeln')->with('/END/')->once();
         $this->setPropVal('output', $this->output, $this->instance);
         $this->invokeMethod('onCollectionAfter', $this->instance);
     }
@@ -157,13 +161,18 @@ class MigrateCommandTest extends CommandTestCase
     /**
      * testOnCollectionBefore
      * @param bool $trackProgress
+     * @param bool $isDirectionUp
+     * @dataProvider onCollectionBeforeProvider
      */
-    public function testOnCollectionBefore($trackProgress = true)
+    public function testOnCollectionBefore($trackProgress = true, $isDirectionUp = true)
     {
         $target = new Version('v10');
         /** @var m\Mock|CollectionEvent $event */
         $event = m::mock(CollectionEvent::class);
-        $event->shouldReceive(['getTarget' => $target])->once();
+        $event->shouldReceive([
+            'getTarget' => $target,
+            'getOptions->isDirectionUp' => $isDirectionUp,
+        ])->once();
         $this->output->shouldReceive('writeln')->with('/' . $target->getId() . '/')->once();
         $this->setPropVal('output', $this->output, $this->instance);
 
@@ -182,11 +191,14 @@ class MigrateCommandTest extends CommandTestCase
         $this->invokeMethod('onCollectionBefore', $this->instance, [$event]);
     }
 
-    public function trackProgressProvider()
+    /**
+     * onCollectionBeforeProvider
+     * @return array
+     */
+    public function onCollectionBeforeProvider()
     {
-        return [
-            [true], [false]
-        ];
+        $trueFalse = [true, false];
+        return $this->combinations([$trueFalse, $trueFalse]);
     }
 
     /**
@@ -205,17 +217,53 @@ class MigrateCommandTest extends CommandTestCase
         $this->invokeMethod('onMigrationBefore', $this->instance, [$event]);
     }
 
-    public function testAttachEvents($verbosity = 1)
+    /**
+     * testAttachEvents
+     * @param int $verbosity
+     * @param $saveChanges
+     * @dataProvider attachEventsProvider
+     */
+    public function testAttachEvents($verbosity, $saveChanges)
     {
         $dispatcher = m::mock(EventDispatcher::class);
         $this->instance->shouldReceive('getTimeline->getEventDispatcher')->once()->andReturn($dispatcher);
+        $this->setPropVal('saveChanges', $saveChanges, $this->instance);
         $this->output->shouldReceive('getVerbosity')->andReturn($verbosity);
+        $counts = [
+            EventInterface::MIGRATION_BEFORE => 0,
+            EventInterface::MIGRATION_AFTER => 0,
+            EventInterface::COLLECTION_BEFORE => 0,
+            EventInterface::COLLECTION_AFTER => 0,
+        ];
         if ($verbosity >= OutputInterface::VERBOSITY_NORMAL) {
-            $dispatcher->shouldReceive('addListener')->once()->with(EventInterface::MIGRATION_BEFORE, m::any());
-            $dispatcher->shouldReceive('addListener')->once()->with(EventInterface::MIGRATION_AFTER, m::any());
-            $dispatcher->shouldReceive('addListener')->once()->with(EventInterface::COLLECTION_BEFORE, m::any());
-            $dispatcher->shouldReceive('addListener')->once()->with(EventInterface::COLLECTION_AFTER, m::any());
+            $counts = [
+                EventInterface::MIGRATION_BEFORE => 1,
+                EventInterface::MIGRATION_AFTER => 1,
+                EventInterface::COLLECTION_BEFORE => 1,
+                EventInterface::COLLECTION_AFTER => 1,
+            ];
+        }
+        if ($saveChanges) {
+            $counts[EventInterface::MIGRATION_AFTER] += 1;
+        }
+        foreach ($counts as $event => $count) {
+            $dispatcher->shouldReceive('addListener')->times($count)->with($event, m::any());
         }
         $this->invokeMethod('attachEvents', $this->instance, [$this->output]);
+    }
+
+    /**
+     * attachEventsProvider
+     * @return array
+     */
+    public function attachEventsProvider()
+    {
+        $trueFalse = [true, false];
+        $verbosities = [
+            OutputInterface::VERBOSITY_QUIET,
+            OutputInterface::OUTPUT_NORMAL,
+            OutputInterface::VERBOSITY_VERY_VERBOSE,
+        ];
+        return $this->combinations([$verbosities, $trueFalse]);
     }
 }
