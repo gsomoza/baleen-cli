@@ -20,7 +20,7 @@
 
 namespace Baleen\Cli\Command;
 
-use Baleen\Cli\Config\ConfigFileStorage;
+use Baleen\Cli\Config\ConfigStorage;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,11 +33,11 @@ class InitCommand extends AbstractCommand
 {
     const COMMAND_NAME = 'init';
 
-    /** @var ConfigFileStorage */
+    /** @var ConfigStorage */
     protected $configStorage;
 
     /**
-     * @return ConfigFileStorage
+     * @return ConfigStorage
      */
     public function getConfigStorage()
     {
@@ -45,7 +45,7 @@ class InitCommand extends AbstractCommand
     }
 
     /**
-     * @param ConfigFileStorage $configStorage
+     * @param ConfigStorage $configStorage
      */
     public function setConfigStorage($configStorage)
     {

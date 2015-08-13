@@ -20,8 +20,7 @@
 namespace BaleenTest\Baleen\Config;
 
 use Baleen\Cli\Config\AppConfig;
-use Baleen\Cli\Config\ConfigFileStorage;
-use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Config\ConfigStorage;
 use BaleenTest\Baleen\BaseTestCase;
 use League\Flysystem\FilesystemInterface;
 use Mockery as m;
@@ -36,10 +35,10 @@ class ConfigFileStorageTest extends BaseTestCase
     /** @var FilesystemInterface|m\Mock */
     protected $filesystem;
 
-    /** @var ConfigFileStorage|m\Mock $instance */
+    /** @var ConfigStorage|m\Mock $instance */
     protected $config;
 
-    /** @var ConfigFileStorage|m\Mock $instance */
+    /** @var ConfigStorage|m\Mock $instance */
     protected $instance;
 
     /**
@@ -49,7 +48,7 @@ class ConfigFileStorageTest extends BaseTestCase
     {
         parent::setUp();
         $this->filesystem = m::mock(FilesystemInterface::class);
-        $this->instance = m::mock(ConfigFileStorage::class)->makePartial();
+        $this->instance = m::mock(ConfigStorage::class)->makePartial();
         $this->config = m::mock(AppConfig::class);
     }
 
@@ -67,9 +66,9 @@ class ConfigFileStorageTest extends BaseTestCase
      */
     public function testConstructor()
     {
-        $instance = new ConfigFileStorage($this->filesystem);
-        $this->assertInstanceOf(ConfigFileStorage::class, $instance);
-        $this->assertSame($this->filesystem, $this->getPropVal('filesystem', $instance));
+        $instance = new ConfigStorage($this->filesystem);
+        $this->assertInstanceOf(ConfigStorage::class, $instance);
+        $this->assertSame($this->filesystem, $this->getPropVal('projectFileSystem', $instance));
     }
 
     /**
@@ -89,7 +88,6 @@ class ConfigFileStorageTest extends BaseTestCase
      */
     public function testReadWithoutFile()
     {
-        $this->setExpectedException(CliException::class, 'could not be read');
         $this->doRead('irrelevant', 'doesnt exist', false);
     }
 
@@ -105,7 +103,7 @@ class ConfigFileStorageTest extends BaseTestCase
     {
         $expectedFile = $file ?: AppConfig::CONFIG_FILE_NAME;
 
-        $instance = new ConfigFileStorage($this->filesystem);
+        $instance = new ConfigStorage($this->filesystem);
         $this->filesystem->shouldReceive('has')->with(m::type('string'))->once()->andReturn($fileExists);
 
         if ($fileExists) {
@@ -139,7 +137,7 @@ class ConfigFileStorageTest extends BaseTestCase
         $file = 'some/file';
         $config = 'some config'; // contents don't really matter
         $this->instance->shouldReceive('read')->once()->with($file)->andReturn($config);
-        $this->instance->shouldReceive('setConfig')->once()->with($config);
+        $this->instance->shouldReceive('setAppConfig')->once()->with($config);
         $result = $this->instance->load($file);
         $this->assertSame($result, $config);
     }
@@ -149,12 +147,12 @@ class ConfigFileStorageTest extends BaseTestCase
      */
     public function testGetSetConfig()
     {
-        $instance = new ConfigFileStorage($this->filesystem);
-        $default = $instance->getConfig();
+        $instance = new ConfigStorage($this->filesystem);
+        $default = $instance->getAppConfig();
         $this->assertInstanceOf(AppConfig::class, $default);
 
-        $instance->setConfig($this->config);
-        $this->assertSame($this->config, $instance->getConfig());
+        $instance->setAppConfig($this->config);
+        $this->assertSame($this->config, $instance->getAppConfig());
         $this->assertNotSame($this->config, $default);
     }
 
@@ -163,10 +161,10 @@ class ConfigFileStorageTest extends BaseTestCase
      */
     public function testIsLoaded()
     {
-        $instance = new ConfigFileStorage($this->filesystem);
+        $instance = new ConfigStorage($this->filesystem);
         $this->assertFalse($instance->isLoaded());
 
-        $instance->setConfig($this->config);
+        $instance->setAppConfig($this->config);
         $this->assertTrue($instance->isLoaded());
     }
 
@@ -176,7 +174,7 @@ class ConfigFileStorageTest extends BaseTestCase
     public function testGetConfigFileName()
     {
         $fileName = 'some/file';
-        $this->instance->shouldReceive('getConfig->getConfigFileName')->once()->andReturn($fileName);
+        $this->instance->shouldReceive('getAppConfig->getConfigFileName')->once()->andReturn($fileName);
 
         $result = $this->instance->getConfigFileName();
         $this->assertSame($fileName, $result);
@@ -185,11 +183,10 @@ class ConfigFileStorageTest extends BaseTestCase
     /**
      * @param $file
      * @param null $defaultFileName
-     * @throws CliException
-     *
+     * @param bool $defaults
      * @dataProvider writeProvider
      */
-    public function testWrite($file, $defaultFileName = null)
+    public function testWrite($file, $defaultFileName = null, $defaults = true)
     {
         $configToArray = ['foo' => 'bar'];
         $this->config->shouldReceive('toArray')->once()->andReturn($configToArray);
@@ -210,10 +207,10 @@ class ConfigFileStorageTest extends BaseTestCase
             ->andReturn($expectedResult);
 
         $this->instance->shouldReceive('isLoaded')->andReturn(true);
-        $this->instance->setConfig($this->config);
-        $this->setPropVal('filesystem', $this->filesystem, $this->instance);
+        $this->instance->setAppConfig($this->config);
+        $this->setPropVal('projectFileSystem', $this->filesystem, $this->instance);
 
-        $result = $this->instance->write($file);
+        $result = $this->instance->write($file, $defaults);
 
         $this->assertSame($expectedResult, $result);
     }
@@ -225,19 +222,9 @@ class ConfigFileStorageTest extends BaseTestCase
     {
         return [
             [null, 'some/file'],
-            ['another/file']
+            ['another/file'],
+            ['another/file', null, false],
         ];
-    }
-
-    /**
-     * testWriteFailsIfNoConfigLoaded
-     */
-    public function testWriteFailsIfNoConfigLoaded()
-    {
-        $instance = m::mock(ConfigFileStorage::class)->makePartial();
-        $instance->shouldReceive('isLoaded')->andReturn(false);
-        $this->setExpectedException(CliException::class, 'not loaded');
-        $instance->write('some/file'); // parameter doesn't really matter
     }
 
     /**
@@ -248,7 +235,7 @@ class ConfigFileStorageTest extends BaseTestCase
     public function testIsInitialized($pathOrConfig, $fsResult = null)
     {
         $expectedResult = $fsResult;
-        $this->setPropVal('filesystem', $this->filesystem, $this->instance);
+        $this->setPropVal('projectFileSystem', $this->filesystem, $this->instance);
         if (null !== $fsResult) {
             $this->filesystem->shouldReceive('has')->with(m::type('string'))->once()->andReturn($fsResult);
         } else {

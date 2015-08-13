@@ -35,7 +35,7 @@ use League\Flysystem\Filesystem;
 class RepositoryProvider extends ServiceProvider
 {
     const SERVICE_REPOSITORY = 'repository';
-    const SERVICE_FILESYSTEM = 'repository-filesystem';
+    const SERVICE_FILESYSTEM = 'repository-projectFileSystem';
 
     protected $provides = [
         self::SERVICE_REPOSITORY,
@@ -51,7 +51,6 @@ class RepositoryProvider extends ServiceProvider
 
         $container->singleton(self::SERVICE_FILESYSTEM, function (AppConfig $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
-
             return new Filesystem($adapter);
         })->withArgument(AppConfigProvider::SERVICE_CONFIG);
 

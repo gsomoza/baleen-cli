@@ -21,7 +21,7 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
-use Baleen\Cli\Config\ConfigFileStorage;
+use Baleen\Cli\Config\ConfigStorage;
 use League\Container\ServiceProvider;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -51,22 +51,21 @@ class AppConfigProvider extends ServiceProvider
         $baseDir = getcwd();
         $baleenBaseDir = $this->getContainer()->get(self::BALEEN_BASE_DIR);
         $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function () use ($baseDir, $baleenBaseDir) {
-            $configFilesystem = new Filesystem(new Local($baseDir));
-            $defaultFilePath = implode(DIRECTORY_SEPARATOR, [$baleenBaseDir, 'config', 'defaults.php']);
-            $defaultConfig = [];
-            if (file_exists($defaultFilePath) && is_readable($defaultFilePath)) {
-                $defaultConfig = include $defaultFilePath;
+            $configFiles = glob(implode(DIRECTORY_SEPARATOR, [$baleenBaseDir, 'config', '*.php']));
+            $localConfig = [];
+            foreach ($configFiles as $file) {
+                if (is_file($file)) {
+                    $fileConfig = include $file;
+                    $localConfig = array_merge_recursive($localConfig, $fileConfig);
+                }
             }
-
-            return new ConfigFileStorage($configFilesystem, $defaultConfig);
+            $configFilesystem = new Filesystem(new Local($baseDir));
+            return new ConfigStorage($configFilesystem, $localConfig);
         });
         $this->getContainer()->singleton(
             self::SERVICE_CONFIG,
-            function (ConfigFileStorage $configStorage) use ($baseDir) {
-                return $configStorage->isInitialized(AppConfig::CONFIG_FILE_NAME) ?
-                       // its important to call "load" and not just "read"
-                       $configStorage->load(AppConfig::CONFIG_FILE_NAME) :
-                       new AppConfig();
+            function (ConfigStorage $configStorage) use ($baseDir) {
+                return $configStorage->load(AppConfig::CONFIG_FILE_NAME);
             }
         )->withArgument(self::SERVICE_CONFIG_STORAGE);
     }
