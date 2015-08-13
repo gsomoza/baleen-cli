@@ -26,26 +26,27 @@ But you can customize almost anything through a configuration file. To create a 
 ./vendor/bin/baleen init
 ```
 
-This will generate two files in your working directory: 
+This will generate two files in your working directory:  
+
 * `.baleen.yml`: the configuration file.
 * `.baleen_versions`: a simple file to keep track of which versions have been migrated. This can later be replaced
- with a database table. You may want to ignore this file in your VCS system (e.g. using Git's `.gitignore` file).
+ with a database table. You may want to ignore this file in your VCS system (e.g. using Git's `.gitignore` file).  
  
- The `.baleen_versions` file will be created for you automatically if you use the default configuration values. You 
- don't need to run `baleen init` in order for the file to be created.
+The `.baleen_versions` file will be created for you automatically if you use the default configuration values. You 
+don't need to run `baleen init` in order for the file to be created.
  
- If you don't want to type `./vendor/bin/baleen` to run baleen commands then you can alternatively use Composer as a
- shortcut. Just edit your project's `composer.json` file to add the following:
+If you don't want to type `./vendor/bin/baleen` to run baleen commands then you can alternatively use Composer as a
+shortcut. Just edit your project's `composer.json` file to add the following:
  
  ```json
  {
-    "scripts" {
+    "scripts": {
         "baleen": "vendor/bin/baleen --ansi"
     }
  }
  ```
  
- Now you can run Baleen CLI easily by just typing `composer baleen`!
+Now you can run Baleen CLI easily by just typing `composer baleen`!
 
 ## Usage
 
