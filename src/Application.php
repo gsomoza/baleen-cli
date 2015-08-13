@@ -31,7 +31,7 @@ use Symfony\Component\Console\Helper\HelperSet;
  */
 class Application extends ConsoleApplication
 {
-    const VERSION = '0.1.0';
+    const VERSION = '0.2.0';
 
     /** @var Container */
     protected $container;

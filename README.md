@@ -9,7 +9,7 @@
 
 Generic, customisable command-line wrapper for Baleen Migrations.
 
-### Installation
+## Installation
 
 With Composer:
 
@@ -41,14 +41,13 @@ This will generate two files in your working directory:
  {
     "scripts" {
         "baleen": "vendor/bin/baleen --ansi"
-        // ... other scripts
     }
  }
  ```
  
  Now you can run Baleen CLI easily by just typing `composer baleen`!
 
-### Usage
+## Usage
 
 To see some help and a list of available commands, simply execute:
 
@@ -85,6 +84,6 @@ composer baleen migrate
 
 If you'd like to see a log instead of the progress-bar then just add the `--no-progress` option to the migrate command above.
 
-### License
-MIT - for more details please refer to [LICENSE](https://github.com/baleen/cli/blob/master/LICENSE) at the root 
-directory.
+## License
+Licensed under MIT - for more details please refer to the [LICENSE](https://github.com/baleen/cli/blob/master/LICENSE) 
+file at the root directory.

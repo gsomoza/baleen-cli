@@ -34,8 +34,5 @@
         "phploc/phploc": "^2.1",
         "phpmd/phpmd": "^2.2",
         "sebastian/phpcpd": "^2.0"
-    },
-    "scripts": {
-        "baleen": "bin/baleen --ansi"
     }
 }
