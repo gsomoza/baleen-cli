@@ -17,7 +17,10 @@ With Composer:
 composer install baleen/cli
 ```
 
-And then to initialise Baleen for your project:
+Baleen CLI is quite opinionated in its defaults, so it doesn't need extra configuration to run. So if you'd like to just
+ test-drive the project, you can now jump straight to the "usage" section.
+
+But you can customize almost anything through a configuration file. To create a configuration file, run the following:
 
 ```bash
 ./vendor/bin/baleen init
@@ -25,8 +28,25 @@ And then to initialise Baleen for your project:
 
 This will generate two files in your working directory: 
 * `.baleen.yml`: the configuration file.
-* `.baleen_versions`: a simple database to keep track of which versions have been migrated. This can later be replaced
+* `.baleen_versions`: a simple file to keep track of which versions have been migrated. This can later be replaced
  with a database table. You may want to ignore this file in your VCS system (e.g. using Git's `.gitignore` file).
+ 
+ The `.baleen_versions` file will be created for you automatically if you use the default configuration values. You 
+ don't need to run `baleen init` in order for the file to be created.
+ 
+ If you don't want to type `./vendor/bin/baleen` to run baleen commands then you can alternatively use Composer as a
+ shortcut. Just edit your project's `composer.json` file to add the following:
+ 
+ ```json
+ {
+    "scripts" {
+        "baleen": "vendor/bin/baleen --ansi"
+        // ... other scripts
+    }
+ }
+ ```
+ 
+ Now you can run Baleen CLI easily by just typing `composer baleen`!
 
 ### Usage
 

@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
-use Baleen\Cli\Config\ConfigFileStorage;
+use Baleen\Cli\Config\ConfigStorage;
 use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
 use Mockery as m;
 
@@ -31,45 +31,35 @@ use Mockery as m;
 class AppConfigProviderTest extends ServiceProviderTestCase
 {
     /**
-     * @param bool|false $isInitialized
-     * @dataProvider registerProvider
+     * testRegister
      */
-    public function testRegister($isInitialized = false)
+    public function testRegister()
     {
-        $fileStorage = m::mock(ConfigFileStorage::class);
-        $fileStorage->shouldReceive('isInitialized')->once()->andReturn($isInitialized);
-        if ($isInitialized) {
-            $appConfigMock = m::mock(AppConfig::class);
-            $fileStorage->shouldReceive('load')->with(m::type('string'))->once()->andReturn($appConfigMock);
-        } else {
-            $fileStorage->shouldNotReceive('load');
-        }
+        $configStorage = m::mock(ConfigStorage::class);
+        $appConfigMock = m::mock(AppConfig::class);
+        $configStorage->shouldReceive('load')->with(m::type('string'))->once()->andReturn($appConfigMock);
 
         $this->setInstance(m::mock(AppConfigProvider::class)->makePartial());
+
+        $localConfigFolder = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..']));
+        $this->assertFileExists($localConfigFolder);
 
         $this->getInstance()->getContainer()
             ->shouldReceive('get')
             ->with(AppConfigProvider::BALEEN_BASE_DIR)
             ->once()
-            ->andReturn(__DIR__);
+            ->andReturn($localConfigFolder);
 
         $this->assertSingletonProvided(
             AppConfigProvider::SERVICE_CONFIG,
-            $this->assertCallbackInstanceOf(AppConfig::class, $fileStorage)
+            $this->assertCallbackInstanceOf(AppConfig::class, $configStorage)
         )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG_STORAGE);
 
         $this->assertSingletonProvided(
             AppConfigProvider::SERVICE_CONFIG_STORAGE,
-            $this->assertCallbackInstanceOf(ConfigFileStorage::class)
+            $this->assertCallbackInstanceOf(ConfigStorage::class)
         );
 
         $this->instance->register();
-    }
-
-    public function registerProvider()
-    {
-        return [
-            [true], [false]
-        ];
     }
 }

@@ -22,7 +22,7 @@ namespace BaleenTest\Baleen\Command;
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\InitCommand;
 use Baleen\Cli\Config\AppConfig;
-use Baleen\Cli\Config\ConfigFileStorage;
+use Baleen\Cli\Config\ConfigStorage;
 use Mockery as m;
 
 /**
@@ -32,7 +32,7 @@ use Mockery as m;
 class InitCommandTest extends CommandTestCase
 {
 
-    /** @var ConfigFileStorage|m\Mock */
+    /** @var ConfigStorage|m\Mock */
     protected $configStorage;
 
     /**
@@ -42,7 +42,7 @@ class InitCommandTest extends CommandTestCase
     {
         parent::setUp();
         $this->instance = m::mock(InitCommand::class)->makePartial();
-        $this->configStorage = m::mock(ConfigFileStorage::class);
+        $this->configStorage = m::mock(ConfigStorage::class);
         $this->instance->setConfigStorage($this->configStorage);
     }
 

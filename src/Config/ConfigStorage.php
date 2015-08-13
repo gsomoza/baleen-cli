@@ -26,20 +26,17 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class ConfigFileStorage.
+ * Class ConfigStorage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ConfigFileStorage
+class ConfigStorage
 {
     /** @var FilesystemInterface */
-    protected $filesystem;
+    protected $projectFileSystem;
 
     /** @var AppConfig */
     protected $config;
-
-    /** @var array */
-    protected $defaultConfig;
 
     /** @var Processor */
     protected $processor;
@@ -48,14 +45,14 @@ class ConfigFileStorage
     protected $definition;
 
     /**
-     * ConfigFileStorage constructor.
+     * ConfigStorage constructor.
      *
-     * @param FilesystemInterface $filesystem
+     * @param FilesystemInterface $projectFileSystem
      * @param array               $defaultConfig
      */
-    public function __construct(FilesystemInterface $filesystem, array $defaultConfig = [])
+    public function __construct(FilesystemInterface $projectFileSystem, array $defaultConfig = [])
     {
-        $this->filesystem = $filesystem;
+        $this->projectFileSystem = $projectFileSystem;
         $this->defaultConfig = $defaultConfig;
 
         $this->processor = new Processor();
@@ -63,28 +60,24 @@ class ConfigFileStorage
     }
 
     /**
-     * @param $file
+     * @param $externalFile
      *
      * @return AppConfig
      *
      * @throws CliException
      */
-    public function read($file = null)
+    public function read($externalFile = null)
     {
-        if (null === $file) {
-            $file = AppConfig::CONFIG_FILE_NAME;
-        }
-        if (!$this->filesystem->has($file)) {
-            throw new CliException(sprintf(
-                'Configuration file "%s" could not be read.',
-                $file
-            ));
+        if (null === $externalFile) {
+            $externalFile = AppConfig::CONFIG_FILE_NAME;
         }
         $configs = [];
         if (!empty($this->defaultConfig)) {
             $configs[] = $this->defaultConfig;
         }
-        $configs[] = Yaml::parse($this->filesystem->read($file));
+        if ($this->projectFileSystem->has($externalFile)) {
+            $configs[] = Yaml::parse($this->projectFileSystem->read($externalFile));
+        }
 
         $config = $this->processor->processConfiguration(
             $this->definition,
@@ -106,29 +99,30 @@ class ConfigFileStorage
     public function load($file = null)
     {
         $config = $this->read($file);
-        $this->setConfig($config);
+        $this->setAppConfig($config);
 
         return $config;
     }
 
     /**
      * @param null $file
+     * @param bool $defaultsOnly
      *
      * @return bool
-     *
      * @throws CliException
      */
-    public function write($file = null)
+    public function write($file = null, $defaultsOnly = true)
     {
-        if (!$this->isLoaded()) {
-            throw new CliException('Configuration file not loaded. Nothing to write!');
-        }
         if (null === $file) {
             $file = $this->config->getConfigFileName();
         }
-        $contents = Yaml::dump(['baleen' => $this->config->toArray()]);
+        $config = $this->getAppConfig()->toArray();
+        if ($defaultsOnly) {
+            unset($config['providers']); // we don't want to write that
+        }
+        $contents = Yaml::dump($config);
 
-        return $this->filesystem->write($file, $contents);
+        return $this->projectFileSystem->write($file, $contents);
     }
 
     /**
@@ -147,13 +141,13 @@ class ConfigFileStorage
             $path = $pathOrConfig;
         }
 
-        return null === $path ? false : $this->filesystem->has($path);
+        return null === $path ? false : $this->projectFileSystem->has($path);
     }
 
     /**
      * @return AppConfig
      */
-    public function getConfig()
+    public function getAppConfig()
     {
         if (null === $this->config) {
             $this->config = new AppConfig();
@@ -165,7 +159,7 @@ class ConfigFileStorage
     /**
      * @param AppConfig $config
      */
-    public function setConfig($config)
+    public function setAppConfig($config)
     {
         $this->config = $config;
     }
@@ -180,6 +174,6 @@ class ConfigFileStorage
      */
     public function getConfigFileName()
     {
-        return $this->getConfig()->getConfigFileName();
+        return $this->getAppConfig()->getConfigFileName();
     }
 }
