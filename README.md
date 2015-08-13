@@ -75,13 +75,13 @@ To easily create a new Migration file run the following command:
 
 ### Running Migrations
 
-Running migrtaions is as easy as executing:
+Running migrations is as easy as executing:
 
 ```bash
 ./vendor/bin/baleen migrate
-# or alternatively
-composer baleen migrate
 ```
+
+By default it will migrate `up` to the latest available version.
 
 If you'd like to see a log instead of the progress-bar then just add the `--no-progress` option to the migrate command above.
 
