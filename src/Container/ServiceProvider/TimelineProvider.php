@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
+use Baleen\Cli\Container\Services;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline\TimelineFactory;
@@ -34,10 +35,9 @@ use League\Container\ServiceProvider;
  */
 class TimelineProvider extends ServiceProvider
 {
-    const SERVICE_TIMELINE = 'timeline';
-
     protected $provides = [
-        self::SERVICE_TIMELINE,
+        Services::TIMELINE,
+        Services::TIMELINE_COMPARATOR,
     ];
 
     /**
@@ -45,8 +45,14 @@ class TimelineProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->singleton(
-            self::SERVICE_TIMELINE,
+        $container = $this->getContainer();
+
+        if (!$container->isRegistered(Services::TIMELINE_COMPARATOR)) {
+            $container->singleton(Services::TIMELINE_COMPARATOR, DefaultComparator::class);
+        }
+
+        $container->singleton(
+            Services::TIMELINE,
             function (RepositoryInterface $repository, StorageInterface $storage, ComparatorInterface $comparator) {
                 $available = $repository->fetchAll();
                 $migrated = $storage->fetchAll();
@@ -55,8 +61,8 @@ class TimelineProvider extends ServiceProvider
                 return $factory->create($comparator);
             }
         )->withArguments([
-            RepositoryProvider::SERVICE_REPOSITORY,
-            StorageProvider::SERVICE_STORAGE,
+            Services::REPOSITORY,
+            Services::STORAGE,
             DefaultComparator::class,
         ]);
     }

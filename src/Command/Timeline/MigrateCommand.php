@@ -27,7 +27,6 @@ use Baleen\Migrations\Event\Timeline\MigrationEvent;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\MigratedVersions;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,7 +62,7 @@ class MigrateCommand extends AbstractTimelineCommand
         'both' => 'goTowards',
     ];
 
-    /** @var bool  */
+    /** @var bool */
     protected $trackProgress = true;
 
     /** @var string */
@@ -107,7 +106,7 @@ class MigrateCommand extends AbstractTimelineCommand
         $options->setExceptionOnSkip(false);
 
         $this->trackProgress = ($output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET)
-                                && !$input->getOption(self::OPT_NOPROGRESS);
+            && !$input->getOption(self::OPT_NOPROGRESS);
 
         $this->attachEvents($output);
 

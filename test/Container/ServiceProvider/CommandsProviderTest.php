@@ -19,12 +19,8 @@
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Command\InitCommand;
-use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
-use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
-use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatest;
 use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
+use Baleen\Cli\Container\Services;
 use Mockery as m;
 
 /**
@@ -40,18 +36,20 @@ class CommandsProviderTest extends ServiceProviderTestCase
         $container = $this->getContainer();
 
         $defaultCommands = [
-            StorageLatest::class,
-            InitCommand::class,
-            RepositoryLatest::class,
-            RepositoryList::class,
-            CreateCommand::class,
+            Services::CMD_CONFIG_INIT,
+            Services::CMD_REPOSITORY_CREATE,
+            Services::CMD_REPOSITORY_LATEST,
+            Services::CMD_REPOSITORY_LIST,
+            Services::CMD_STORAGE_LATEST,
+            Services::CMD_TIMELINE_EXECUTE,
+            Services::CMD_TIMELINE_MIGRATE,
         ];
         foreach ($defaultCommands as $command) {
-            $container->shouldReceive('add')->with($command)->once();
+            $container->shouldReceive('add')->with($command, m::type('string'))->once();
             $container->shouldReceive('get')->with($command)->once();
         }
         $container->shouldReceive('add')
-            ->with(CommandsProvider::SERVICE_COMMANDS, m::type('callable'))
+            ->with(Services::COMMANDS, m::type('callable'))
             ->once()
             ->andReturnUsing($this->assertableCallback(function(callable $factory) {
                 $result = $factory();

@@ -49,12 +49,12 @@ abstract class AbstractTimelineCommand extends AbstractCommand
     {
         parent::configure();
         $this->addOption(self::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, 'Execute the migration on dry-run mode.')
-             ->addOption(
-                 self::OPT_NO_STORAGE,
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Do not persist execution results to storage.'
-             );
+            ->addOption(
+                self::OPT_NO_STORAGE,
+                null,
+                InputOption::VALUE_NONE,
+                'Do not persist execution results to storage.'
+            );
     }
 
     /**

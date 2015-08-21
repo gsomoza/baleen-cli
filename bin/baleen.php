@@ -47,18 +47,18 @@ if (!$composerAutoloader = $findAutoloader()) {
 
 use Baleen\Cli\Application;
 use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
+use Baleen\Cli\Container\Services;
 use League\Container\Container;
 
 $container = new Container();
-$container->add(AppConfigProvider::BALEEN_BASE_DIR, dirname(__DIR__));
-$container->add(DefaultProvider::SERVICE_AUTOLOADER, $composerAutoloader);
+$container->add(Services::BALEEN_BASE_DIR, dirname(__DIR__));
+$container->add(Services::AUTOLOADER, $composerAutoloader);
 
 // the only provider that can't be overwritten
 $container->addServiceProvider(new AppConfigProvider());
 
 /** @var \Baleen\Cli\Config\AppConfig $appConfig */
-$appConfig = $container->get(AppConfigProvider::SERVICE_CONFIG);
+$appConfig = $container->get(Services::CONFIG);
 
 foreach ($appConfig->getProviders() as $name => $class) {
     $provider = new $class();
@@ -66,5 +66,5 @@ foreach ($appConfig->getProviders() as $name => $class) {
 }
 
 /** @var Application $app */
-$app = $container->get(Application::class);
+$app = $container->get(Services::APPLICATION);
 $app->run();

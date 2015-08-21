@@ -21,6 +21,7 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use League\Container\ServiceProvider;
@@ -34,12 +35,9 @@ use League\Flysystem\Filesystem;
  */
 class RepositoryProvider extends ServiceProvider
 {
-    const SERVICE_REPOSITORY = 'repository';
-    const SERVICE_FILESYSTEM = 'repository-projectFileSystem';
-
     protected $provides = [
-        self::SERVICE_REPOSITORY,
-        self::SERVICE_REPOSITORY,
+        Services::REPOSITORY,
+        Services::REPOSITORY_FILESYSTEM,
     ];
 
     /**
@@ -49,12 +47,12 @@ class RepositoryProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->singleton(self::SERVICE_FILESYSTEM, function (AppConfig $appConfig) {
+        $container->singleton(Services::REPOSITORY_FILESYSTEM, function (AppConfig $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
             return new Filesystem($adapter);
-        })->withArgument(AppConfigProvider::SERVICE_CONFIG);
+        })->withArgument(Services::CONFIG);
 
-        $container->singleton(self::SERVICE_REPOSITORY, function (AppConfig $config) {
+        $container->singleton(Services::REPOSITORY, function (AppConfig $config) {
             $migrationsDir = $config->getMigrationsDirectoryPath();
             if (!is_dir($migrationsDir)) {
                 $result = mkdir($migrationsDir, 0777, true);
@@ -67,10 +65,10 @@ class RepositoryProvider extends ServiceProvider
             }
             // make sure classes in the migration directory are autoloaded
             /** @var \Composer\Autoload\ClassLoader $autoloader */
-            $autoloader = $this->getContainer()->get(DefaultProvider::SERVICE_AUTOLOADER);
-            $autoloader->addPsr4($config->getMigrationsNamespace().'\\', $migrationsDir);
+            $autoloader = $this->getContainer()->get(Services::AUTOLOADER);
+            $autoloader->addPsr4($config->getMigrationsNamespace() . '\\', $migrationsDir);
 
             return new DirectoryRepository($migrationsDir);
-        })->withArgument(AppConfigProvider::SERVICE_CONFIG);
+        })->withArgument(Services::CONFIG);
     }
 }

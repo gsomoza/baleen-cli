@@ -28,7 +28,6 @@ use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use BaleenTest\Baleen\Command\CommandTestCase;
 use Mockery as m;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 

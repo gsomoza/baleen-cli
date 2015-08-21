@@ -69,14 +69,14 @@ class ExecuteCommand extends AbstractTimelineCommand
         $direction = $input->getArgument(self::ARG_DIRECTION) == Options::DIRECTION_DOWN ?
             Options::DIRECTION_DOWN :
             Options::DIRECTION_UP;
-        $dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
+        $dryRun = (bool)$input->getOption(self::OPT_DRY_RUN);
         $forced = true; // because we're executing a single migration
 
         $options = new Options($direction, $forced, $dryRun);
 
         $canExecute = true;
         if ($input->isInteractive()) {
-            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that '.
+            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that ' .
                 'could result in schema changes and data lost.');
             $question = sprintf('Are you sure you wish to migrate "%s" (y/n)? ', $direction);
             $canExecute = $this->getHelper('question')->ask($input, $output, new ConfirmationQuestion($question));

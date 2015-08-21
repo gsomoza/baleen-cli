@@ -71,7 +71,7 @@ class AppConfig
      */
     public function getMigrationsDirectoryPath()
     {
-        return getcwd().DIRECTORY_SEPARATOR.$this->getMigrationsDirectory();
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getMigrationsDirectory();
     }
 
     /**
@@ -95,7 +95,7 @@ class AppConfig
      */
     public function getStorageFilePath()
     {
-        return getcwd().DIRECTORY_SEPARATOR.$this->getStorageFile();
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getStorageFile();
     }
 
     /**
@@ -111,7 +111,7 @@ class AppConfig
      */
     public function getConfigFilePath()
     {
-        return getcwd().DIRECTORY_SEPARATOR.$this->getConfigFileName();
+        return getcwd() . DIRECTORY_SEPARATOR . $this->getConfigFileName();
     }
 
     /**

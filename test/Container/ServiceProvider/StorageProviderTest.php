@@ -36,8 +36,8 @@ function touch() {
 
 namespace Baleen\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
 use Baleen\Cli\Container\ServiceProvider\StorageProvider;
+use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Storage\StorageInterface;
 use BaleenTest\Baleen\Container\ServiceProvider\ServiceProviderTestCase;
@@ -67,9 +67,9 @@ class StorageProviderTest extends ServiceProviderTestCase
             ->andReturn($this->testFile);
 
         $this->assertSingletonProvided(
-            StorageProvider::SERVICE_STORAGE,
+            Services::STORAGE,
             $this->assertCallbackInstanceOf(StorageInterface::class, [$this->config])
-        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG);
+        )->shouldReceive('withArgument')->with(Services::CONFIG);
 
         self::$touchCalled = false;
         self::$touchResult = null;

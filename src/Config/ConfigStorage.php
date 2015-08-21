@@ -48,7 +48,7 @@ class ConfigStorage
      * ConfigStorage constructor.
      *
      * @param FilesystemInterface $projectFileSystem
-     * @param array               $defaultConfig
+     * @param array $defaultConfig
      */
     public function __construct(FilesystemInterface $projectFileSystem, array $defaultConfig = [])
     {
