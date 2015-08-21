@@ -22,6 +22,7 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Config\ConfigStorage;
 use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
+use Baleen\Cli\Container\Services;
 use Mockery as m;
 
 /**
@@ -46,17 +47,17 @@ class AppConfigProviderTest extends ServiceProviderTestCase
 
         $this->getInstance()->getContainer()
             ->shouldReceive('get')
-            ->with(AppConfigProvider::BALEEN_BASE_DIR)
+            ->with(Services::BALEEN_BASE_DIR)
             ->once()
             ->andReturn($localConfigFolder);
 
         $this->assertSingletonProvided(
-            AppConfigProvider::SERVICE_CONFIG,
+            Services::CONFIG,
             $this->assertCallbackInstanceOf(AppConfig::class, $configStorage)
-        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG_STORAGE);
+        )->shouldReceive('withArgument')->with(Services::CONFIG_STORAGE);
 
         $this->assertSingletonProvided(
-            AppConfigProvider::SERVICE_CONFIG_STORAGE,
+            Services::CONFIG_STORAGE,
             $this->assertCallbackInstanceOf(ConfigStorage::class)
         );
 

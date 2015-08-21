@@ -26,7 +26,7 @@ use Baleen\Cli\Command\InitCommand;
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
-use Baleen\Migrations\Version\Comparator\DefaultComparator;
+use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 
 /**
@@ -37,11 +37,8 @@ use League\Container\ServiceProvider;
  */
 class DefaultProvider extends ServiceProvider
 {
-    const SERVICE_AUTOLOADER = 'composerAutoloader';
-
     protected $provides = [
-        Application::class,
-        DefaultComparator::class,
+        Services::APPLICATION,
     ];
 
     /**
@@ -53,35 +50,31 @@ class DefaultProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        if ($container->isRegistered(Application::class)) {
-            return; // only needs to be executed once
+        if (!$container->isRegistered(Services::APPLICATION)) {
+            $container->singleton(Services::APPLICATION, Application::class)
+                ->withArguments([
+                    Services::COMMANDS,
+                    Services::HELPERSET,
+                ]);
         }
-
-        $container->singleton(Application::class)
-            ->withArguments([
-                CommandsProvider::SERVICE_COMMANDS,
-                HelperSetProvider::SERVICE_HELPERSET,
-            ]);
-
-        $container->singleton(DefaultComparator::class);
 
         // register inflectors for the different types of commands
         $container->inflector(AbstractRepositoryCommand::class)
-            ->invokeMethod('setRepository', [RepositoryProvider::SERVICE_REPOSITORY])
-            ->invokeMethod('setFilesystem', [RepositoryProvider::SERVICE_FILESYSTEM]);
+            ->invokeMethod('setRepository', [Services::REPOSITORY])
+            ->invokeMethod('setFilesystem', [Services::REPOSITORY_FILESYSTEM]);
 
         $container->inflector(AbstractCommand::class)
-            ->invokeMethod('setComparator', [DefaultComparator::class])
-            ->invokeMethod('setConfig', [AppConfigProvider::SERVICE_CONFIG]);
+            ->invokeMethod('setComparator', [Services::TIMELINE_COMPARATOR])
+            ->invokeMethod('setConfig', [Services::CONFIG]);
 
         $container->inflector(AbstractStorageCommand::class)
-            ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
+            ->invokeMethod('setStorage', [Services::STORAGE]);
 
         $container->inflector(AbstractTimelineCommand::class)
-            ->invokeMethod('setTimeline', [TimelineProvider::SERVICE_TIMELINE])
-            ->invokeMethod('setStorage', [StorageProvider::SERVICE_STORAGE]);
+            ->invokeMethod('setTimeline', [Services::TIMELINE])
+            ->invokeMethod('setStorage', [Services::STORAGE]);
 
         $container->inflector(InitCommand::class)
-            ->invokeMethod('setConfigStorage', [AppConfigProvider::SERVICE_CONFIG_STORAGE]);
+            ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);
     }
 }

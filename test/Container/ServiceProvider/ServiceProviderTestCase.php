@@ -22,7 +22,6 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 use Baleen\Cli\Config\AppConfig;
 use BaleenTest\Baleen\BaseTestCase;
 use League\Container\Container;
-use League\Container\Definition\AbstractDefinition;
 use League\Container\Definition\Factory;
 use League\Container\ServiceProvider;
 use Mockery as m;
@@ -99,11 +98,12 @@ class ServiceProviderTestCase extends BaseTestCase
     /**
      * @param $service
      * @param \Closure $callback
+     * @param string $concreteType
      * @return m\Mock
      */
-    public function assertSingletonProvided($service, $callback)
+    public function assertSingletonProvided($service, $callback, $concreteType = 'callable')
     {
-        $this->assertServiceProvided($service, 'singleton', $callback);
+        $this->assertServiceProvided($service, 'singleton', $callback, $concreteType);
         return $this->getContainer();
     }
 
@@ -111,11 +111,12 @@ class ServiceProviderTestCase extends BaseTestCase
      * @param $service
      * @param string $type
      * @param $callback
+     * @param string $concreteType
      * @return m\Mock
      */
-    private function assertServiceProvided($service, $type, $callback)
+    private function assertServiceProvided($service, $type, $callback, $concreteType = 'callable')
     {
-        $this->getContainer()->shouldReceive($type)->with($service, m::type('callable'))->once()
+        $this->getContainer()->shouldReceive($type)->with($service, m::type($concreteType))->once()
             ->andReturnUsing($callback);
     }
 
@@ -132,11 +133,19 @@ class ServiceProviderTestCase extends BaseTestCase
             $factoryArgs = [$factoryArgs];
         }
         return $this->assertableCallback(
-            function(callable $factory) use ($instanceOf, $factoryArgs, $additionalAssertions) {
-                if ($factory instanceof \Closure) {
+            function($factory) use ($instanceOf, $factoryArgs, $additionalAssertions) {
+                if (is_string($factory)) {
+                    // simulate the Container's behaviour when a string is supplied as a concrete
+                    $factory = function () use ($factory) {
+                        $refl = new \ReflectionClass($factory);
+                        return $refl->newInstanceArgs(func_get_args());
+                    };
+                }
+                if (is_object($factory) && $factory instanceof \Closure) {
                     $factory = $factory->bindTo($this);
                 }
-                $result = call_user_func_array([$factory, '__invoke'], $factoryArgs);
+                $func = [$factory, '__invoke'];
+                $result = call_user_func_array($func, $factoryArgs);
                 $this->assertInstanceOf($instanceOf, $result);
                 if (null !== $additionalAssertions) {
                     $additionalAssertions = $additionalAssertions->bindTo($this);

@@ -76,7 +76,7 @@ class InitCommand extends AbstractCommand
             $message = sprintf('Config file created at "<info>%s</info>".', $relativePath);
         } else {
             $message = sprintf(
-                '<error>Error: Could not create and write file "<info>%s</info>". '.
+                '<error>Error: Could not create and write file "<info>%s</info>". ' .
                 'Please check file and directory permissions.</error>',
                 $relativePath
             );

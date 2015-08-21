@@ -22,6 +22,7 @@ namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
 use Baleen\Cli\Config\ConfigStorage;
+use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -33,12 +34,9 @@ use League\Flysystem\Filesystem;
  */
 class AppConfigProvider extends ServiceProvider
 {
-    const SERVICE_CONFIG = 'config';
-    const SERVICE_CONFIG_STORAGE = 'config-writer';
-    const BALEEN_BASE_DIR = 'baleen_base_dir';
-
     protected $provides = [
-        self::SERVICE_CONFIG,
+        Services::CONFIG,
+        Services::CONFIG_STORAGE,
     ];
 
     /**
@@ -49,8 +47,8 @@ class AppConfigProvider extends ServiceProvider
     public function register()
     {
         $baseDir = getcwd();
-        $baleenBaseDir = $this->getContainer()->get(self::BALEEN_BASE_DIR);
-        $this->getContainer()->singleton(self::SERVICE_CONFIG_STORAGE, function () use ($baseDir, $baleenBaseDir) {
+        $baleenBaseDir = $this->getContainer()->get(Services::BALEEN_BASE_DIR);
+        $this->getContainer()->singleton(Services::CONFIG_STORAGE, function () use ($baseDir, $baleenBaseDir) {
             $configFiles = glob(implode(DIRECTORY_SEPARATOR, [$baleenBaseDir, 'config', '*.php']));
             $localConfig = [];
             foreach ($configFiles as $file) {
@@ -63,10 +61,10 @@ class AppConfigProvider extends ServiceProvider
             return new ConfigStorage($configFilesystem, $localConfig);
         });
         $this->getContainer()->singleton(
-            self::SERVICE_CONFIG,
+            Services::CONFIG,
             function (ConfigStorage $configStorage) use ($baseDir) {
                 return $configStorage->load(AppConfig::CONFIG_FILE_NAME);
             }
-        )->withArgument(self::SERVICE_CONFIG_STORAGE);
+        )->withArgument(Services::CONFIG_STORAGE);
     }
 }

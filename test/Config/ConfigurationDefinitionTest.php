@@ -21,9 +21,9 @@ namespace BaleenTest\Baleen\Config;
 
 use Baleen\Cli\Config\ConfigurationDefinition;
 use BaleenTest\Baleen\BaseTestCase;
+use Mockery as m;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Mockery as m;
 
 /**
  * Class ConfigurationDefinitionTest

@@ -37,9 +37,8 @@ function mkdir()
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
+use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Composer\Autoload\ClassLoader;
@@ -69,7 +68,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->getContainer()
             ->shouldReceive('get')
             ->zeroOrMoreTimes()
-            ->with(DefaultProvider::SERVICE_AUTOLOADER)
+            ->with(Services::AUTOLOADER)
             ->andReturn($this->autoloader);
     }
 
@@ -88,9 +87,9 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn(__DIR__);
 
         $this->assertSingletonProvided(
-            RepositoryProvider::SERVICE_REPOSITORY,
+            Services::REPOSITORY,
             $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
-        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG);
+        )->shouldReceive('withArgument')->with(Services::CONFIG);
 
         $this->getInstance()->register();
     }
@@ -104,9 +103,9 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
 
         $this->assertSingletonProvided(
-            RepositoryProvider::SERVICE_REPOSITORY,
+            Services::REPOSITORY,
             $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
-        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG);
+        )->shouldReceive('withArgument')->with(Services::CONFIG);
 
         try {
             $this->getInstance()->register();
@@ -127,9 +126,9 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
 
         $this->assertSingletonProvided(
-            RepositoryProvider::SERVICE_REPOSITORY,
+            Services::REPOSITORY,
             $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
-        )->shouldReceive('withArgument')->with(AppConfigProvider::SERVICE_CONFIG);
+        )->shouldReceive('withArgument')->with(Services::CONFIG);
 
         self::$mkDirResult = false;
 

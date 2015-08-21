@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -21,6 +20,7 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Storage\FileStorage;
 use League\Container\ServiceProvider;
@@ -32,10 +32,8 @@ use League\Container\ServiceProvider;
  */
 class StorageProvider extends ServiceProvider
 {
-    const SERVICE_STORAGE = 'storage';
-
     protected $provides = [
-        self::SERVICE_STORAGE,
+        Services::STORAGE,
     ];
 
     /**
@@ -44,7 +42,7 @@ class StorageProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(self::SERVICE_STORAGE, function (AppConfig $config) {
+        $container->singleton(Services::STORAGE, function (AppConfig $config) {
             $storageFile = $config->getStorageFilePath();
             $result = touch($storageFile);
             if (!$result) {
@@ -56,6 +54,6 @@ class StorageProvider extends ServiceProvider
 
             return new FileStorage($storageFile);
         })
-            ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+            ->withArgument(Services::CONFIG);
     }
 }

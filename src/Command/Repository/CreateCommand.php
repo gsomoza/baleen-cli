@@ -75,7 +75,7 @@ class CreateCommand extends AbstractRepositoryCommand
 
         $title = $input->getArgument('title');
         $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
-        $className = ['v'.$timestamp];
+        $className = ['v' . $timestamp];
         if (!empty($title)) {
             $className[] = $title;
         }
@@ -87,7 +87,7 @@ class CreateCommand extends AbstractRepositoryCommand
                 $result
             ));
             if ($editorCmd) {
-                proc_open($editorCmd.' '.escapeshellarg($result), array(), $pipes);
+                proc_open($editorCmd . ' ' . escapeshellarg($result), array(), $pipes);
             }
         } else {
             $output->writeln(
@@ -136,10 +136,10 @@ class CreateCommand extends AbstractRepositoryCommand
     {
         $className = $class->getName();
         $file = new FileGenerator([
-            'fileName' => $className.'.php',
+            'fileName' => $className . '.php',
             'classes' => [$class],
         ]);
-        $relativePath = $this->config->getMigrationsDirectory().DIRECTORY_SEPARATOR.$file->getFilename();
+        $relativePath = $this->config->getMigrationsDirectory() . DIRECTORY_SEPARATOR . $file->getFilename();
         $contents = $file->generate();
         if ($this->getFilesystem()->has($relativePath)) {
             throw new CliException(sprintf(

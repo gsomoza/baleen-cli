@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Baleen\Command\Storage;
 
-use Baleen\Cli\Command\Storage\LatestCommand;
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
+use Baleen\Cli\Command\Storage\LatestCommand;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;

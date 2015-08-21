@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
+use Baleen\Cli\Container\Services;
 use Baleen\Cli\Helper\ConfigHelper;
 use League\Container\ServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -32,12 +33,10 @@ use Symfony\Component\Console\Helper\QuestionHelper;
  */
 class HelperSetProvider extends ServiceProvider
 {
-    const SERVICE_HELPERSET = 'helper-set';
-
     protected $provides = [
-        self::SERVICE_HELPERSET,
-        QuestionHelper::class,
-        ConfigHelper::class,
+        Services::HELPERSET,
+        Services::HELPERSET_QUESTION,
+        Services::HELPERSET_CONFIG,
     ];
 
     /**
@@ -46,17 +45,16 @@ class HelperSetProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(self::SERVICE_HELPERSET, function () use ($container) {
+        $container->singleton(Services::HELPERSET, function () use ($container) {
             $helperSet = new HelperSet();
-            $helperSet->set($container->get(QuestionHelper::class), 'question');
-            $helperSet->set($container->get(ConfigHelper::class));
-
+            $helperSet->set($container->get(Services::HELPERSET_QUESTION), 'question');
+            $helperSet->set($container->get(Services::HELPERSET_CONFIG));
             return $helperSet;
         })
-        ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+            ->withArgument(Services::CONFIG);
 
-        $container->add(QuestionHelper::class);
-        $container->add(ConfigHelper::class)
-            ->withArgument(AppConfigProvider::SERVICE_CONFIG);
+        $container->add(Services::HELPERSET_QUESTION, QuestionHelper::class);
+        $container->add(Services::HELPERSET_CONFIG, ConfigHelper::class)
+            ->withArgument(Services::CONFIG);
     }
 }

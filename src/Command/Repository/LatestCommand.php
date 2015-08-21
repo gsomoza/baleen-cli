@@ -53,7 +53,7 @@ class LatestCommand extends AbstractRepositoryCommand
     }
 
     /**
-     * @param LinkedVersions  $versions
+     * @param LinkedVersions $versions
      * @param OutputInterface $output
      */
     protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
