@@ -20,7 +20,7 @@
 
 namespace Baleen\Cli\Helper;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Symfony\Component\Console\Helper\Helper;
 
 /**
@@ -35,7 +35,7 @@ class ConfigHelper extends Helper
     /**
      * @inheritDoc
      */
-    public function __construct(AppConfig $configuration)
+    public function __construct(Config $configuration)
     {
         $this->config = $configuration;
     }
@@ -49,7 +49,7 @@ class ConfigHelper extends Helper
     }
 
     /**
-     * @return AppConfig
+     * @return Config
      */
     public function getConfig()
     {
@@ -57,9 +57,9 @@ class ConfigHelper extends Helper
     }
 
     /**
-     * @param AppConfig $configuration
+     * @param Config $configuration
      */
-    public function setConfig(AppConfig $configuration)
+    public function setConfig(Config $configuration)
     {
         $this->config = $configuration;
     }

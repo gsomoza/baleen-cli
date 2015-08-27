@@ -63,22 +63,24 @@ class InitCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->getConfigStorage()->isInitialized()) {
-            $output->writeln('Baleen is already initialised!');
+        if ($this->getConfigStorage()->isInitialized($this->config)) {
+            $output->writeln(sprintf(
+                '%s is already initialised!',
+                $this->getApplication()->getName()
+            ));
 
             return;
         }
 
-        $relativePath = $this->getConfigStorage()->getConfigFileName();
-        $result = $this->getConfigStorage()->write();
+        $result = $this->getConfigStorage()->write($this->config);
 
         if ($result !== false) {
-            $message = sprintf('Config file created at "<info>%s</info>".', $relativePath);
+            $message = sprintf('Config file created at "<info>%s</info>".', $this->config->getFileName());
         } else {
             $message = sprintf(
                 '<error>Error: Could not create and write file "<info>%s</info>". ' .
                 'Please check file and directory permissions.</error>',
-                $relativePath
+                $this->config->getFileName()
             );
         }
         $output->writeln($message);

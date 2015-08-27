@@ -21,7 +21,7 @@ namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
 use BaleenTest\Baleen\Command\CommandTestCase;
@@ -109,7 +109,7 @@ class CreateCommandTest extends CommandTestCase
         $className = 'TestClass';
         $generator->setName($className);
 
-        $config = m::mock(AppConfig::class);
+        $config = m::mock(Config::class);
         $migrationsDir = 'migrations';
         $config->shouldReceive(['getMigrationsDirectory' => $migrationsDir]);
 
@@ -144,7 +144,7 @@ class CreateCommandTest extends CommandTestCase
      */
     public function testExecuteNoMigrationsDirectory()
     {
-        $config = m::mock(AppConfig::class);
+        $config = m::mock(Config::class);
         $config->shouldReceive(['getMigrationsDirectory' => 'migrations']);
         $this->instance->setConfig($config);
         $this->setExpectedException(CliException::class, 'not exist');
@@ -165,7 +165,7 @@ class CreateCommandTest extends CommandTestCase
         $filesystem->shouldReceive(['has' => true]);
         $this->instance->setFilesystem($filesystem);
 
-        $config = m::mock(AppConfig::class);
+        $config = m::mock(Config::class);
         $config->shouldReceive(['getMigrationsDirectory' => 'migrations']);
         $config->shouldReceive('getMigrationsNamespace')->zeroOrMoreTimes()->andReturn('DefaultNamespace');
         $this->instance->setConfig($config);

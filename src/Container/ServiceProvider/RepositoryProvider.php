@@ -20,7 +20,7 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Repository\DirectoryRepository;
@@ -47,12 +47,12 @@ class RepositoryProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->singleton(Services::REPOSITORY_FILESYSTEM, function (AppConfig $appConfig) {
+        $container->singleton(Services::REPOSITORY_FILESYSTEM, function (Config $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
             return new Filesystem($adapter);
         })->withArgument(Services::CONFIG);
 
-        $container->singleton(Services::REPOSITORY, function (AppConfig $config) {
+        $container->singleton(Services::REPOSITORY, function (Config $config) {
             $migrationsDir = $config->getMigrationsDirectoryPath();
             if (!is_dir($migrationsDir)) {
                 $result = mkdir($migrationsDir, 0777, true);

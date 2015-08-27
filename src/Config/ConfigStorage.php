@@ -21,7 +21,9 @@
 namespace Baleen\Cli\Config;
 
 use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Exception\InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Yaml;
 
@@ -35,145 +37,124 @@ class ConfigStorage
     /** @var FilesystemInterface */
     protected $projectFileSystem;
 
-    /** @var AppConfig */
-    protected $config;
+    /** @var array */
+    protected $localConfigStack;
 
     /** @var Processor */
     protected $processor;
 
-    /** @var ConfigurationDefinition */
+    /** @var string */
+    protected $configClass;
+
+    /** @var ConfigurationInterface */
     protected $definition;
+
+    /** @var string */
+    protected $defaultFileName;
 
     /**
      * ConfigStorage constructor.
      *
+     * @param string $configClass                       The FQN of the configuration file to be loaded.
      * @param FilesystemInterface $projectFileSystem
-     * @param array $defaultConfig
+     * @param array $localConfigStack                   Array of files that contain configuration information in PHP
+     *                                                  arrays (see ./config folder in this project)
+     * @throws InvalidArgumentException
      */
-    public function __construct(FilesystemInterface $projectFileSystem, array $defaultConfig = [])
-    {
-        $this->projectFileSystem = $projectFileSystem;
-        $this->defaultConfig = $defaultConfig;
+    public function __construct(
+        $configClass,
+        FilesystemInterface $projectFileSystem,
+        array $localConfigStack = []
+    ) {
+        foreach ($localConfigStack as $file) {
+            if (!is_file($file) || !is_readable($file)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Config file "%s" must be a readable file.',
+                    $file
+                ));
+            }
+        }
+        $this->localConfigStack = $localConfigStack;
+
+        $configClass = (string) $configClass;
+        if (!class_exists($configClass)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid argument configClass: class "%s" does not exist.',
+                $configClass
+            ));
+        }
+        $this->configClass = $configClass;
+        $configInstance = new $configClass();
+        if (!$configInstance instanceof ConfigInterface) {
+            throw new InvalidArgumentException(sprintf(
+                'Class "%s" must be an instance of %s.',
+                $configClass,
+                ConfigInterface::class
+            ));
+        }
+        $this->definition = $configInstance->getDefinition();
+        $this->defaultFileName = $configInstance->getFileName();
 
         $this->processor = new Processor();
-        $this->definition = new ConfigurationDefinition();
+        $this->projectFileSystem = $projectFileSystem;
     }
 
     /**
-     * @param $externalFile
-     *
-     * @return AppConfig
-     *
-     * @throws CliException
+     * @param string $configFileName The path to the consumer's config file (eg .baleen.yml) relative to the project
+     *                               filesystem
+     * @return Config
      */
-    public function read($externalFile = null)
+    public function load($configFileName = null)
     {
-        if (null === $externalFile) {
-            $externalFile = AppConfig::CONFIG_FILE_NAME;
-        }
         $configs = [];
-        if (!empty($this->defaultConfig)) {
-            $configs[] = $this->defaultConfig;
+
+        // load all local configs (config files that are not user-facing)
+        $localConfig = [];
+        foreach ($this->localConfigStack as $file) {
+            $config = include $file;
+            $localConfig = array_merge_recursive($localConfig, $config);
         }
-        if ($this->projectFileSystem->has($externalFile)) {
-            $configs[] = Yaml::parse($this->projectFileSystem->read($externalFile));
+        if (!empty($localConfig)) {
+            $configs[] = $localConfig;
         }
 
+        // load the current project's config file (user-facing)
+        if (null === $configFileName) {
+            $configFileName = $this->defaultFileName;
+        }
+        if ($this->projectFileSystem->has($configFileName)) {
+            $configs[] = Yaml::parse($this->projectFileSystem->read($configFileName));
+        }
+
+        // validate and merge all configs
         $config = $this->processor->processConfiguration(
             $this->definition,
             $configs
         );
 
-        return new AppConfig($config);
+        return new $this->configClass($config);
     }
 
     /**
-     * Reads the file and loads the config into this instance.
-     *
-     * @param null $file
-     *
-     * @return AppConfig
-     *
-     * @throws CliException
-     */
-    public function load($file = null)
-    {
-        $config = $this->read($file);
-        $this->setAppConfig($config);
-
-        return $config;
-    }
-
-    /**
-     * @param null $file
-     * @param bool $defaultsOnly
-     *
-     * @return bool
-     * @throws CliException
-     */
-    public function write($file = null, $defaultsOnly = true)
-    {
-        if (null === $file) {
-            $file = $this->config->getConfigFileName();
-        }
-        $config = $this->getAppConfig()->toArray();
-        if ($defaultsOnly) {
-            unset($config['providers']); // we don't want to write that
-        }
-        $contents = Yaml::dump($config);
-
-        return $this->projectFileSystem->write($file, $contents);
-    }
-
-    /**
-     * @param $pathOrConfig
-     *
+     * @param ConfigInterface $config
      * @return bool
      */
-    public function isInitialized($pathOrConfig = null)
+    public function write(ConfigInterface $config)
     {
-        if (null === $pathOrConfig) {
-            $pathOrConfig = $this->config;
-        }
-        if (is_object($pathOrConfig) && $pathOrConfig instanceof AppConfig) {
-            $path = $pathOrConfig->getConfigFileName();
-        } else {
-            $path = $pathOrConfig;
-        }
-
-        return null === $path ? false : $this->projectFileSystem->has($path);
+        $fileName = $config->getFileName() ?: Config::CONFIG_FILE_NAME;
+        $array = $config->getCleanArray();
+        $contents = Yaml::dump($array);
+        return $this->projectFileSystem->write($fileName, $contents);
     }
 
     /**
-     * @return AppConfig
+     * Returns whether the specified configuration has an existing user-facing config file.
+     *
+     * @param ConfigInterface $config
+     * @return bool
      */
-    public function getAppConfig()
+    public function isInitialized(ConfigInterface $config)
     {
-        if (null === $this->config) {
-            $this->config = new AppConfig();
-        }
-
-        return $this->config;
-    }
-
-    /**
-     * @param AppConfig $config
-     */
-    public function setAppConfig($config)
-    {
-        $this->config = $config;
-    }
-
-    public function isLoaded()
-    {
-        return null !== $this->config;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getConfigFileName()
-    {
-        return $this->getAppConfig()->getConfigFileName();
+        return $this->projectFileSystem->has($config->getFileName());
     }
 }

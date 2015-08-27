@@ -19,7 +19,7 @@
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;
 use Baleen\Cli\Container\Services;
 use Baleen\Cli\Helper\ConfigHelper;
@@ -54,7 +54,7 @@ class HelperSetProviderTest extends ServiceProviderTestCase
         $this->container->shouldReceive('get')->with(Services::HELPERSET_QUESTION)
             ->andReturn(new QuestionHelper());
         $this->container->shouldReceive('get')->with(Services::HELPERSET_CONFIG)
-            ->andReturn(new ConfigHelper(m::mock(AppConfig::class)));
+            ->andReturn(new ConfigHelper(m::mock(Config::class)));
 
         $this->assertSingletonProvided(
             Services::HELPERSET,

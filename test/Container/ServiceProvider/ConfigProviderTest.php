@@ -19,17 +19,17 @@
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
-use Baleen\Cli\Container\ServiceProvider\AppConfigProvider;
+use Baleen\Cli\Container\ServiceProvider\ConfigProvider;
 use Baleen\Cli\Container\Services;
 use Mockery as m;
 
 /**
- * Class AppConfigProviderTest
+ * Class ConfigProviderTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class AppConfigProviderTest extends ServiceProviderTestCase
+class ConfigProviderTest extends ServiceProviderTestCase
 {
     /**
      * testRegister
@@ -37,10 +37,10 @@ class AppConfigProviderTest extends ServiceProviderTestCase
     public function testRegister()
     {
         $configStorage = m::mock(ConfigStorage::class);
-        $appConfigMock = m::mock(AppConfig::class);
+        $appConfigMock = m::mock(Config::class);
         $configStorage->shouldReceive('load')->with(m::type('string'))->once()->andReturn($appConfigMock);
 
-        $this->setInstance(m::mock(AppConfigProvider::class)->makePartial());
+        $this->setInstance(m::mock(ConfigProvider::class)->makePartial());
 
         $localConfigFolder = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..']));
         $this->assertFileExists($localConfigFolder);
@@ -53,7 +53,7 @@ class AppConfigProviderTest extends ServiceProviderTestCase
 
         $this->assertSingletonProvided(
             Services::CONFIG,
-            $this->assertCallbackInstanceOf(AppConfig::class, $configStorage)
+            $this->assertCallbackInstanceOf(Config::class, $configStorage)
         )->shouldReceive('withArgument')->with(Services::CONFIG_STORAGE);
 
         $this->assertSingletonProvided(

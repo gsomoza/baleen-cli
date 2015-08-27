@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,7 +14,7 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
 namespace Baleen\Cli\Config;
@@ -24,16 +23,13 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Class ConfigurationDefinition.
- *
+ * Class Definition
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ConfigurationDefinition implements ConfigurationInterface
+class Definition implements ConfigurationInterface
 {
     /**
-     * Generates the configuration tree builder.
-     *
-     * @return \Symfony\Component\Config\Definition\Builder\TreeBuilder The tree builder
+     * @inheritdoc
      */
     public function getConfigTreeBuilder()
     {
@@ -41,18 +37,52 @@ class ConfigurationDefinition implements ConfigurationInterface
         $root = $builder->root('baleen');
         $root->children()
             ->arrayNode('providers')
-            ->useAttributeAsKey('name')
-            ->prototype('scalar')->end()
+                ->isRequired()
+                ->requiresAtLeastOneElement()
+                ->useAttributeAsKey('name')
+                ->prototype('scalar')->end()
             ->end()
-            ->arrayNode('migrations')
-            ->children()
-            ->scalarNode('directory')->defaultValue('migrations')->end()
-            ->scalarNode('namespace')->defaultValue('Migrations')->end()
-            ->end()
-            ->end()
-            ->scalarNode('storage_file')->defaultValue('.baleen_versions')->end()
-            ->end();
+            ->append($this->addMigrationsNode())
+            ->append($this->addStorageNode())
+        ->end();
 
         return $builder;
+    }
+
+    /**
+     * addMigrationsNode
+     * @return \Symfony\Component\Config\Definition\Builder\NodeDefinition
+     */
+    protected function addMigrationsNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('migrations');
+
+        $node->isRequired()
+            ->children()
+                ->scalarNode('directory')->defaultValue('migrations')->end()
+                ->scalarNode('namespace')->defaultValue('Migrations')->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    /**
+     * addStorageNode
+     * @return \Symfony\Component\Config\Definition\Builder\NodeDefinition
+     */
+    protected function addStorageNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('storage');
+
+        $node->isRequired()
+            ->children()
+                ->scalarNode('file')->defaultValue('.baleen_versions')->end()
+            ->end()
+        ->end();
+
+        return $node;
     }
 }

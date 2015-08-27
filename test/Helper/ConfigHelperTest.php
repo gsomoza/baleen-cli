@@ -19,7 +19,7 @@
 
 namespace BaleenTest\Baleen\Helper;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Helper\ConfigHelper;
 use BaleenTest\Baleen\BaseTestCase;
 use Mockery as m;
@@ -32,12 +32,12 @@ class ConfigHelperTest extends BaseTestCase
 {
     public function testConstructor()
     {
-        $config = m::mock(AppConfig::class);
+        $config = m::mock(Config::class);
         $instance = new ConfigHelper($config);
         $this->assertSame($config, $instance->getConfig());
         $this->assertEquals('config', $instance->getName());
 
-        $config2 = m::mock(AppConfig::class);
+        $config2 = m::mock(Config::class);
         $this->assertNotSame($config, $config2);
         $instance->setConfig($config2);
         $this->assertSame($config2, $instance->getConfig());
