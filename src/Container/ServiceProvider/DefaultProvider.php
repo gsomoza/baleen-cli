@@ -22,10 +22,14 @@ namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitCommand;
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
+use Baleen\Cli\Command\Util\ComparatorAwareInterface;
+use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\Command\Util\RepositoryAwareInterface;
+use Baleen\Cli\Command\Util\StorageAwareInterface;
+use Baleen\Cli\Command\Util\TimelineAwareInterface;
 use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 
@@ -59,22 +63,27 @@ class DefaultProvider extends ServiceProvider
         }
 
         // register inflectors for the different types of commands
-        $container->inflector(AbstractRepositoryCommand::class)
-            ->invokeMethod('setRepository', [Services::REPOSITORY])
-            ->invokeMethod('setFilesystem', [Services::REPOSITORY_FILESYSTEM]);
+        $container->inflector(RepositoryAwareInterface::class)
+            ->invokeMethods([
+                'setRepository' => [Services::REPOSITORY],
+                'setFilesystem' => [Services::REPOSITORY_FILESYSTEM],
+            ]);
+
+        $container->inflector(StorageAwareInterface::class)
+            ->invokeMethod('setStorage', [Services::STORAGE]);
+
+        $container->inflector(TimelineAwareInterface::class)
+            ->invokeMethod('setTimeline', [Services::TIMELINE]);
+
+        $container->inflector(ComparatorAwareInterface::class)
+            ->invokeMethod('setComparator', [Services::TIMELINE_COMPARATOR]);
+
+        $container->inflector(ConfigStorageAwareInterface::class)
+            ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);
 
         $container->inflector(AbstractCommand::class)
-            ->invokeMethod('setComparator', [Services::TIMELINE_COMPARATOR])
-            ->invokeMethod('setConfig', [Services::CONFIG]);
-
-        $container->inflector(AbstractStorageCommand::class)
-            ->invokeMethod('setStorage', [Services::STORAGE]);
-
-        $container->inflector(AbstractTimelineCommand::class)
-            ->invokeMethod('setTimeline', [Services::TIMELINE])
-            ->invokeMethod('setStorage', [Services::STORAGE]);
-
-        $container->inflector(InitCommand::class)
-            ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);
+            ->invokeMethods([
+                'setConfig' => [Services::CONFIG]
+            ]);
     }
 }

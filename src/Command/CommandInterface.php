@@ -20,90 +20,68 @@
 namespace Baleen\Cli\Command;
 
 use Baleen\Cli\Config\ConfigInterface;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class AbstractCommand
- * @author Gabriel Somoza <gabriel@strategery.io>
+ * Interface CommandInterface
+ * @package Baleen\Cli\Command
  */
-abstract class AbstractCommand implements CommandInterface
+interface CommandInterface
 {
-    /** @var ConfigInterface */
-    protected $config;
-
-    /** @var InputInterface */
-    protected $input;
-
-    /** @var OutputInterface */
-    protected $output;
-
-    /** @var Command */
-    protected $cliCommand;
-
     /**
-     * @inheritdoc
+     * Configures a console command by setting name, description, arguments, etc.
+     *
+     * @param Command $command
      */
-    public function getConfig()
-    {
-        return $this->config;
-    }
+    public static function configure(Command $command);
 
     /**
-     * @inheritdoc
+     * getConfig
+     * @return ConfigInterface
      */
-    public function setConfig(ConfigInterface $config)
-    {
-        $this->config = $config;
-    }
+    public function getConfig();
 
     /**
-     * @inheritdoc
+     * setConfig
+     * @param ConfigInterface $config
      */
-    public function getInput()
-    {
-        return $this->input;
-    }
+    public function setConfig(ConfigInterface $config);
 
     /**
-     * @inheritdoc
+     * getInput
+     * @return InputInterface
      */
-    public function setInput(InputInterface $input)
-    {
-        $this->input = $input;
-    }
+    public function getInput();
 
     /**
-     * @inheritdoc
+     * setInput
+     * @param InputInterface $input
      */
-    public function getOutput()
-    {
-        return $this->output;
-    }
+    public function setInput(InputInterface $input);
 
     /**
-     * @inheritdoc
+     * getOutput
+     * @return OutputInterface
      */
-    public function setOutput(OutputInterface $output)
-    {
-        $this->output = $output;
-    }
+    public function getOutput();
 
     /**
+     * setOutput
+     * @param OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output);
+
+    /**
+     * getCliCommand
      * @return Command
      */
-    public function getCliCommand()
-    {
-        return $this->cliCommand;
-    }
+    public function getCliCommand();
 
     /**
-     * @param Command $cliCommand
+     * setCliCommand
+     * @param Command $command
      */
-    public function setCliCommand(Command $cliCommand)
-    {
-        $this->cliCommand = $cliCommand;
-    }
+    public function setCliCommand(Command $command);
 }

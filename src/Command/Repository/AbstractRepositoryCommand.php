@@ -21,73 +21,26 @@
 namespace Baleen\Cli\Command\Repository;
 
 use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Cli\Command\Util\ComparatorAwareInterface;
+use Baleen\Cli\Command\Util\ComparatorAwareTrait;
+use Baleen\Cli\Command\Util\FilesystemAwareInterface;
+use Baleen\Cli\Command\Util\FilesystemAwareTrait;
+use Baleen\Cli\Command\Util\RepositoryAwareInterface;
+use Baleen\Cli\Command\Util\RepositoryAwareTrait;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
 use League\Flysystem\Filesystem;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Class AbstractRepositoryCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractRepositoryCommand extends AbstractCommand
+abstract class AbstractRepositoryCommand
+    extends AbstractCommand
+    implements RepositoryAwareInterface, ComparatorAwareInterface
 {
-    const COMMAND_GROUP = 'migrations';
-
-    /** @var RepositoryInterface */
-    protected $repository;
-
-    /** @var LinkedVersions */
-    protected $versions;
-
-    /** @var Filesystem */
-    protected $filesystem;
-
-    /**
-     * @return Filesystem
-     */
-    public function getFilesystem()
-    {
-        return $this->filesystem;
-    }
-
-    /**
-     * @param Filesystem $filesystem
-     */
-    public function setFilesystem(Filesystem $filesystem)
-    {
-        $this->filesystem = $filesystem;
-    }
-
-    /**
-     * @return RepositoryInterface
-     */
-    public function getRepository()
-    {
-        return $this->repository;
-    }
-
-    /**
-     * @param RepositoryInterface $repository
-     */
-    public function setRepository(RepositoryInterface $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
-     * @return LinkedVersions
-     */
-    public function getCollection()
-    {
-        if (!$this->versions) {
-            $versions = $this->repository->fetchAll();
-            if ($this->getComparator()) {
-                $versions->sortWith($this->getComparator());
-            }
-            $this->versions = $versions;
-        }
-
-        return $this->versions;
-    }
+    use RepositoryAwareTrait;
+    use ComparatorAwareTrait;
 }

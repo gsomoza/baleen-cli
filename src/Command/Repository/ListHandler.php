@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,37 +14,49 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
 namespace Baleen\Cli\Command\Repository;
-
 use Baleen\Migrations\Version\Collection\LinkedVersions;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ListCommand.
- *
+ * Class ListHandler
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ListCommand extends AbstractRepositoryCommand
+class ListHandler extends AbstractRepositoryListHandler
 {
     /**
-     * configure
-     * @param Command $command
+     * handle
+     * @param ListCommand $command
      */
-    public static function configure(Command $command)
+    public function handle(ListCommand $command)
     {
-        $command->setName('migrations:list')
-            ->setDescription('Prints version IDs for all available migrations ordered incrementally.')
-            ->addOption(
-                'newest-first',
-                null,
-                InputOption::VALUE_NONE,
-                'Sort list in reverse order (newest first)'
-            );
+        $input = $command->getInput();
+        $output = $command->getOutput();
+
+        $reverse = $input->getOption('newest-first');
+        $versions = $this->getCollection($command->getRepository(), $command->getComparator());
+
+        if (count($versions) > 0) {
+            if ($reverse) {
+                $versions = $versions->getReverse();
+            }
+            $this->outputVersions($versions, $output);
+        } else {
+            $output->writeln('No available migrations were found. Please check your settings.');
+        }
+    }
+
+    /**
+     * @param LinkedVersions $versions
+     * @param OutputInterface $output
+     */
+    protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
+    {
+        foreach ($versions as $version) {
+            $output->writeln('<comment>(' . $version->getId() . ')</comment> ' . get_class($version->getMigration()));
+        }
     }
 }

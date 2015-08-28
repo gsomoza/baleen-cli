@@ -35,6 +35,7 @@ interface Services
     const BALEEN_BASE_DIR = 'baleen.base_dir';
 
     // CommandsProvider
+    const COMMAND_BUS = 'commands.bus';
     const COMMANDS = 'commands';
     const CMD_CONFIG_INIT = 'commands.config.init';
     const CMD_TIMELINE_EXECUTE = 'commands.timeline.execute';

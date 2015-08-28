@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,72 +14,39 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Command;
-
-use Baleen\Cli\Config\ConfigStorage;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace Baleen\Cli\Command\Config;
+use Baleen\Cli\Command\CommandHandlerInterface;
 
 /**
- * Class InitCommand.
- *
+ * Class InitHandler
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class InitCommand extends AbstractCommand
+class InitHandler
 {
-    const COMMAND_NAME = 'init';
-
-    /** @var ConfigStorage */
-    protected $configStorage;
-
-    /**
-     * @return ConfigStorage
-     */
-    public function getConfigStorage()
+    public function handle(InitCommand $command)
     {
-        return $this->configStorage;
-    }
-
-    /**
-     * @param ConfigStorage $configStorage
-     */
-    public function setConfigStorage($configStorage)
-    {
-        $this->configStorage = $configStorage;
-    }
-
-    public function configure()
-    {
-        parent::configure();
-        $this->setDescription('Initialises Baleen by creating a config file in the current directory.');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        if ($this->getConfigStorage()->isInitialized($this->config)) {
+        $output = $command->getOutput();
+        if ($command->getConfigStorage()->isInitialized($command->getConfig())) {
             $output->writeln(sprintf(
                 '%s is already initialised!',
-                $this->getApplication()->getName()
+                $command->getCliCommand()->getApplication()->getName()
             ));
 
             return;
         }
 
-        $result = $this->getConfigStorage()->write($this->config);
+        $result = $command->getConfigStorage()->write($command->getConfig());
 
         if ($result !== false) {
-            $message = sprintf('Config file created at "<info>%s</info>".', $this->config->getFileName());
+            $message = sprintf('Config file created at "<info>%s</info>".', $command->getConfig()->getFileName());
         } else {
             $message = sprintf(
                 '<error>Error: Could not create and write file "<info>%s</info>". ' .
                 'Please check file and directory permissions.</error>',
-                $this->config->getFileName()
+                $command->getConfig()->getFileName()
             );
         }
         $output->writeln($message);

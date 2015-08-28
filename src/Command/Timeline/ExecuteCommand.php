@@ -22,6 +22,7 @@ namespace Baleen\Cli\Command\Timeline;
 
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -38,56 +39,23 @@ class ExecuteCommand extends AbstractTimelineCommand
     const COMMAND_NAME = 'execute';
     const COMMAND_ALIAS = 'exec';
     const ARG_VERSION = 'version';
-    const ARG_DIRECTION = 'up';
-    const OPT_DOWN = 'down';
+    const ARG_DIRECTION = 'direction';
 
     /**
      * @inheritDoc
      */
-    public function configure()
+    public static function configure(Command $command)
     {
-        parent::configure();
-        $this->setDescription('Execute a single migration version up or down manually.')
+        parent::configure($command);
+        $command->setName('timeline:execute')
             ->setAliases(['exec'])
+            ->setDescription('Execute a single migration version up or down manually.')
             ->addArgument(self::ARG_VERSION, InputArgument::REQUIRED, 'The version to execute.')
             ->addArgument(
                 self::ARG_DIRECTION,
                 InputArgument::OPTIONAL,
                 'Direction in which to execute the migration.',
                 Options::DIRECTION_UP
-            )
-            ->addOption(self::OPT_DOWN, null, InputOption::VALUE_NONE, 'Execute the migration down.');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $version = new Version($input->getArgument(self::ARG_VERSION));
-
-        $direction = $input->getArgument(self::ARG_DIRECTION) == Options::DIRECTION_DOWN ?
-            Options::DIRECTION_DOWN :
-            Options::DIRECTION_UP;
-        $dryRun = (bool)$input->getOption(self::OPT_DRY_RUN);
-        $forced = true; // because we're executing a single migration
-
-        $options = new Options($direction, $forced, $dryRun);
-
-        $canExecute = true;
-        if ($input->isInteractive()) {
-            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that ' .
-                'could result in schema changes and data lost.');
-            $question = sprintf('Are you sure you wish to migrate "%s" (y/n)? ', $direction);
-            $canExecute = $this->getHelper('question')->ask($input, $output, new ConfirmationQuestion($question));
-        }
-        if ($canExecute) {
-            $result = $this->getTimeline()->runSingle($version, $options);
-            if ($result) {
-                $version = $result;
-                $this->getStorage()->update($version);
-            }
-            $output->writeln("Version <info>{$version->getId()}</info> migrated <info>$direction</info> successfully.");
-        }
+            );
     }
 }

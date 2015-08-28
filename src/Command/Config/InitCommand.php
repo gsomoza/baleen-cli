@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,37 +17,29 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Command\Storage;
+namespace Baleen\Cli\Command\Config;
 
-use Baleen\Cli\Command\Util\ComparatorAwareInterface;
-use Baleen\Cli\Command\Util\ComparatorAwareTrait;
+use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\Command\Util\ConfigStorageAwareTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ListCommand.
+ * Class InitCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends AbstractStorageCommand implements ComparatorAwareInterface
+class InitCommand extends AbstractCommand implements ConfigStorageAwareInterface
 {
-    use ComparatorAwareTrait;
+    use ConfigStorageAwareTrait;
 
     /**
      * @inheritdoc
      */
     public static function configure(Command $command)
     {
-        $command->setName('storage:latest')
-            ->setDescription('Outputs the ID of the latest migrated version.');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-
+        $command->setName('config:init');
+        $command->setAliases(['init']);
+        $command->setDescription('Initialises Baleen by creating a config file in the current directory.');
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,40 +14,37 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Command\Storage;
+namespace Baleen\Cli\Command\Util;
 
-use Baleen\Cli\Command\Util\ComparatorAwareInterface;
-use Baleen\Cli\Command\Util\ComparatorAwareTrait;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Baleen\Migrations\Repository\RepositoryInterface;
 
 /**
- * Class ListCommand.
- *
+ * Class RepositoryAwareTrait
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends AbstractStorageCommand implements ComparatorAwareInterface
+trait RepositoryAwareTrait
 {
-    use ComparatorAwareTrait;
+    use FilesystemAwareTrait;
+
+    /** @var RepositoryInterface */
+    protected $repository;
 
     /**
-     * @inheritdoc
+     * @return RepositoryInterface
      */
-    public static function configure(Command $command)
+    public function getRepository()
     {
-        $command->setName('storage:latest')
-            ->setDescription('Outputs the ID of the latest migrated version.');
+        return $this->repository;
     }
 
     /**
-     * @inheritdoc
+     * @param RepositoryInterface $repository
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function setRepository(RepositoryInterface $repository)
     {
-
+        $this->repository = $repository;
     }
 }

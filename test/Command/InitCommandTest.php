@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command;
 
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\Command\InitMessage;
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
 use Mockery as m;
@@ -41,7 +41,7 @@ class InitCommandTest extends CommandTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->instance = m::mock(InitCommand::class)->makePartial();
+        $this->instance = m::mock(InitMessage::class)->makePartial();
         $this->configStorage = m::mock(ConfigStorage::class);
         $this->instance->setConfigStorage($this->configStorage);
     }
@@ -51,9 +51,9 @@ class InitCommandTest extends CommandTestCase
      */
     public function testConstructor()
     {
-        $instance = new InitCommand();
+        $instance = new InitMessage();
         $this->assertInstanceOf(AbstractCommand::class, $instance);
-        $this->assertEquals(InitCommand::COMMAND_NAME, $instance->getName());
+        $this->assertEquals(InitMessage::COMMAND_NAME, $instance->getName());
     }
 
     /**

@@ -20,44 +20,23 @@
 
 namespace Baleen\Cli\Command\Repository;
 
-use Baleen\Migrations\Version\Collection\LinkedVersions;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Class ListCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends AbstractRepositoryCommand
+class LatestCommand
+    extends AbstractRepositoryCommand
 {
-    const COMMAND_NAME = 'latest';
-
-    public function configure()
-    {
-        parent::configure();
-        $this->setDescription('Prints the version ID of the latest available migration.');
-    }
-
     /**
-     * @inheritDoc
+     * configure
+     * @param Command $command
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public static function configure(Command $command)
     {
-        $versions = $this->getCollection();
-        if (count($versions) > 0) {
-            $this->outputVersions($versions, $output);
-        } else {
-            $output->writeln('No available migrations were found. Please check your settings.');
-        }
-    }
-
-    /**
-     * @param LinkedVersions $versions
-     * @param OutputInterface $output
-     */
-    protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
-    {
-        $output->writeln($versions->last()->getId());
+        $command->setName('migrations:latest')
+            ->setDescription('Prints the version ID of the latest available migration.');
     }
 }

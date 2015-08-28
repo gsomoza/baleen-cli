@@ -21,7 +21,7 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\Command\InitMessage;
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
@@ -62,7 +62,7 @@ class DefaultProviderTest extends ServiceProviderTestCase
             AbstractStorageCommand::class => [
                 'setStorage' => [Services::STORAGE],
             ],
-            InitCommand::class => [
+            InitMessage::class => [
                 'setConfigStorage' => [Services::CONFIG_STORAGE],
             ],
         ];
