@@ -19,132 +19,81 @@
 
 namespace BaleenTest\Baleen\Command;
 
-use Baleen\Cli\Command\Storage\LatestCommand;
-use Baleen\Migrations\Storage\StorageInterface;
-use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\MigratedVersions;
 use BaleenTest\Baleen\BaseTestCase;
 use Mockery as m;
-use Mockery\Matcher\MatcherAbstract;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class CommandTestCase
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class CommandTestCase extends BaseTestCase
+abstract class CommandTestCase extends BaseTestCase
 {
-    /** @var m\Mock|InputInterface */
-    protected $input;
-    /** @var m\Mock|OutputInterface */
-    protected $output;
-    /** @var m\Mock|LatestCommand */
-    protected $instance;
-    /** @var m\Mock|StorageInterface */
-    protected $storage;
-
     /**
-     * setUp
+     * testConfigure
      */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->input = m::mock(InputInterface::class);
-        $this->output = m::mock(OutputInterface::class);
-        $this->storage = m::mock(StorageInterface::class);
-    }
+    public function testConfigure() {
+        /** @var m\Mock|Command $command */
+        $command = m::mock(Command::class);
 
-    /**
-     * tearDown
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-        $this->instance = null;
-        $this->input = null;
-        $this->output = null;
-        $this->storage = null;
-    }
-
-    /**
-     * Assers that the command is named after its overwritten COMMAND_NAME constant
-     * @param Command $command
-     */
-    protected function assertCommandIsNamedProperly(Command $command)
-    {
-        $this->assertNotEmpty(LatestCommand::COMMAND_NAME);
-        $this->assertContains(LatestCommand::COMMAND_NAME, $command->getName());
-    }
-
-    /**
-     * Calls execute() on the current instance, passing the current input and output mocks
-     */
-    protected function execute()
-    {
-        $this->instance->execute($this->input, $this->output);
-    }
-
-    /**
-     * @param $versions
-     * @return MigratedVersions
-     */
-    protected function getMigratedCollection(array $versions)
-    {
-        if (!count($versions)) {
-            return $versions;
+        $expectations = $this->getExpectations();
+        foreach ($expectations as $func => $expectation) {
+            $func = isset($expectation['name']) ? $expectation['name'] : $func;
+            $times = isset($expectation['times']) ? $expectation['times'] : 1;
+            $with = !empty($expectation['with']) ? $expectation['with'] : null;
+            $return = isset($expectations['return']) ? $expectations['return'] : '!self';
+            $exp = $command->shouldReceive($func);
+            if (null !== $times) {
+                $exp = $exp->times($times);
+            }
+            if (null !== $with) {
+                if (!is_array($with)) {
+                    $with = [$with];
+                }
+                $exp = call_user_func_array([$exp, 'with'], $with);
+            }
+            switch ($return) {
+                case '!self':
+                    $exp->andReturnSelf();
+                    break;
+                case '!null':
+                case null:
+                    $exp->andReturnNull();
+                    break;
+                default:
+                    if (is_array($return)) {
+                        $exp->andReturnValues($return);
+                    } elseif (is_callable($return)) {
+                        $exp->andReturnUsing($return);
+                    }
+                    break;
+            }
         }
-        foreach ($versions as $version) {
-            /** @var Version $version */
-            $version->setMigrated(true);
-        }
-        return new MigratedVersions($versions);
+        forward_static_call([$this->getCommandClass(), 'configure'], $command);
     }
 
     /**
-     * @param Command $instance
-     * @param $name
+     * Must test the constructor and assert implemented interfaces
      */
-    protected function assertHasArgument(Command $instance, $name)
-    {
-        $this->assertTrue(
-            $instance->getDefinition()->hasArgument($name),
-            sprintf("Expected command to have an argument named '%s'.", $name)
-        );
-    }
+    abstract public function testConstructor();
 
     /**
-     * @param Command $instance
-     * @param $name
+     * getCommandClass must return a string with the FQN of the command class being tested
+     * @return string
      */
-    protected function assertHasOption(Command $instance, $name)
-    {
-        $this->assertTrue(
-            $instance->getDefinition()->hasOption($name),
-            sprintf("Expected command to have an argument named '%s'.", $name)
-        );
-    }
+    abstract protected function getCommandClass();
 
     /**
-     * @param Command $instance
-     * @param $alias
+     * Must return an array in the format:
+     *
+     *      [
+     *          'name' => 'functionName', // required
+     *          'with' => [arguments for with] // optional
+     *          'return' => return value // optional, defaults to return self
+     *          'times' => number of times it will be invoked
+     *      ]
+     *
+     * @return array
      */
-    protected function assertHasAlias(Command $instance, $alias)
-    {
-        $this->assertContains($alias, $instance->getAliases());
-    }
-
-    /**
-     * @param mixed $result
-     * @param MatcherAbstract $validator
-     */
-    protected function assertQuestionAsked($result = null, MatcherAbstract $validator = null)
-    {
-        $helper = m::mock();
-        $helper->shouldReceive('ask')->with($this->input, $this->output, m::on(function($param) use ($validator) {
-            return null !== $validator ? $validator->match($param) : true;
-        }))->once()->andReturn($result);
-        $this->instance->shouldReceive('getHelper')->with('question')->andReturn($helper);
-    }
+    abstract protected function getExpectations();
 }

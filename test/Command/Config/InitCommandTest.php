@@ -17,63 +17,65 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Command\Repository;
+namespace BaleenTest\Baleen\Command\Config;
 
-use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
-use Baleen\Cli\Command\Repository\LatestCommand;
-use Baleen\Migrations\Migration\MigrationInterface;
-use Baleen\Migrations\Version as V;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
+use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Cli\Command\Config\InitCommand;
+use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\Config\ConfigStorage;
 use BaleenTest\Baleen\Command\CommandTestCase;
-use BaleenTest\Baleen\Command\HandlerTestCase;
 use Mockery as m;
 
 /**
- * Class LatestCommandTest
+ * Class InitCommandTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommandTest extends CommandTestCase
+class InitCommandTest extends CommandTestCase
 {
-
     /**
      * testConstructor
      */
     public function testConstructor()
     {
-        $instance = new LatestCommand();
-        $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
+        $instance = new InitCommand();
+        $this->assertInstanceOf(AbstractCommand::class, $instance);
+        $this->assertInstanceOf(ConfigStorageAwareInterface::class, $instance);
     }
 
     /**
-     * getCommandClass must return a string with the FQN of the command class being tested
-     * @return string
+     * testGetSetConfigStorage
      */
-    protected function getCommandClass()
+    public function testGetSetConfigStorage()
     {
-        return LatestCommand::class;
+        $instance = new InitCommand();
+        /** @var ConfigStorage $configStorage */
+        $configStorage = m::mock(ConfigStorage::class);
+        $instance->setConfigStorage($configStorage);
+        $this->assertSame($configStorage, $instance->getConfigStorage());
     }
 
     /**
-     * Must return an array in the format:
-     *
-     *      [
-     *          'name' => 'functionName', // required
-     *          'with' => [arguments for with] // optional
-     *          'return' => return value // optional, defaults to return self
-     *          'times' => number of times it will be invoked
-     *      ]
-     *
-     * @return array
+     * @inheritdoc
      */
     protected function getExpectations()
     {
         return [
-            [   'name' => 'setName',
-                'with' => 'migrations:latest',
+            'setName' => [
+                'with' => 'config:init',
+            ],
+            'setAliases' => [
+                'with' => [['init']],
             ],
             [   'name' => 'setDescription',
-                'with' => m::type('string'),
-            ],
+                'with' => m::type('string'),]
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getCommandClass()
+    {
+        return InitCommand::class;
     }
 }

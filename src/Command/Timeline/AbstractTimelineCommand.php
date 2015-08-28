@@ -24,11 +24,9 @@ use Baleen\Cli\Command\Util\StorageAwareInterface;
 use Baleen\Cli\Command\Util\StorageAwareTrait;
 use Baleen\Cli\Command\Util\TimelineAwareInterface;
 use Baleen\Cli\Command\Util\TimelineAwareTrait;
-use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
  * Class AbstractTimelineCommand.

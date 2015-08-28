@@ -149,7 +149,8 @@ class ConfigTest extends BaseTestCase
     {
         $customStorageFile = 'some-file.txt';
         $config = ['storage' => ['file' => $customStorageFile]];
-        $instance = new Config($config);
+        $instance = new Config();
+        $this->setPropVal('config', $config, $instance);
         $this->assertContains(DIRECTORY_SEPARATOR . $customStorageFile, $instance->getStorageFilePath());
     }
 
@@ -161,5 +162,28 @@ class ConfigTest extends BaseTestCase
         $configFileName = Config::CONFIG_FILE_NAME;
         $instance = new Config();
         $this->assertContains($configFileName, $instance->getConfigFilePath());
+    }
+
+    /**
+     * testGetProviders
+     */
+    public function testGetProviders()
+    {
+        $customProviders = ['foo' => 'bar'];
+        $config = ['providers' => $customProviders];
+        $instance = new Config();
+        $this->setPropVal('config', $config, $instance);
+        $this->assertEquals($customProviders, $instance->getProviders());
+    }
+
+    /**
+     * testGetCleanArray
+     */
+    public function testGetCleanArray()
+    {
+        $config = ['providers' => ['should_be' => 'removed'], 'should' => 'remain'];
+        $instance = new Config();
+        $this->setPropVal('config', $config, $instance);
+        $this->assertArrayNotHasKey('providers', $instance->getCleanArray());
     }
 }

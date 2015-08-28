@@ -25,7 +25,9 @@ use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
 use BaleenTest\Baleen\Command\CommandTestCase;
+use BaleenTest\Baleen\Command\HandlerTestCase;
 use Mockery as m;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ListCommandTest
@@ -33,89 +35,48 @@ use Mockery as m;
  */
 class ListCommandTest extends CommandTestCase
 {
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->instance = m::mock(ListCommand::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-    }
-
+    /**
+     * testConstructor
+     */
     public function testConstructor()
     {
         $instance = new ListCommand();
         $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
-        $this->assertNotEmpty(ListCommand::COMMAND_NAME);
-        $this->assertContains(ListCommand::COMMAND_NAME, $instance->getName());
-        $this->assertTrue(
-            $instance->getDefinition()->hasOption('newest-first'),
-            sprintf('Expected instance of "%s" to have an option called "newest-first"', AbstractRepositoryCommand::class)
-        );
-        $this->assertNotEmpty($instance->getDescription());
     }
 
     /**
-     * @param LinkedVersions $versions
-     * @dataProvider versionsProvider
+     * getCommandClass must return a string with the FQN of the command class being tested
+     * @return string
      */
-    public function testOutputVersions(LinkedVersions $versions)
+    protected function getCommandClass()
     {
-        foreach ($versions as $version) {
-            $id = $version->getId();
-            $class = str_replace('\\', '\\\\', get_class($version->getMigration()));
-            $this->output->shouldReceive('writeln')->with("/$id.*$class/")->once();
-        }
-        $this->instance->outputVersions($versions, $this->output);
+        return ListCommand::class;
     }
 
     /**
-     * @param LinkedVersions $versions
-     * @dataProvider versionsProvider
+     * Must return an array in the format:
+     *
+     *      [
+     *          'name' => 'functionName', // required
+     *          'with' => [arguments for with] // optional
+     *          'return' => return value // optional, defaults to return self
+     *          'times' => number of times it will be invoked
+     *      ]
+     *
+     * @return array
      */
-    public function testExecute(LinkedVersions $versions, $newestFirst)
+    protected function getExpectations()
     {
-        $this->input->shouldReceive('getOption')->with('newest-first')->once()->andReturn($newestFirst);
-        $this->instance->shouldReceive('getCollection')->once()->andReturn($versions);
-
-        if (count($versions)) {
-            //$firstVersion = $newestFirst ? $versions->getReverse()->current() : $versions->current();
-            $this->instance
-                ->shouldReceive('outputVersions')
-                // TODO: the following doesn't work for some reason
-                /*->with(m::on(function($versions) use ($firstVersion) {
-                    if (!$versions instanceof LinkedVersions) {
-                        return false;
-                    }
-                    $versions->rewind();
-                    return $firstVersion === $versions->current();
-                }))*/
-                ->once();
-        } else {
-            $this->output->shouldReceive('writeln')->once();
-        }
-
-        $this->execute();
-    }
-
-    public function versionsProvider()
-    {
-        $cases = [
-            [[], true],
-            [[], false],
-            [Version::fromArray(1, 2, 3, 4, 5), true],
-            [Version::fromArray(1, 2, 3, 4, 5), false],
-            [Version::fromArray(1, 2, 'abc', 4, 5), true],
-            [Version::fromArray(1, 2, 'abc', 4, 5), false],
+        return [
+            [   'name' => 'setName',
+                'with' => 'migrations:list',
+            ],
+            [   'name' => 'setDescription',
+                'with' => m::type('string'),
+            ],
+            [   'name' => 'addOption',
+                'with' => ['newest-first', m::any(), InputOption::VALUE_NONE, m::type('string')],
+            ],
         ];
-        $results = [];
-        foreach ($cases as $case) {
-            foreach ($case[0] as $version) {
-                /** @var m\Mock|Version $version */
-                $version->setMigration(m::mock(MigrationInterface::class));
-            }
-            $results[] = [new LinkedVersions($case[0]), $case[1]];
-        }
-        return $results;
     }
 }

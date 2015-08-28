@@ -189,9 +189,17 @@ class ServiceProviderTestCase extends BaseTestCase
     protected function assertRegistersInflector($name, $withMethods = [])
     {
         $definitionMock = m::mock();
-        foreach ($withMethods as $method => $result) {
-            $definitionMock->shouldReceive('invokeMethod')->once()->with($method, $result)->andReturn($definitionMock);
+        if (count($withMethods) == 1) {
+            $methodName = 'invokeMethod';
+            $withMethods = [key($withMethods), current($withMethods)];
+        } else {
+            $methodName = 'invokeMethods';
+            $withMethods = [$withMethods];
         }
+        $exp = $definitionMock->shouldReceive($methodName)->once();
+        $exp = call_user_func_array([$exp, 'with'], $withMethods);
+        $exp->andReturn($definitionMock);
+
         $this->getContainer()->shouldReceive('inflector')->with($name)->once()->andReturn($definitionMock);
     }
 }

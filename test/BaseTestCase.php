@@ -22,7 +22,7 @@ namespace BaleenTest\Baleen;
 use Mockery as m;
 
 /**
- * Class CommandTestCase
+ * Class HandlerTestCase
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class BaseTestCase extends \PHPUnit_Framework_TestCase
@@ -101,5 +101,17 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         }
 
         return $result;
+    }
+
+    /**
+     * trueFalseProvider
+     * @return array
+     */
+    public function trueFalseProvider()
+    {
+        return [
+            [true],
+            [false],
+        ];
     }
 }

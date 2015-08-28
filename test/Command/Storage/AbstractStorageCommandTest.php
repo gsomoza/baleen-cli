@@ -19,56 +19,58 @@
 
 namespace BaleenTest\Baleen\Command\Storage;
 
+use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
-use Baleen\Cli\Command\Storage\LatestCommand;
-use BaleenTest\Baleen\Command\CommandTestCase;
+use Baleen\Cli\Command\Util\ComparatorAwareInterface;
+use Baleen\Cli\Command\Util\StorageAwareInterface;
+use Baleen\Migrations\Storage\StorageInterface;
+use BaleenTest\Baleen\BaseTestCase;
 use Mockery as m;
 
 /**
- * Class LatestCommandTest
+ * Class AbstractStorageCommandTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommandTest extends CommandTestCase
+class AbstractStorageCommandTest extends BaseTestCase
 {
+    /** @var m\Mock|AbstractStorageCommand */
+    protected $instance;
+
+    /**
+     * @inheritDoc
+     */
+    protected function setUp()
+    {
+        $this->instance = m::mock(AbstractStorageCommand::class)->makePartial();
+    }
+
     /**
      * testConstructor
      */
     public function testConstructor()
     {
-        $instance = new LatestCommand();
-        $this->assertInstanceOf(AbstractStorageCommand::class, $instance);
+        $this->assertInstanceOf(AbstractCommand::class, $this->instance);
+        $this->assertInstanceOf(StorageAwareInterface::class, $this->instance);
+        $this->assertInstanceOf(ComparatorAwareInterface::class, $this->instance);
     }
 
     /**
-     * getCommandClass must return a string with the FQN of the command class being tested
-     * @return string
+     * testGetSetStorage
      */
-    protected function getCommandClass()
+    public function testGetSetStorage()
     {
-        return LatestCommand::class;
+        $storage = m::mock(StorageInterface::class);
+        $this->instance->setStorage($storage);
+        $this->assertSame($storage, $this->instance->getStorage());
     }
 
     /**
-     * Must return an array in the format:
-     *
-     *      [
-     *          'name' => 'functionName', // required
-     *          'with' => [arguments for with] // optional
-     *          'return' => return value // optional, defaults to return self
-     *          'times' => number of times it will be invoked
-     *      ]
-     *
-     * @return array
+     * testGetSetComparator
      */
-    protected function getExpectations()
+    public function testGetSetComparator()
     {
-        return [
-            [   'name' => 'setName',
-                'with' => 'storage:latest',
-            ],
-            [   'name' => 'setDescription',
-                'with' => m::type('string'),
-            ],
-        ];
+        $comparator = function(){};
+        $this->instance->setComparator($comparator);
+        $this->assertSame($comparator, $this->instance->getComparator());
     }
 }

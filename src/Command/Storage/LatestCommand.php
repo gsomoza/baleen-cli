@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,21 +19,15 @@
 
 namespace Baleen\Cli\Command\Storage;
 
-use Baleen\Cli\Command\Util\ComparatorAwareInterface;
-use Baleen\Cli\Command\Util\ComparatorAwareTrait;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ListCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand extends AbstractStorageCommand implements ComparatorAwareInterface
+class LatestCommand extends AbstractStorageCommand
 {
-    use ComparatorAwareTrait;
-
     /**
      * @inheritdoc
      */
@@ -42,13 +35,5 @@ class LatestCommand extends AbstractStorageCommand implements ComparatorAwareInt
     {
         $command->setName('storage:latest')
             ->setDescription('Outputs the ID of the latest migrated version.');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-
     }
 }

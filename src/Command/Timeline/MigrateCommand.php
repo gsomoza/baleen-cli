@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -67,7 +66,7 @@ class MigrateCommand extends AbstractTimelineCommand
                 's',
                 InputOption::VALUE_REQUIRED,
                 'Strategy to migrate with (up/down/both).',
-                'up'
+                Options::DIRECTION_UP // 'up'
             );
     }
 }

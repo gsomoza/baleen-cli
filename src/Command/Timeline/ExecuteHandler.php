@@ -18,6 +18,7 @@
  */
 
 namespace Baleen\Cli\Command\Timeline;
+
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Question\ConfirmationQuestion;

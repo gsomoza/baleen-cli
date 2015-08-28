@@ -18,7 +18,6 @@
  */
 
 namespace Baleen\Cli\Command\Config;
-use Baleen\Cli\Command\CommandHandlerInterface;
 
 /**
  * Class InitHandler
@@ -29,7 +28,9 @@ class InitHandler
     public function handle(InitCommand $command)
     {
         $output = $command->getOutput();
-        if ($command->getConfigStorage()->isInitialized($command->getConfig())) {
+        $configStorage = $command->getConfigStorage();
+
+        if ($configStorage->isInitialized($command->getConfig())) {
             $output->writeln(sprintf(
                 '%s is already initialised!',
                 $command->getCliCommand()->getApplication()->getName()
@@ -38,7 +39,7 @@ class InitHandler
             return;
         }
 
-        $result = $command->getConfigStorage()->write($command->getConfig());
+        $result = $configStorage->write($command->getConfig());
 
         if ($result !== false) {
             $message = sprintf('Config file created at "<info>%s</info>".', $command->getConfig()->getFileName());

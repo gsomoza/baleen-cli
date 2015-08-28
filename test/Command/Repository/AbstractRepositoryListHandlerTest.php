@@ -19,59 +19,32 @@
 
 namespace BaleenTest\Baleen\Command\Repository;
 
-use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
+use Baleen\Cli\Command\Repository\AbstractRepositoryListHandler;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\LinkedVersions;
-use BaleenTest\Baleen\Command\CommandTestCase;
-use League\Flysystem\Filesystem;
+use BaleenTest\Baleen\BaseTestCase;
 use Mockery as m;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class RepositoryCommandTest
+ * Class AbstractRepositoryListHandlerTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class RepositoryCommandTest extends CommandTestCase
+class AbstractRepositoryListHandlerTest extends BaseTestCase
 {
+    /** @var m\Mock|AbstractRepositoryListHandler */
+    protected $instance;
 
     /**
-     * setUp
+     * @inheritDoc
      */
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->instance = m::mock(AbstractRepositoryCommand::class)
+        $this->instance = m::mock(AbstractRepositoryListHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-    }
-
-    /**
-     * testConstructor
-     */
-    public function testConstructor()
-    {
-        $this->assertInstanceOf(AbstractCommand::class, $this->instance);
-    }
-
-    /**
-     * testGetSetRepository
-     */
-    public function testGetSetRepository()
-    {
-        $repository = m::mock(RepositoryInterface::class);
-        $this->instance->setRepository($repository);
-        $this->assertSame($repository, $this->instance->getRepository());
-    }
-
-    /**
-     * testGetSetFilesystem
-     */
-    public function testGetSetFilesystem()
-    {
-        $filesystem = m::mock(Filesystem::class);
-        $this->instance->setFilesystem($filesystem);
-        $this->assertSame($filesystem, $this->instance->getFilesystem());
     }
 
     /**
@@ -83,15 +56,13 @@ class RepositoryCommandTest extends CommandTestCase
         $repository = m::mock(RepositoryInterface::class);
         $versions = m::mock(LinkedVersions::class);
         $repository->shouldReceive('fetchAll')->once()->andReturn($versions);
-        $this->instance->setRepository($repository);
 
         if ($comparator) {
-            $this->instance->setComparator($comparator);
             $versions->shouldReceive('sortWith')->with($comparator)->once();
         }
 
-        $result = $this->instance->getCollection();
-        $this->assertSame($this->getPropVal('versions', $this->instance), $result);
+        $result = $this->invokeMethod('getCollection', $this->instance, [$repository, $comparator]);
+        $this->assertSame($versions, $result);
     }
 
     /**
@@ -103,7 +74,22 @@ class RepositoryCommandTest extends CommandTestCase
             [null],
             [function(Version $v1, Version $v2) {
                 return $v1->getId() - $v2->getId();
-            }] // implementation doen't really matter
+            }] // implementation doesn't really matter
         ];
+    }
+
+    /**
+     * testOutputVersions
+     */
+    public function testOutputVersions()
+    {
+        $lastVersionId = 123;
+        $versions = m::mock(LinkedVersions::class);
+        $versions->shouldReceive('last->getId')->once()->andReturn($lastVersionId);
+
+        $output = m::mock(OutputInterface::class);
+        $output->shouldReceive('writeln')->once()->with($lastVersionId);
+
+        $this->invokeMethod('outputVersions', $this->instance, [$versions, $output]);
     }
 }

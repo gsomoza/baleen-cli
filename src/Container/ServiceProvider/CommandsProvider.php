@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -36,6 +35,8 @@ use Baleen\Cli\Command\Timeline\ExecuteHandler;
 use Baleen\Cli\Command\Timeline\MigrateCommand;
 use Baleen\Cli\Command\Timeline\MigrateHandler;
 use Baleen\Cli\Container\Services;
+use League\Container\Container;
+use League\Container\ContainerInterface;
 use League\Container\ServiceProvider;
 use League\Tactician\Setup\QuickStart;
 
@@ -107,17 +108,8 @@ class CommandsProvider extends ServiceProvider
             $container->add($alias, $config['class']);
         }
 
-        // create a service (that's just an array) that has a list of all the commands for the app
-        $container->add(Services::COMMANDS, function () use ($container, $commands) {
-            $commandList = [];
-            foreach ($commands as $alias => $config) {
-                $commandList[] = new BaseCommand($container, $alias, $config['class']);
-            }
-            return $commandList;
-        });
-
         // setup the command bus to know which handler to use for each message class
-        $container->add(Services::COMMAND_BUS, function() use ($commands) {
+        $container->singleton(Services::COMMAND_BUS, function() use ($commands) {
             $map = [];
             foreach ($commands as $alias => $config) {
                 $message = $config['class'];
@@ -126,5 +118,14 @@ class CommandsProvider extends ServiceProvider
             }
             return QuickStart::create($map);
         });
+
+        // create a service (that's just an array) that has a list of all the commands for the app
+        $container->add(Services::COMMANDS, function (ContainerInterface $container) use ($commands) {
+            $commandList = [];
+            foreach ($commands as $alias => $config) {
+                $commandList[] = new BaseCommand($container, $alias, $config['class']);
+            }
+            return $commandList;
+        })->withArgument('League\Container\ContainerInterface');
     }
 }

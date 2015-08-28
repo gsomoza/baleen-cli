@@ -82,8 +82,6 @@ class DefaultProvider extends ServiceProvider
             ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);
 
         $container->inflector(AbstractCommand::class)
-            ->invokeMethods([
-                'setConfig' => [Services::CONFIG]
-            ]);
+            ->invokeMethod('setConfig', [Services::CONFIG]);
     }
 }

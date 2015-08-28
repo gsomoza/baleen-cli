@@ -47,7 +47,8 @@ class CreateHandler
         $config = $command->getConfig();
 
         $directory = $config->getMigrationsDirectory();
-        if (!$command->getFilesystem()->has($directory)) {
+        $filesystem = $command->getFilesystem();
+        if (!$filesystem->has($directory)) {
             throw new CliException(sprintf(
                 'Migrations directory "%s" does not exist.',
                 $directory
@@ -57,21 +58,24 @@ class CreateHandler
         $namespace = $input->getOption('namespace');
         $editorCmd = $input->getOption('editor-cmd');
 
-        $timestamp = date('YmdHis');
         if (null === $namespace) {
             $namespace = $config->getMigrationsNamespace();
         }
-        $namespace = rtrim($namespace, '\\');
+        if (!empty($namespace)) {
+            $namespace = rtrim($namespace, '\\');
+            $namespace = preg_replace('/[^A-Za-z\d_\\\\]+/', '', $namespace);
+        }
 
-        $title = $input->getArgument('title');
-        $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
+        $timestamp = date('YmdHis');
         $className = ['v' . $timestamp];
+        $title = $input->getArgument('title');
         if (!empty($title)) {
+            $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
             $className[] = $title;
         }
 
         $class = $this->generate(implode('_', $className), $namespace);
-        $result = $this->writeClass($class, $command->getFilesystem(), $config->getMigrationsDirectory());
+        $result = $this->writeClass($class, $filesystem, $directory);
 
         if ($result) {
             $output->writeln(sprintf(
@@ -133,14 +137,16 @@ class CreateHandler
             'fileName' => $className . '.php',
             'classes' => [$class],
         ]);
-        $relativePath = $destinationDir . DIRECTORY_SEPARATOR . $file->getFilename();
         $contents = $file->generate();
+
+        $relativePath = $destinationDir . DIRECTORY_SEPARATOR . $file->getFilename();
         if ($filesystem->has($relativePath)) {
             throw new CliException(sprintf(
                 'Could not generate migration. File already exists: %s',
                 $relativePath
             ));
         }
+
         $result = $filesystem->write($relativePath, $contents);
 
         return $result ? $relativePath : false;
