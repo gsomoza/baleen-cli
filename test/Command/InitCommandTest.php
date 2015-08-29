@@ -21,7 +21,7 @@ namespace BaleenTest\Baleen\Command;
 
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\InitCommand;
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
 use Mockery as m;
 
@@ -63,8 +63,9 @@ class InitCommandTest extends CommandTestCase
     public function testExecute($writeResult)
     {
         $configFileName = '.baleen.yml';
-        /** @var m\Mock|AppConfig $config */
-        $config = m::mock(AppConfig::class);
+        /** @var m\Mock|Config $config */
+        $config = m::mock(Config::class);
+
         $this->instance->setConfig($config);
 
         $resultMessage = $writeResult ? 'created at' : 'Could not create';
@@ -73,8 +74,8 @@ class InitCommandTest extends CommandTestCase
         }))->once();
 
 
+        $config->shouldReceive('getFileName')->once()->andReturn($configFileName);
         $this->configStorage->shouldReceive('isInitialized')->once()->andReturn(false);
-        $this->configStorage->shouldReceive('getConfigFileName')->once()->andReturn($configFileName);
         $this->configStorage->shouldReceive('write')->once()->andReturn($writeResult);
 
         $this->execute();
@@ -96,9 +97,10 @@ class InitCommandTest extends CommandTestCase
      */
     public function testExecuteExitsEarlyIfFileExists()
     {
-        /** @var m\Mock|AppConfig $config */
-        $config = m::mock(AppConfig::class);
+        /** @var m\Mock|Config $config */
+        $config = m::mock(Config::class);
         $this->instance->setConfig($config);
+        $this->instance->shouldReceive('getApplication->getName')->andReturn('Baleen');
 
         $this->output->shouldReceive('writeln')->with('/already initiali[zs]ed/')->once();
         $config->shouldNotReceive('write');

@@ -29,7 +29,7 @@ namespace Baleen\Cli\Container;
  */
 interface Services
 {
-    // AppConfigProvider
+    // ConfigProvider
     const CONFIG = 'config';
     const CONFIG_STORAGE = 'config-storage';
     const BALEEN_BASE_DIR = 'baleen.base_dir';

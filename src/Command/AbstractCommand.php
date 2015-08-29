@@ -20,7 +20,7 @@
 
 namespace Baleen\Cli\Command;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -34,13 +34,13 @@ class AbstractCommand extends Command
     const COMMAND_NAME = '';
     const COMMAND_GROUP = '';
 
-    /** @var AppConfig */
+    /** @var Config */
     protected $config;
 
     /** @var callable */
     protected $comparator;
 
-    public function setConfig(AppConfig $config)
+    public function setConfig(Config $config)
     {
         $this->config = $config;
     }

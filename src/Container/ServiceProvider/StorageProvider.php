@@ -19,7 +19,7 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Storage\FileStorage;
@@ -42,7 +42,7 @@ class StorageProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(Services::STORAGE, function (AppConfig $config) {
+        $container->singleton(Services::STORAGE, function (Config $config) {
             $storageFile = $config->getStorageFilePath();
             $result = touch($storageFile);
             if (!$result) {

@@ -19,7 +19,7 @@
 
 namespace BaleenTest\Baleen\Container\ServiceProvider;
 
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use BaleenTest\Baleen\BaseTestCase;
 use League\Container\Container;
 use League\Container\Definition\Factory;
@@ -74,7 +74,7 @@ class ServiceProviderTestCase extends BaseTestCase
         $prop->setAccessible(true);
         $prop->setValue($this->container, new Factory());
 
-        $config = m::mock(AppConfig::class);
+        $config = m::mock(Config::class);
         $this->config = $config;
     }
 

@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\Command;
 
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Config\AppConfig;
+use Baleen\Cli\Config\Config;
 use Mockery as m;
 
 /**
@@ -44,7 +44,7 @@ class AbstractCommandTest extends CommandTestCase
 
     public function testSetGetConfig()
     {
-        $config = m::mock(AppConfig::class);
+        $config = m::mock(Config::class);
         $this->instance->setConfig($config);
 
         $this->assertSame($config, $this->getPropVal('config', $this->instance));

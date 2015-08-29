@@ -17,38 +17,50 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Config;
+namespace Baleen\Cli\Config;
 
-use Baleen\Cli\Config\ConfigurationDefinition;
-use BaleenTest\Baleen\BaseTestCase;
-use Mockery as m;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Class ConfigurationDefinitionTest
+ * Interface ConfigInterface provides a common interface to be extended for applications based on this framework.
+ * The resulting class will provide the config configClass (see Symfony's ConfigurationInterface).
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ConfigurationDefinitionTest extends BaseTestCase
+interface ConfigInterface
 {
+    /**
+     * Returns an array of default values.
+     *
+     * @return array
+     */
+    public function getDefaults();
 
     /**
-     * testConstructor
+     * Returns the entire configuration as an array,
+     *
+     * @return array
      */
-    public function testConstructor()
-    {
-        $instance = new ConfigurationDefinition();
-        $this->assertInstanceOf(ConfigurationInterface::class, $instance);
-    }
+    public function toArray();
 
     /**
-     * testGetConfigTreeBuilder
+     * Returns the default configuration file name.
+     *
+     * @return string
      */
-    public function testGetConfigTreeBuilder()
-    {
-        $instance = new ConfigurationDefinition();
-        $result = $instance->getConfigTreeBuilder();
-        $this->assertInstanceOf(TreeBuilder::class, $result);
-        $result->buildTree(); // make sure this works without exceptions
-    }
+    public function getFileName();
+
+    /**
+     * Returns an instance of the configuration definition.
+     *
+     * @return ConfigurationInterface
+     */
+    public function getDefinition();
+
+    /**
+     * Returns an array only with settings that can be configured by the end-user
+     *
+     * @return array
+     */
+    public function getCleanArray();
 }
