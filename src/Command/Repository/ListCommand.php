@@ -20,10 +20,8 @@
 
 namespace Baleen\Cli\Command\Repository;
 
-use Baleen\Migrations\Version\Collection\LinkedVersions;
-use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ListCommand.
@@ -32,45 +30,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListCommand extends AbstractRepositoryCommand
 {
-    const COMMAND_NAME = 'list';
-
-    public function configure()
+    /**
+     * configure.
+     *
+     * @param Command $command
+     */
+    public static function configure(Command $command)
     {
-        $this->setDescription('Prints version IDs for all available migrations ordered incrementally.')
+        $command->setName('migrations:list')
+            ->setDescription('Prints version IDs for all available migrations ordered incrementally.')
             ->addOption(
                 'newest-first',
                 null,
                 InputOption::VALUE_NONE,
                 'Sort list in reverse order (newest first)'
             );
-        parent::configure();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $reverse = $input->getOption('newest-first');
-        $versions = $this->getCollection();
-        if (count($versions) > 0) {
-            if ($reverse) {
-                $versions = $versions->getReverse();
-            }
-            $this->outputVersions($versions, $output);
-        } else {
-            $output->writeln('No available migrations were found. Please check your settings.');
-        }
-    }
-
-    /**
-     * @param LinkedVersions $versions
-     * @param OutputInterface $output
-     */
-    protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
-    {
-        foreach ($versions as $version) {
-            $output->writeln('<comment>(' . $version->getId() . ')</comment> ' . get_class($version->getMigration()));
-        }
     }
 }

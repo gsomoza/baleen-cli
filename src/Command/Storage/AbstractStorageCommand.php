@@ -21,33 +21,18 @@
 namespace Baleen\Cli\Command\Storage;
 
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Cli\Command\Util\ComparatorAwareInterface;
+use Baleen\Cli\Command\Util\ComparatorAwareTrait;
+use Baleen\Cli\Command\Util\StorageAwareInterface;
+use Baleen\Cli\Command\Util\StorageAwareTrait;
 
 /**
  * Class AbstractStorageCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractStorageCommand extends AbstractCommand
+abstract class AbstractStorageCommand extends AbstractCommand implements StorageAwareInterface, ComparatorAwareInterface
 {
-    const COMMAND_GROUP = 'versions';
-
-    /** @var StorageInterface */
-    protected $storage;
-
-    /**
-     * @return StorageInterface
-     */
-    public function getStorage()
-    {
-        return $this->storage;
-    }
-
-    /**
-     * @param StorageInterface $storage
-     */
-    public function setStorage(StorageInterface $storage = null)
-    {
-        $this->storage = $storage;
-    }
+    use StorageAwareTrait;
+    use ComparatorAwareTrait;
 }

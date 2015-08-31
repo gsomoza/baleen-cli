@@ -21,9 +21,6 @@ namespace BaleenTest\Baleen\Command\Storage;
 
 use Baleen\Cli\Command\Storage\AbstractStorageCommand;
 use Baleen\Cli\Command\Storage\LatestCommand;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use BaleenTest\Baleen\Command\CommandTestCase;
 use Mockery as m;
 
@@ -33,77 +30,45 @@ use Mockery as m;
  */
 class LatestCommandTest extends CommandTestCase
 {
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->instance = m::mock(LatestCommand::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-    }
-
+    /**
+     * testConstructor
+     */
     public function testConstructor()
     {
         $instance = new LatestCommand();
         $this->assertInstanceOf(AbstractStorageCommand::class, $instance);
-        $this->assertNotEmpty(LatestCommand::COMMAND_NAME);
-        $this->assertContains(LatestCommand::COMMAND_NAME, $instance->getName());
-        $this->assertNotEmpty($instance->getDescription());
     }
 
     /**
-     * Test configure()
+     * getCommandClass must return a string with the FQN of the command class being tested
+     * @return string
      */
-    public function testConfigure()
+    protected function getCommandClass()
     {
-        $this->instance->shouldReceive('setDescription')->with(m::type('string'))->once();
-        $this->instance->configure();
-        $this->assertCommandIsNamedProperly($this->instance);
+        return LatestCommand::class;
     }
 
     /**
-     * Test execute()
-     * @dataProvider executeProvider
-     * @param $versions
-     * @param callable $comparator
-     */
-    public function testExecute($versions, $lastId, callable $comparator = null)
-    {
-        if (count($versions) > 0) {
-            $migrated = $this->getMigratedCollection($versions);
-            $this->instance->setComparator($comparator ?: new DefaultComparator());
-            $this->output->shouldReceive('writeln')->with($lastId)->once();
-        } else {
-            $migrated = $versions;
-            $this->output->shouldReceive('writeln')->with(m::type('string'))->once();
-        }
-        $this->instance->setStorage($this->storage);
-        $this->storage->shouldReceive('fetchAll')->once()->andReturn($migrated);
-
-        $this->execute();
-    }
-
-    public function testExecuteWithInvalidComparator()
-    {
-        $this->storage->shouldReceive('fetchAll')->once()->andReturn(Version::fromArray(1, 2));
-        $this->instance->setStorage($this->storage);
-        $this->setExpectedException(CliException::class, 'comparator');
-        $this->execute();
-    }
-
-    /**
+     * Must return an array in the format:
+     *
+     *      [
+     *          'name' => 'functionName', // required
+     *          'with' => [arguments for with] // optional
+     *          'return' => return value // optional, defaults to return self
+     *          'times' => number of times it will be invoked
+     *      ]
+     *
      * @return array
      */
-    public function executeProvider()
+    protected function getExpectations()
     {
         return [
-            [ [], 5, new DefaultComparator()],
-            [ Version::fromArray(1, 2, 3, 4, 5),      5],  // simple
-            [ Version::fromArray(1, 2, 3, 4, 5, -6), -6],  // last item is -6
-            [ Version::fromArray(3, 5, 1, 6, 7, 2),   7],  // default order
-            [ Version::fromArray(3, 5, 1, 6, 7, 2),   1, function(Version $v1, Version $v2) { // reverse order
-                return (int) $v2->getId() - (int) $v1->getId();
-            }],
+            [   'name' => 'setName',
+                'with' => 'storage:latest',
+            ],
+            [   'name' => 'setDescription',
+                'with' => m::type('string'),
+            ],
         ];
     }
 }

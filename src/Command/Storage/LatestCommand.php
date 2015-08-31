@@ -20,9 +20,7 @@
 
 namespace Baleen\Cli\Command\Storage;
 
-use Baleen\Cli\Exception\CliException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Class ListCommand.
@@ -31,32 +29,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class LatestCommand extends AbstractStorageCommand
 {
-    const COMMAND_NAME = 'latest';
-
     /**
      * @inheritdoc
      */
-    public function configure()
+    public static function configure(Command $command)
     {
-        $this->setDescription('Outputs the name of the latest migrated version.');
-        parent::configure();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-        $migrated = $this->storage->fetchAll();
-        if (count($migrated) === 0) {
-            $output->writeln('No migrated versions found in storage.');
-
-            return;
-        }
-        if (!is_callable($this->comparator)) {
-            throw new CliException('No comparator available, cannot order versions!');
-        }
-        $migrated->sortWith($this->comparator);
-        $output->writeln($migrated->last()->getId());
+        $command->setName('storage:latest')
+            ->setDescription('Outputs the ID of the latest migrated version.');
     }
 }

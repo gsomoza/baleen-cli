@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -37,7 +38,7 @@ interface ConfigInterface
     public function getDefaults();
 
     /**
-     * Returns the entire configuration as an array,
+     * Returns the entire configuration as an array,.
      *
      * @return array
      */
@@ -58,7 +59,7 @@ interface ConfigInterface
     public function getDefinition();
 
     /**
-     * Returns an array only with settings that can be configured by the end-user
+     * Returns an array only with settings that can be configured by the end-user.
      *
      * @return array
      */

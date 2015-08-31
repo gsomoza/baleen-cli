@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -17,26 +18,17 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Command\Storage;
+namespace Baleen\Cli\Command\Util;
 
-use Baleen\Cli\Command\Storage\AbstractStorageCommand;
-use Baleen\Migrations\Storage\StorageInterface;
-use BaleenTest\Baleen\Command\CommandTestCase;
-use Mockery as m;
-
-/**
- * Class StorageCommandTest
- * @author Gabriel Somoza <gabriel@strategery.io>
- */
-class StorageCommandTest extends CommandTestCase
+interface ComparatorAwareInterface
 {
+    /**
+     * @return callable
+     */
+    public function getComparator();
 
-    public function testSetGetStorage()
-    {
-        $storage = m::mock(StorageInterface::class);
-        /** @var AbstractStorageCommand|m\Mock $instance */
-        $instance = m::mock(AbstractStorageCommand::class)->makePartial();
-        $instance->setStorage($storage);
-        $this->assertSame($storage, $instance->getStorage());
-    }
+    /**
+     * @param callable $comparator
+     */
+    public function setComparator(callable $comparator);
 }

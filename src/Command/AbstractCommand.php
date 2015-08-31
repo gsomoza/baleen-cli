@@ -15,55 +15,96 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
 namespace Baleen\Cli\Command;
 
-use Baleen\Cli\Config\Config;
+use Baleen\Cli\Config\ConfigInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class AbstractCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class AbstractCommand extends Command
+abstract class AbstractCommand implements CommandInterface
 {
-    /** Overwrite these two constants in implementation classes */
-    const COMMAND_NAME = '';
-    const COMMAND_GROUP = '';
-
-    /** @var Config */
+    /** @var ConfigInterface */
     protected $config;
 
-    /** @var callable */
-    protected $comparator;
+    /** @var InputInterface */
+    protected $input;
 
-    public function setConfig(Config $config)
+    /** @var OutputInterface */
+    protected $output;
+
+    /** @var Command */
+    protected $cliCommand;
+
+    /**
+     * @inheritdoc
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setConfig(ConfigInterface $config)
     {
         $this->config = $config;
     }
 
-    public function configure()
+    /**
+     * @inheritdoc
+     */
+    public function getInput()
     {
-        $name = implode(':', array_filter([static::COMMAND_GROUP, static::COMMAND_NAME]));
-        $this->setName($name);
+        return $this->input;
     }
 
     /**
-     * @return callable
+     * @inheritdoc
      */
-    public function getComparator()
+    public function setInput(InputInterface $input)
     {
-        return $this->comparator;
+        $this->input = $input;
     }
 
     /**
-     * @param callable $comparator
+     * @inheritdoc
      */
-    public function setComparator(callable $comparator)
+    public function getOutput()
     {
-        $this->comparator = $comparator;
+        return $this->output;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    /**
+     * @return Command
+     */
+    public function getCliCommand()
+    {
+        return $this->cliCommand;
+    }
+
+    /**
+     * @param Command $cliCommand
+     */
+    public function setCliCommand(Command $cliCommand)
+    {
+        $this->cliCommand = $cliCommand;
     }
 }

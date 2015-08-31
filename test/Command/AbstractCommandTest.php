@@ -20,52 +20,86 @@
 namespace BaleenTest\Baleen\Command;
 
 use Baleen\Cli\Command\AbstractCommand;
+use Baleen\Cli\Command\CommandInterface;
 use Baleen\Cli\Config\Config;
+use BaleenTest\Baleen\BaseTestCase;
 use Mockery as m;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class AbstractCommandTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class AbstractCommandTest extends CommandTestCase
+class AbstractCommandTest extends BaseTestCase
 {
+    /** @var m\Mock|AbstractCommand */
+    protected $instance;
 
+    /**
+     * setUp
+     */
     public function setUp()
     {
-        parent::setUp();
         $this->instance = m::mock(AbstractCommand::class)->makePartial();
     }
 
+    public function testConstructor()
+    {
+        $this->assertInstanceOf(CommandInterface::class, $this->instance);
+    }
+
+    /**
+     * tearDown
+     */
     public function tearDown()
     {
         parent::tearDown();
         $this->instance = null;
     }
 
+    /**
+     * testSetGetConfig
+     */
     public function testSetGetConfig()
     {
+        /** @var Config $config */
         $config = m::mock(Config::class);
         $this->instance->setConfig($config);
-
-        $this->assertSame($config, $this->getPropVal('config', $this->instance));
+        $this->assertSame($config, $this->instance->getConfig());
     }
 
-    public function testConfigure()
+    /**
+     * testGetSetInput
+     */
+    public function testGetSetInput()
     {
-        $this->instance->shouldReceive('setName')->with(m::type('string'))->once();
-        $this->instance->configure();
+        /** @var InputInterface $input */
+        $input = m::mock(InputInterface::class);
+        $this->instance->setInput($input);
+        $this->assertSame($input, $this->instance->getInput());
     }
 
-    public function testGetSetComparator()
+    /**
+     * testGetSetOutput
+     */
+    public function testGetSetOutput()
     {
-        $comparator = function(){};
-        $this->instance->setComparator($comparator);
-
-        $this->assertSame($comparator, $this->instance->getComparator());
+        /** @var OutputInterface $output */
+        $output = m::mock(OutputInterface::class);
+        $this->instance->setOutput($output);
+        $this->assertSame($output, $this->instance->getOutput());
     }
 
-    public function testOutputHeader()
+    /**
+     * testGetSetCliCommand
+     */
+    public function testGetSetCliCommand()
     {
-
+        /** @var Command $cliCommand */
+        $cliCommand = m::mock(Command::class);
+        $this->instance->setCliCommand($cliCommand);
+        $this->assertSame($cliCommand, $this->instance->getCliCommand());
     }
 }

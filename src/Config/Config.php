@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -42,7 +43,7 @@ class Config implements ConfigInterface
 
     /**
      * @param array $config
-     * @param bool $defaults
+     * @param bool  $defaults
      */
     public function __construct(array $config = [], $defaults = true)
     {
@@ -72,7 +73,8 @@ class Config implements ConfigInterface
     }
 
     /**
-     * Default values for the migrations section
+     * Default values for the migrations section.
+     *
      * @return array
      */
     protected function getMigrationDefaults()
@@ -84,7 +86,8 @@ class Config implements ConfigInterface
     }
 
     /**
-     * Default values for the storage section
+     * Default values for the storage section.
+     *
      * @return array
      */
     protected function getStorageDefaults()
@@ -95,7 +98,8 @@ class Config implements ConfigInterface
     }
 
     /**
-     * Default values for the providers section
+     * Default values for the providers section.
+     *
      * @return array
      */
     protected function getProviderDefaults()
@@ -111,7 +115,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * getProviders
+     * getProviders.
      *
      * @return array
      */
@@ -125,7 +129,7 @@ class Config implements ConfigInterface
      */
     public function getMigrationsDirectoryPath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getMigrationsDirectory();
+        return getcwd().DIRECTORY_SEPARATOR.$this->getMigrationsDirectory();
     }
 
     /**
@@ -149,7 +153,7 @@ class Config implements ConfigInterface
      */
     public function getStorageFilePath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getStorageFile();
+        return getcwd().DIRECTORY_SEPARATOR.$this->getStorageFile();
     }
 
     /**
@@ -165,7 +169,7 @@ class Config implements ConfigInterface
      */
     public function getConfigFilePath()
     {
-        return getcwd() . DIRECTORY_SEPARATOR . $this->getFileName();
+        return getcwd().DIRECTORY_SEPARATOR.$this->getFileName();
     }
 
     /**
@@ -185,7 +189,8 @@ class Config implements ConfigInterface
     }
 
     /**
-     * getDefinition
+     * getDefinition.
+     *
      * @return Definition
      */
     public function getDefinition()
@@ -194,7 +199,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * Returns a clone of itself but only with settings that can be configured by the end-user
+     * Returns a clone of itself but only with settings that can be configured by the end-user.
      *
      * @return array
      */
@@ -202,6 +207,7 @@ class Config implements ConfigInterface
     {
         $config = $this->config;
         unset($config['providers']);
+
         return $config;
     }
 }

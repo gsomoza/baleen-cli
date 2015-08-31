@@ -21,6 +21,8 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
 use Baleen\Cli\Container\Services;
+use League\Container\Container;
+use League\Tactician\CommandBus;
 use Mockery as m;
 
 /**
@@ -29,7 +31,9 @@ use Mockery as m;
  */
 class CommandsProviderTest extends ServiceProviderTestCase
 {
-
+    /**
+     * testRegister
+     */
     public function testRegister()
     {
         $this->setInstance(m::mock(CommandsProvider::class)->makePartial());
@@ -46,14 +50,27 @@ class CommandsProviderTest extends ServiceProviderTestCase
         ];
         foreach ($defaultCommands as $command) {
             $container->shouldReceive('add')->with($command, m::type('string'))->once();
-            $container->shouldReceive('get')->with($command)->once();
         }
+
         $container->shouldReceive('add')
             ->with(Services::COMMANDS, m::type('callable'))
             ->once()
             ->andReturnUsing($this->assertableCallback(function(callable $factory) {
-                $result = $factory();
+                $container = new Container();
+                $container->add(Services::COMMAND_BUS, new CommandBus([]));
+                $result = $factory($container);
                 $this->assertInternalType('array', $result);
+                $withArgMock = m::mock();
+                $withArgMock->shouldReceive('withArgument')->once()->with('League\Container\ContainerInterface');
+                return $withArgMock;
+            }));
+
+        $container->shouldReceive('singleton')
+            ->with(Services::COMMAND_BUS, m::type('callable'))
+            ->once()
+            ->andReturnUsing($this->assertableCallback(function(callable $factory) {
+                $result = $factory();
+                $this->assertInstanceOf(CommandBus::class, $result);
             }));
 
         $this->getInstance()->register();

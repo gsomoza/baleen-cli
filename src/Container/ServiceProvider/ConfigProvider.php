@@ -51,6 +51,7 @@ class ConfigProvider extends ServiceProvider
         $this->getContainer()->singleton(Services::CONFIG_STORAGE, function () use ($baseDir, $baleenBaseDir) {
             $configFiles = glob(implode(DIRECTORY_SEPARATOR, [$baleenBaseDir, 'config', '*.php']));
             $configFilesystem = new Filesystem(new Local($baseDir));
+
             return new ConfigStorage(Config::class, $configFilesystem, $configFiles);
         });
         $this->getContainer()->singleton(

@@ -21,9 +21,7 @@ namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Repository\LatestCommand;
-use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Version as V;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
 use BaleenTest\Baleen\Command\CommandTestCase;
 use Mockery as m;
 
@@ -33,16 +31,6 @@ use Mockery as m;
  */
 class LatestCommandTest extends CommandTestCase
 {
-    /**
-     * @inheritDoc
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->instance = m::mock(LatestCommand::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-    }
 
     /**
      * testConstructor
@@ -51,46 +39,38 @@ class LatestCommandTest extends CommandTestCase
     {
         $instance = new LatestCommand();
         $this->assertInstanceOf(AbstractRepositoryCommand::class, $instance);
-        $this->assertNotEmpty(LatestCommand::COMMAND_NAME);
-        $this->assertContains(LatestCommand::COMMAND_NAME, $instance->getName());
-        $this->assertNotEmpty($instance->getDescription());
     }
 
     /**
-     * testExecute
+     * getCommandClass must return a string with the FQN of the command class being tested
+     * @return string
      */
-    public function testExecute()
+    protected function getCommandClass()
     {
-        $version = new V(1);
-        $version->setMigration(m::mock(MigrationInterface::class));
-        $versions = new LinkedVersions([$version]); // only thing that matters is count > 0
-        $this->instance->shouldReceive('getCollection')->once()->andReturn($versions);
-        $this->instance->shouldReceive('outputVersions')->once()->with($versions, $this->output);
-
-        $this->execute();
+        return LatestCommand::class;
     }
 
     /**
-     * testExecuteNoVersions
+     * Must return an array in the format:
+     *
+     *      [
+     *          'name' => 'functionName', // required
+     *          'with' => [arguments for with] // optional
+     *          'return' => return value // optional, defaults to return self
+     *          'times' => number of times it will be invoked
+     *      ]
+     *
+     * @return array
      */
-    public function testExecuteNoVersions()
+    protected function getExpectations()
     {
-        // only thing that matters is that its empty
-        $this->instance->shouldReceive('getCollection')->once()->andReturn([]);
-        $this->instance->shouldNotReceive('outputVersions');
-        $this->output->shouldReceive('writeln')->once(); // some error message
-        $this->execute();
-    }
-
-    /**
-     * testOutputVersions
-     */
-    public function testOutputVersions()
-    {
-        $lastId = '1'; // will always be a string
-        $versions = m::mock(LinkedVersions::class);
-        $versions->shouldReceive('last->getId')->once()->andReturn($lastId);
-        $this->output->shouldReceive('writeln')->with($lastId)->once();
-        $this->instance->outputVersions($versions, $this->output);
+        return [
+            [   'name' => 'setName',
+                'with' => 'migrations:latest',
+            ],
+            [   'name' => 'setDescription',
+                'with' => m::type('string'),
+            ],
+        ];
     }
 }

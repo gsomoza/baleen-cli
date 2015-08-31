@@ -17,22 +17,23 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Command;
+namespace BaleenTest\Baleen\Command\Config;
 
-use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\Command\Config\InitCommand;
+use Baleen\Cli\Command\Config\InitHandler;
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
+use BaleenTest\Baleen\Command\HandlerTestCase;
 use Mockery as m;
 
 /**
- * Class InitCommandTest
+ * Class InitHandlerTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class InitCommandTest extends CommandTestCase
+class InitHandlerTest extends HandlerTestCase
 {
 
-    /** @var ConfigStorage|m\Mock */
+    /** @var m\Mock|ConfigStorage */
     protected $configStorage;
 
     /**
@@ -40,20 +41,11 @@ class InitCommandTest extends CommandTestCase
      */
     public function setUp()
     {
-        parent::setUp();
-        $this->instance = m::mock(InitCommand::class)->makePartial();
+        $this->instance = m::mock(InitHandler::class)->makePartial();
+        $this->command = m::mock(InitCommand::class)->makePartial();
         $this->configStorage = m::mock(ConfigStorage::class);
-        $this->instance->setConfigStorage($this->configStorage);
-    }
-
-    /**
-     * testConstructor
-     */
-    public function testConstructor()
-    {
-        $instance = new InitCommand();
-        $this->assertInstanceOf(AbstractCommand::class, $instance);
-        $this->assertEquals(InitCommand::COMMAND_NAME, $instance->getName());
+        $this->command->shouldReceive('getConfigStorage')->zeroOrMoreTimes()->andReturn($this->configStorage);
+        parent::setUp();
     }
 
     /**
@@ -63,10 +55,11 @@ class InitCommandTest extends CommandTestCase
     public function testExecute($writeResult)
     {
         $configFileName = '.baleen.yml';
+
         /** @var m\Mock|Config $config */
         $config = m::mock(Config::class);
 
-        $this->instance->setConfig($config);
+        $this->command->setConfig($config);
 
         $resultMessage = $writeResult ? 'created at' : 'Could not create';
         $this->output->shouldReceive('writeln')->with(m::on(function($message) use ($resultMessage) {
@@ -78,7 +71,7 @@ class InitCommandTest extends CommandTestCase
         $this->configStorage->shouldReceive('isInitialized')->once()->andReturn(false);
         $this->configStorage->shouldReceive('write')->once()->andReturn($writeResult);
 
-        $this->execute();
+        $this->handle();
     }
 
     /**
@@ -99,14 +92,14 @@ class InitCommandTest extends CommandTestCase
     {
         /** @var m\Mock|Config $config */
         $config = m::mock(Config::class);
-        $this->instance->setConfig($config);
-        $this->instance->shouldReceive('getApplication->getName')->andReturn('Baleen');
+        $this->command->setConfig($config);
+        $this->command->shouldReceive('getCliCommand->getApplication->getName')->andReturn('Baleen');
 
         $this->output->shouldReceive('writeln')->with('/already initiali[zs]ed/')->once();
         $config->shouldNotReceive('write');
 
         $this->configStorage->shouldReceive('isInitialized')->once()->andReturn(true);
 
-        $this->execute();
+        $this->handle();
     }
 }

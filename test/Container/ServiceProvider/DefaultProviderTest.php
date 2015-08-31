@@ -21,9 +21,11 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitCommand;
-use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
-use Baleen\Cli\Command\Storage\AbstractStorageCommand;
+use Baleen\Cli\Command\Util\ComparatorAwareInterface;
+use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\Command\Util\RepositoryAwareInterface;
+use Baleen\Cli\Command\Util\StorageAwareInterface;
+use Baleen\Cli\Command\Util\TimelineAwareInterface;
 use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
 use Baleen\Cli\Container\Services;
 use Mockery as m;
@@ -35,7 +37,6 @@ use Symfony\Component\Console\Helper\HelperSet;
  */
 class DefaultProviderTest extends ServiceProviderTestCase
 {
-
     /**
      * setUp
      */
@@ -47,49 +48,50 @@ class DefaultProviderTest extends ServiceProviderTestCase
 
     /**
      * testRegister
+     * @dataProvider trueFalseProvider
+     * @param $isAppRegistered
      */
-    public function testRegister()
+    public function testRegister($isAppRegistered)
     {
         $inflectors = [
-            AbstractCommand::class => [
-                'setComparator' => [Services::TIMELINE_COMPARATOR],
-                'setConfig' => [Services::CONFIG],
-            ],
-            AbstractRepositoryCommand::class => [
+            RepositoryAwareInterface::class => [
                 'setRepository' => [Services::REPOSITORY],
                 'setFilesystem' => [Services::REPOSITORY_FILESYSTEM],
             ],
-            AbstractStorageCommand::class => [
+            StorageAwareInterface::class => [
                 'setStorage' => [Services::STORAGE],
             ],
-            InitCommand::class => [
+            TimelineAwareInterface::class => [
+                'setTimeline' => [Services::TIMELINE],
+            ],
+            ComparatorAwareInterface::class => [
+                'setComparator' => [Services::TIMELINE_COMPARATOR],
+            ],
+            ConfigStorageAwareInterface::class => [
                 'setConfigStorage' => [Services::CONFIG_STORAGE],
             ],
+            AbstractCommand::class => [
+                'setConfig' => [Services::CONFIG],
+            ]
         ];
         foreach ($inflectors as $name => $withMethods) {
             $this->assertRegistersInflector($name, $withMethods);
         }
 
-        $this->assertSingletonProvided(
-            Services::APPLICATION,
-            $this->assertCallbackInstanceOf( Application::class, [[], new HelperSet()]),
-            'string'
-        )->shouldReceive('withArguments')->with([Services::COMMANDS, Services::HELPERSET])->once();
+        $this->container->shouldReceive('isRegistered')
+            ->with(Services::APPLICATION)
+            ->once()
+            ->andReturn($isAppRegistered);
 
-        $this->getInstance()->register();
-    }
+        if (!$isAppRegistered) {
+            $this->assertSingletonProvided(
+                Services::APPLICATION,
+                $this->assertCallbackInstanceOf( Application::class, [[], new HelperSet()]),
+                'string'
+            )->shouldReceive('withArguments')->with([Services::COMMANDS, Services::HELPERSET])->once();
+        }
 
-    /**
-     * testIsRegistered
-     */
-    public function testIsRegistered()
-    {
-        $container = $this->getContainer();
-        $container->shouldReceive('isRegistered')->with(Services::APPLICATION)->once()->andReturn(true);
-        $container->shouldNotReceive('singleton');
-        $inflectorMock = m::mock();
-        $inflectorMock->shouldReceive('invokeMethod')->atLeast(1)->andReturnSelf();
-        $container->shouldReceive('inflector')->atLeast(1)->andReturn($inflectorMock);
+
         $this->getInstance()->register();
     }
 }

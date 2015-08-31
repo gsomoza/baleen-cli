@@ -19,12 +19,15 @@
 
 namespace BaleenTest\Baleen\Command\Timeline;
 
+use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\Command\Timeline\ExecuteCommand;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version;
 use BaleenTest\Baleen\Command\CommandTestCase;
 use Mockery as m;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ExecuteCommandTest
@@ -32,82 +35,66 @@ use Mockery as m;
  */
 class ExecuteCommandTest extends CommandTestCase
 {
-    /** @var m\Mock|ExecuteCommand */
-    protected $instance;
 
     /**
-     * setUp
+     * Must test the constructor and assert implemented interfaces
      */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->instance = m::mock(ExecuteCommand::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-    }
-
-    /**
-     * testConfigure
-     */
-    public function testConfigure()
+    public function testConstructor()
     {
         $instance = new ExecuteCommand();
-        $this->assertContains(ExecuteCommand::COMMAND_NAME, $instance->getName());
-        $this->assertHasAlias($instance, 'exec');
-        $this->assertHasArgument($instance, ExecuteCommand::ARG_VERSION);
-        $this->assertHasArgument($instance, ExecuteCommand::ARG_DIRECTION);
-        $this->assertHasOption($instance, ExecuteCommand::OPT_DOWN);
-        $this->assertHasOption($instance, ExecuteCommand::OPT_DRY_RUN);
+        $this->assertInstanceOf(AbstractTimelineCommand::class, $instance);
     }
 
     /**
-     * @param $isInteractive
-     * @param $isUp
-     * @param $isDryRun
-     * @param $askResult
-     * @dataProvider executeProvider
+     * getCommandClass must return a string with the FQN of the command class being tested
+     * @return string
      */
-    public function testExecute($isInteractive, $isUp, $isDryRun, $askResult)
+    protected function getCommandClass()
     {
-        /** @var m\Mock|Timeline $timeline */
-        $timeline = m::mock(Timeline::class);
-        $this->input->shouldReceive('isInteractive')->once()->andReturn($isInteractive);
-        $this->input->shouldReceive('getArgument')->with(ExecuteCommand::ARG_VERSION)->once()->andReturn('123');
-        $this->input->shouldReceive('getArgument')->with(ExecuteCommand::ARG_DIRECTION)->once()->andReturn(!$isUp);
-        $this->input->shouldReceive('getOption')->with(ExecuteCommand::OPT_DRY_RUN)->once()->andReturn($isDryRun);
-
-        if ($isInteractive) {
-            $this->output->shouldReceive('writeln')->once()->with('/WARNING/');
-            $this->assertQuestionAsked($askResult, m::type('Symfony\Component\Console\Question\ConfirmationQuestion'));
-        }
-
-        if (!$isInteractive || $askResult) {
-            $timeline->shouldReceive('runSingle')->with(
-                m::on(function (Version $version) {
-                    return $version->getId() === '123';
-                }),
-                m::on(function (Options $options) use ($isUp, $isDryRun) {
-                    return $options->isDryRun() === $isDryRun
-                        && $options->isDirectionUp() === $isUp;
-                })
-            );
-            $this->output->shouldReceive('writeln')->once()->with('/successfully/');
-        }
-
-        $this->instance->setTimeline($timeline);
-        $this->execute();
+        return ExecuteCommand::class;
     }
 
     /**
+     * Must return an array in the format:
+     *
+     *      [
+     *          'name' => 'functionName', // required
+     *          'with' => [arguments for with] // optional
+     *          'return' => return value // optional, defaults to return self
+     *          'times' => number of times it will be invoked
+     *      ]
+     *
      * @return array
      */
-    public function executeProvider()
+    protected function getExpectations()
     {
-        return $this->combinations([
-            [true, false], // isInteractive
-            [true, false], // isUp
-            [true, false], // isDryRun
-            [true, false], // askResult
-        ]);
+        return [
+            [   'name' => 'setName',
+                'with' => 'timeline:execute',
+            ],
+            [   'name' => 'setAliases',
+                'with' => [['exec']],
+            ],
+            [   'name' => 'setDescription',
+                'with' => m::type('string'),
+            ],
+            [   'name' => 'addOption',
+                'with' => [ExecuteCommand::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, m::type('string')],
+            ],
+            [   'name' => 'addOption',
+                'with' => [ExecuteCommand::OPT_NO_STORAGE, m::any(), InputOption::VALUE_NONE, m::type('string')],
+            ],
+            [   'name' => 'addArgument',
+                'with' => [ExecuteCommand::ARG_VERSION, InputArgument::REQUIRED, m::type('string')],
+            ],
+            [   'name' => 'addArgument',
+                'with' => [
+                    ExecuteCommand::ARG_DIRECTION,
+                    InputArgument::OPTIONAL,
+                    m::type('string'),
+                    Options::DIRECTION_UP,
+                ],
+            ],
+        ];
     }
 }

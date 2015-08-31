@@ -20,15 +20,25 @@
 
 namespace Baleen\Cli\Container\ServiceProvider;
 
-use Baleen\Cli\Command\InitCommand;
+use Baleen\Cli\BaseCommand;
+use Baleen\Cli\Command\Config\InitCommand;
+use Baleen\Cli\Command\Config\InitHandler;
 use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatest;
-use Baleen\Cli\Command\Repository\ListCommand as RepositoryList;
-use Baleen\Cli\Command\Storage\LatestCommand as StorageLatest;
+use Baleen\Cli\Command\Repository\CreateHandler;
+use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatestCommand;
+use Baleen\Cli\Command\Repository\LatestHandler as RepositoryLatestHandler;
+use Baleen\Cli\Command\Repository\ListCommand;
+use Baleen\Cli\Command\Repository\ListHandler;
+use Baleen\Cli\Command\Storage\LatestCommand as StorageLatestCommand;
+use Baleen\Cli\Command\Storage\LatestHandler as StorageLatestHandler;
 use Baleen\Cli\Command\Timeline\ExecuteCommand;
+use Baleen\Cli\Command\Timeline\ExecuteHandler;
 use Baleen\Cli\Command\Timeline\MigrateCommand;
+use Baleen\Cli\Command\Timeline\MigrateHandler;
 use Baleen\Cli\Container\Services;
+use League\Container\ContainerInterface;
 use League\Container\ServiceProvider;
+use League\Tactician\Setup\QuickStart;
 
 /**
  * Class CommandsProvider.
@@ -39,14 +49,48 @@ class CommandsProvider extends ServiceProvider
 {
     protected $provides = [
         Services::COMMANDS,
-        Services::CMD_CONFIG_INIT,
-        Services::CMD_TIMELINE_EXECUTE,
-        Services::CMD_TIMELINE_MIGRATE,
-        Services::CMD_REPOSITORY_CREATE,
-        Services::CMD_REPOSITORY_LATEST,
-        Services::CMD_REPOSITORY_LIST,
-        Services::CMD_STORAGE_LATEST,
+        Services::COMMAND_BUS,
     ];
+
+    /** @var array */
+    protected $commands = [
+        Services::CMD_CONFIG_INIT => [
+            'class' => InitCommand::class,
+            'handler' => InitHandler::class,
+        ],
+        Services::CMD_REPOSITORY_CREATE => [
+            'class' => CreateCommand::class,
+            'handler' => CreateHandler::class,
+        ],
+        Services::CMD_REPOSITORY_LATEST => [
+            'class' => RepositoryLatestCommand::class,
+            'handler' => RepositoryLatestHandler::class,
+        ],
+        Services::CMD_REPOSITORY_LIST => [
+            'class' => ListCommand::class,
+            'handler' => ListHandler::class,
+        ],
+        Services::CMD_STORAGE_LATEST => [
+            'class' => StorageLatestCommand::class,
+            'handler' => StorageLatestHandler::class,
+        ],
+        Services::CMD_TIMELINE_EXECUTE => [
+            'class' => ExecuteCommand::class,
+            'handler' => ExecuteHandler::class,
+        ],
+        Services::CMD_TIMELINE_MIGRATE => [
+            'class' => MigrateCommand::class,
+            'handler' => MigrateHandler::class,
+        ],
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct()
+    {
+        $this->provides = array_merge($this->provides, array_keys($this->commands));
+    }
 
     /**
      * Use the register method to register items with the container via the
@@ -57,28 +101,33 @@ class CommandsProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        // storage
-        $container->add(Services::CMD_STORAGE_LATEST, StorageLatest::class);
-        // repository
-        $container->add(Services::CMD_REPOSITORY_LATEST, RepositoryLatest::class);
-        $container->add(Services::CMD_REPOSITORY_LIST, RepositoryList::class);
-        $container->add(Services::CMD_REPOSITORY_CREATE, CreateCommand::class);
-        // timeline
-        $container->add(Services::CMD_TIMELINE_EXECUTE, ExecuteCommand::class);
-        $container->add(Services::CMD_TIMELINE_MIGRATE, MigrateCommand::class);
-        // other
-        $container->add(Services::CMD_CONFIG_INIT, InitCommand::class);
+        $commands = $this->commands;
 
-        $provides = $this->provides;
-        $container->add(Services::COMMANDS, function () use ($container, $provides) {
-            $commands = [];
-            foreach ($provides as $command) {
-                if ($command !== Services::COMMANDS) {
-                    $commands[] = $container->get($command);
-                }
+        // add all message classes to the container
+        foreach ($commands as $alias => $config) {
+            $container->add($alias, $config['class']);
+        }
+
+        // setup the command bus to know which handler to use for each message class
+        $container->singleton(Services::COMMAND_BUS, function () use ($commands) {
+            $map = [];
+            foreach ($commands as $alias => $config) {
+                $message = $config['class'];
+                $handler = $config['handler'];
+                $map[$message] = new $handler();
             }
 
-            return $commands;
+            return QuickStart::create($map);
         });
+
+        // create a service (that's just an array) that has a list of all the commands for the app
+        $container->add(Services::COMMANDS, function (ContainerInterface $container) use ($commands) {
+            $commandList = [];
+            foreach ($commands as $alias => $config) {
+                $commandList[] = new BaseCommand($container, $alias, $config['class']);
+            }
+
+            return $commandList;
+        })->withArgument('League\Container\ContainerInterface');
     }
 }
