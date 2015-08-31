@@ -110,7 +110,7 @@ class ServiceProviderTestCase extends BaseTestCase
     /**
      * @param $service
      * @param string $type
-     * @param $callback
+     * @param \Closure $callback
      * @param string $concreteType
      * @return m\Mock
      */
