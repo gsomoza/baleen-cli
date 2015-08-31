@@ -53,12 +53,13 @@ class BaseCommand extends Command
      * @param ContainerInterface $container
      * @param $serviceAlias
      * @param $serviceClass
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(ContainerInterface $container, $serviceAlias, $serviceClass)
     {
         $serviceClass = (string) $serviceClass;
-        if (!class_exists($serviceClass) || ! (new $serviceClass) instanceof CommandInterface) {
+        if (!class_exists($serviceClass) || !(new $serviceClass()) instanceof CommandInterface) {
             throw new InvalidArgumentException(sprintf(
                 'Message class "%s" must exist and be an instance of %s',
                 $serviceClass,
@@ -91,7 +92,8 @@ class BaseCommand extends Command
     }
 
     /**
-     * getCommandBus
+     * getCommandBus.
+     *
      * @return CommandBus
      */
     public function getCommandBus()

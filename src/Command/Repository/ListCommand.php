@@ -20,11 +20,8 @@
 
 namespace Baleen\Cli\Command\Repository;
 
-use Baleen\Migrations\Version\Collection\LinkedVersions;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ListCommand.
@@ -34,7 +31,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ListCommand extends AbstractRepositoryCommand
 {
     /**
-     * configure
+     * configure.
+     *
      * @param Command $command
      */
     public static function configure(Command $command)

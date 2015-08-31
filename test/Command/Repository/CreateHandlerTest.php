@@ -26,8 +26,8 @@ use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
 use BaleenTest\Baleen\Command\HandlerTestCase;
 use League\Flysystem\Filesystem;
-use Zend\Code\Generator\ClassGenerator;
 use Mockery as m;
+use Zend\Code\Generator\ClassGenerator;
 
 /**
  * Class CreateHandlerTest

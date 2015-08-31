@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,7 +25,6 @@ use Baleen\Cli\Command\Util\StorageAwareInterface;
 use Baleen\Cli\Command\Util\StorageAwareTrait;
 use Baleen\Cli\Command\Util\TimelineAwareInterface;
 use Baleen\Cli\Command\Util\TimelineAwareTrait;
-use Baleen\Migrations\Timeline;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -33,9 +33,7 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractTimelineCommand
-    extends AbstractCommand
-    implements StorageAwareInterface, TimelineAwareInterface
+abstract class AbstractTimelineCommand extends AbstractCommand implements StorageAwareInterface, TimelineAwareInterface
 {
     use StorageAwareTrait;
     use TimelineAwareTrait;

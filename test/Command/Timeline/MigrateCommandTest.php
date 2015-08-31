@@ -21,16 +21,11 @@ namespace BaleenTest\Baleen\Command\Timeline;
 
 use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\Command\Timeline\MigrateCommand;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Event\EventInterface;
-use Baleen\Migrations\Event\Timeline\CollectionEvent;
-use Baleen\Migrations\Event\Timeline\MigrationEvent;
-use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use BaleenTest\Baleen\Command\CommandTestCase;
+use Mockery as m;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Mockery as m;
 
 /**
  * Class MigrateCommandTest

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,7 +25,8 @@ use Baleen\Migrations\Version;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Class ExecuteHandler
+ * Class ExecuteHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ExecuteHandler
@@ -45,7 +47,7 @@ class ExecuteHandler
 
         $canExecute = true;
         if ($input->isInteractive()) {
-            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that ' .
+            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that '.
                 'could result in schema changes and data lost.');
             $question = sprintf('Are you sure you wish to migrate "%s" (y/n)? ', $direction);
             $canExecute = $command->getCliCommand()

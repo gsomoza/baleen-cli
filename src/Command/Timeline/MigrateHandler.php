@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -30,12 +31,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class MigrateHandler
+ * Class MigrateHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class MigrateHandler
 {
-
     /** @var ProgressBar */
     protected $progress;
 
@@ -62,8 +63,10 @@ class MigrateHandler
     protected $command;
 
     /**
-     * handle
+     * handle.
+     *
      * @param MigrateCommand $command
+     *
      * @throws CliException
      */
     public function handle(MigrateCommand $command)
@@ -85,10 +88,9 @@ class MigrateHandler
 
         $this->attachEvents($output, $command->getTimeline()->getEventDispatcher());
 
-        /** @var \Baleen\Migrations\Version\Collection\LinkedVersions $results */
+        /* @var \Baleen\Migrations\Version\Collection\LinkedVersions $results */
         $command->getTimeline()->$strategy($targetArg, $options);
     }
-
 
     /**
      * @inheritDoc
@@ -110,7 +112,8 @@ class MigrateHandler
     }
 
     /**
-     * saveVersionListener
+     * saveVersionListener.
+     *
      * @param MigrationEvent $event
      */
     public function saveVersionListener(MigrationEvent $event)
@@ -135,7 +138,8 @@ class MigrateHandler
     }
 
     /**
-     * onMigrationAfter
+     * onMigrationAfter.
+     *
      * @param MigrationEvent $event
      */
     public function onMigrationAfter(MigrationEvent $event)

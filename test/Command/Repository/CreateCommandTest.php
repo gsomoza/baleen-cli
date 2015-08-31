@@ -21,16 +21,9 @@ namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Config\Config;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Migration\SimpleMigration;
 use BaleenTest\Baleen\Command\CommandTestCase;
-use BaleenTest\Baleen\Command\HandlerTestCase;
-use League\Flysystem\Adapter\NullAdapter;
-use League\Flysystem\Filesystem;
 use Mockery as m;
 use Symfony\Component\Console\Input\InputOption;
-use Zend\Code\Generator\ClassGenerator;
 
 /**
  * Class CreateCommandTest

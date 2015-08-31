@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,8 +21,8 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\BaseCommand;
-use Baleen\Cli\Command\Config\InitHandler;
 use Baleen\Cli\Command\Config\InitCommand;
+use Baleen\Cli\Command\Config\InitHandler;
 use Baleen\Cli\Command\Repository\CreateCommand;
 use Baleen\Cli\Command\Repository\CreateHandler;
 use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatestCommand;
@@ -35,7 +36,6 @@ use Baleen\Cli\Command\Timeline\ExecuteHandler;
 use Baleen\Cli\Command\Timeline\MigrateCommand;
 use Baleen\Cli\Command\Timeline\MigrateHandler;
 use Baleen\Cli\Container\Services;
-use League\Container\Container;
 use League\Container\ContainerInterface;
 use League\Container\ServiceProvider;
 use League\Tactician\Setup\QuickStart;
@@ -72,7 +72,7 @@ class CommandsProvider extends ServiceProvider
         ],
         Services::CMD_STORAGE_LATEST => [
             'class' => StorageLatestCommand::class,
-            'handler' => StorageLatestHandler::class
+            'handler' => StorageLatestHandler::class,
         ],
         Services::CMD_TIMELINE_EXECUTE => [
             'class' => ExecuteCommand::class,
@@ -109,13 +109,14 @@ class CommandsProvider extends ServiceProvider
         }
 
         // setup the command bus to know which handler to use for each message class
-        $container->singleton(Services::COMMAND_BUS, function() use ($commands) {
+        $container->singleton(Services::COMMAND_BUS, function () use ($commands) {
             $map = [];
             foreach ($commands as $alias => $config) {
                 $message = $config['class'];
                 $handler = $config['handler'];
                 $map[$message] = new $handler();
             }
+
             return QuickStart::create($map);
         });
 
@@ -125,6 +126,7 @@ class CommandsProvider extends ServiceProvider
             foreach ($commands as $alias => $config) {
                 $commandList[] = new BaseCommand($container, $alias, $config['class']);
             }
+
             return $commandList;
         })->withArgument('League\Container\ContainerInterface');
     }

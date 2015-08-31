@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,7 +23,8 @@ namespace Baleen\Cli\Command\Util;
 use Baleen\Cli\Config\ConfigStorage;
 
 /**
- * Class ConfigStorageAwareTrait
+ * Class ConfigStorageAwareTrait.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 trait ConfigStorageAwareTrait

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,13 +25,14 @@ use Baleen\Migrations\Version\Collection\LinkedVersions;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class AbstractRepositoryListHandler
+ * Class AbstractRepositoryListHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class AbstractRepositoryListHandler
 {
     /**
-     * @param LinkedVersions $versions
+     * @param LinkedVersions  $versions
      * @param OutputInterface $output
      */
     protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
@@ -39,9 +41,11 @@ class AbstractRepositoryListHandler
     }
 
     /**
-     * getCollection
+     * getCollection.
+     *
      * @param RepositoryInterface $repository
-     * @param callable|null $comparator
+     * @param callable|null       $comparator
+     *
      * @return LinkedVersions
      */
     protected function getCollection(RepositoryInterface $repository, callable $comparator = null)
@@ -50,6 +54,7 @@ class AbstractRepositoryListHandler
         if ($comparator) {
             $versions->sortWith($comparator);
         }
+
         return $versions;
     }
 }

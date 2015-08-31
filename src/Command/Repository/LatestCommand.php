@@ -27,11 +27,11 @@ use Symfony\Component\Console\Command\Command;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestCommand
-    extends AbstractRepositoryCommand
+class LatestCommand extends AbstractRepositoryCommand
 {
     /**
-     * configure
+     * configure.
+     *
      * @param Command $command
      */
     public static function configure(Command $command)

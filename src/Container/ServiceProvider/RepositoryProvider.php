@@ -49,6 +49,7 @@ class RepositoryProvider extends ServiceProvider
 
         $container->singleton(Services::REPOSITORY_FILESYSTEM, function (Config $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
+
             return new Filesystem($adapter);
         })->withArgument(Services::CONFIG);
 
@@ -66,7 +67,7 @@ class RepositoryProvider extends ServiceProvider
             // make sure classes in the migration directory are autoloaded
             /** @var \Composer\Autoload\ClassLoader $autoloader */
             $autoloader = $this->getContainer()->get(Services::AUTOLOADER);
-            $autoloader->addPsr4($config->getMigrationsNamespace() . '\\', $migrationsDir);
+            $autoloader->addPsr4($config->getMigrationsNamespace().'\\', $migrationsDir);
 
             return new DirectoryRepository($migrationsDir);
         })->withArgument(Services::CONFIG);

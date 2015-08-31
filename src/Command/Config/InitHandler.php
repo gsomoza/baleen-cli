@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,7 +21,8 @@
 namespace Baleen\Cli\Command\Config;
 
 /**
- * Class InitHandler
+ * Class InitHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class InitHandler
@@ -45,7 +47,7 @@ class InitHandler
             $message = sprintf('Config file created at "<info>%s</info>".', $command->getConfig()->getFileName());
         } else {
             $message = sprintf(
-                '<error>Error: Could not create and write file "<info>%s</info>". ' .
+                '<error>Error: Could not create and write file "<info>%s</info>". '.
                 'Please check file and directory permissions.</error>',
                 $command->getConfig()->getFileName()
             );

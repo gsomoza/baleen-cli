@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -25,8 +26,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Interface CommandInterface
- * @package Baleen\Cli\Command
+ * Interface CommandInterface.
  */
 interface CommandInterface
 {
@@ -38,49 +38,57 @@ interface CommandInterface
     public static function configure(Command $command);
 
     /**
-     * getConfig
+     * getConfig.
+     *
      * @return ConfigInterface
      */
     public function getConfig();
 
     /**
-     * setConfig
+     * setConfig.
+     *
      * @param ConfigInterface $config
      */
     public function setConfig(ConfigInterface $config);
 
     /**
-     * getInput
+     * getInput.
+     *
      * @return InputInterface
      */
     public function getInput();
 
     /**
-     * setInput
+     * setInput.
+     *
      * @param InputInterface $input
      */
     public function setInput(InputInterface $input);
 
     /**
-     * getOutput
+     * getOutput.
+     *
      * @return OutputInterface
      */
     public function getOutput();
 
     /**
-     * setOutput
+     * setOutput.
+     *
      * @param OutputInterface $output
      */
     public function setOutput(OutputInterface $output);
 
     /**
-     * getCliCommand
+     * getCliCommand.
+     *
      * @return Command
      */
     public function getCliCommand();
 
     /**
-     * setCliCommand
+     * setCliCommand.
+     *
      * @param Command $command
      */
     public function setCliCommand(Command $command);

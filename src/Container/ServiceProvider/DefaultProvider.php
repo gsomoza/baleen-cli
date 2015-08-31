@@ -22,9 +22,6 @@ namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
-use Baleen\Cli\Command\Storage\AbstractStorageCommand;
-use Baleen\Cli\Command\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\Command\Util\ComparatorAwareInterface;
 use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\Command\Util\RepositoryAwareInterface;

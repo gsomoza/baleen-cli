@@ -21,11 +21,8 @@ namespace BaleenTest\Baleen\Command\Repository;
 
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Repository\LatestCommand;
-use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Version as V;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
 use BaleenTest\Baleen\Command\CommandTestCase;
-use BaleenTest\Baleen\Command\HandlerTestCase;
 use Mockery as m;
 
 /**

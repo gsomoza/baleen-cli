@@ -49,6 +49,7 @@ class HelperSetProvider extends ServiceProvider
             $helperSet = new HelperSet();
             $helperSet->set($container->get(Services::HELPERSET_QUESTION), 'question');
             $helperSet->set($container->get(Services::HELPERSET_CONFIG));
+
             return $helperSet;
         })
             ->withArgument(Services::CONFIG);

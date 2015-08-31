@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -24,17 +25,13 @@ use Baleen\Cli\Command\Util\ComparatorAwareInterface;
 use Baleen\Cli\Command\Util\ComparatorAwareTrait;
 use Baleen\Cli\Command\Util\StorageAwareInterface;
 use Baleen\Cli\Command\Util\StorageAwareTrait;
-use Baleen\Migrations\Storage\StorageInterface;
-use Symfony\Component\Console\Command\Command;
 
 /**
  * Class AbstractStorageCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractStorageCommand
-    extends AbstractCommand
-    implements StorageAwareInterface, ComparatorAwareInterface
+abstract class AbstractStorageCommand extends AbstractCommand implements StorageAwareInterface, ComparatorAwareInterface
 {
     use StorageAwareTrait;
     use ComparatorAwareTrait;

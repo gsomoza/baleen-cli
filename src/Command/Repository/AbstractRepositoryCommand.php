@@ -23,23 +23,17 @@ namespace Baleen\Cli\Command\Repository;
 use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\Util\ComparatorAwareInterface;
 use Baleen\Cli\Command\Util\ComparatorAwareTrait;
-use Baleen\Cli\Command\Util\FilesystemAwareInterface;
-use Baleen\Cli\Command\Util\FilesystemAwareTrait;
 use Baleen\Cli\Command\Util\RepositoryAwareInterface;
 use Baleen\Cli\Command\Util\RepositoryAwareTrait;
-use Baleen\Migrations\Repository\RepositoryInterface;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
-use League\Flysystem\Filesystem;
-use Symfony\Component\Console\Command\Command;
 
 /**
  * Class AbstractRepositoryCommand.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractRepositoryCommand
-    extends AbstractCommand
-    implements RepositoryAwareInterface, ComparatorAwareInterface
+abstract class AbstractRepositoryCommand extends AbstractCommand implements
+    RepositoryAwareInterface,
+    ComparatorAwareInterface
 {
     use RepositoryAwareTrait;
     use ComparatorAwareTrait;

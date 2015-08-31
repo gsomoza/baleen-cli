@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -23,9 +24,7 @@ namespace Baleen\Cli\Container;
  * This interface contains constants for the names of services in the Service Container. Its useful in order to:
  * A) reduce the coupling between classes for service providers (since they can use a single interface to reference
  * services) and B) provide an easy way to override certain services for libraries that use Baleen CLI as their
- * framework
- *
- * @package Baleen\Cli\Container
+ * framework.
  */
 interface Services
 {

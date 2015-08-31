@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,17 +19,20 @@
  */
 
 namespace Baleen\Cli\Command\Repository;
+
 use Baleen\Migrations\Version\Collection\LinkedVersions;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ListHandler
+ * Class ListHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class ListHandler extends AbstractRepositoryListHandler
 {
     /**
-     * handle
+     * handle.
+     *
      * @param ListCommand $command
      */
     public function handle(ListCommand $command)
@@ -50,13 +54,13 @@ class ListHandler extends AbstractRepositoryListHandler
     }
 
     /**
-     * @param LinkedVersions $versions
+     * @param LinkedVersions  $versions
      * @param OutputInterface $output
      */
     protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
     {
         foreach ($versions as $version) {
-            $output->writeln('<comment>(' . $version->getId() . ')</comment> ' . get_class($version->getMigration()));
+            $output->writeln('<comment>('.$version->getId().')</comment> '.get_class($version->getMigration()));
         }
     }
 }

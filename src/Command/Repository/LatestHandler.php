@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,13 +21,15 @@
 namespace Baleen\Cli\Command\Repository;
 
 /**
- * Class LatestHandler
+ * Class LatestHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class LatestHandler extends AbstractRepositoryListHandler
 {
     /**
-     * handle
+     * handle.
+     *
      * @param LatestCommand $command
      */
     public function handle(LatestCommand $command)

@@ -23,13 +23,9 @@ use Baleen\Cli\Command\AbstractCommand;
 use Baleen\Cli\Command\Repository\AbstractRepositoryCommand;
 use Baleen\Cli\Command\Util\ComparatorAwareInterface;
 use Baleen\Cli\Command\Util\RepositoryAwareInterface;
-use Baleen\Cli\Command\Util\RepositoryAwareTrait;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
 use BaleenTest\Baleen\BaseTestCase;
-use BaleenTest\Baleen\Command\CommandTestCase;
-use BaleenTest\Baleen\Command\HandlerTestCase;
 use League\Flysystem\Filesystem;
 use Mockery as m;
 

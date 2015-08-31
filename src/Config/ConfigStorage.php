@@ -20,7 +20,6 @@
 
 namespace Baleen\Cli\Config;
 
-use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Exception\InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -55,10 +54,11 @@ class ConfigStorage
     /**
      * ConfigStorage constructor.
      *
-     * @param string $configClass                       The FQN of the configuration file to be loaded.
+     * @param string              $configClass       The FQN of the configuration file to be loaded.
      * @param FilesystemInterface $projectFileSystem
-     * @param array $localConfigStack                   Array of files that contain configuration information in PHP
-     *                                                  arrays (see ./config folder in this project)
+     * @param array               $localConfigStack  Array of files that contain configuration information in PHP
+     *                                               arrays (see ./config folder in this project)
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -102,6 +102,7 @@ class ConfigStorage
     /**
      * @param string $configFileName The path to the consumer's config file (eg .baleen.yml) relative to the project
      *                               filesystem
+     *
      * @return Config
      */
     public function load($configFileName = null)
@@ -137,6 +138,7 @@ class ConfigStorage
 
     /**
      * @param ConfigInterface $config
+     *
      * @return bool
      */
     public function write(ConfigInterface $config)
@@ -144,6 +146,7 @@ class ConfigStorage
         $fileName = $config->getFileName() ?: Config::CONFIG_FILE_NAME;
         $array = $config->getCleanArray();
         $contents = Yaml::dump($array);
+
         return $this->projectFileSystem->write($fileName, $contents);
     }
 
@@ -151,6 +154,7 @@ class ConfigStorage
      * Returns whether the specified configuration has an existing user-facing config file.
      *
      * @param ConfigInterface $config
+     *
      * @return bool
      */
     public function isInitialized(ConfigInterface $config)

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,20 +23,22 @@ namespace Baleen\Cli\Command\Util;
 use Baleen\Cli\Config\ConfigStorage;
 
 /**
- * Interface ConfigStorageAwareInterface
- * @package Baleen\Cli\Command\Util
+ * Interface ConfigStorageAwareInterface.
  */
 interface ConfigStorageAwareInterface
 {
     /**
-     * getConfigStorage
+     * getConfigStorage.
+     *
      * @return mixed
      */
     public function getConfigStorage();
 
     /**
-     * setConfigStorage
+     * setConfigStorage.
+     *
      * @param ConfigStorage $configStorage
+     *
      * @return mixed
      */
     public function setConfigStorage(ConfigStorage $configStorage);

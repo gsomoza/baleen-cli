@@ -23,8 +23,6 @@ namespace Baleen\Cli;
 use League\Container\Container;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class Application.
@@ -48,7 +46,7 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * @param array $commands
+     * @param array     $commands
      * @param HelperSet $helperSet
      */
     protected function init(array $commands, HelperSet $helperSet)

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,6 +19,7 @@
  */
 
 namespace Baleen\Cli\Command\Repository;
+
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
@@ -27,15 +29,19 @@ use Zend\Code\Generator\FileGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
 /**
- * Class CreateHandler
+ * Class CreateHandler.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class CreateHandler
 {
     /**
-     * handle
+     * handle.
+     *
      * @param CreateCommand $command
+     *
      * @return false|string
+     *
      * @throws CliException
      */
     public function handle(CreateCommand $command)
@@ -67,7 +73,7 @@ class CreateHandler
         }
 
         $timestamp = date('YmdHis');
-        $className = ['v' . $timestamp];
+        $className = ['v'.$timestamp];
         $title = $input->getArgument('title');
         if (!empty($title)) {
             $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
@@ -83,7 +89,8 @@ class CreateHandler
                 $result
             ));
             if ($editorCmd) {
-                proc_open($editorCmd . ' ' . escapeshellarg($result), array(), $pipes);
+                $pipes = [];
+                proc_open($editorCmd.' '.escapeshellarg($result), array(), $pipes);
             }
         } else {
             $output->writeln(
@@ -117,29 +124,31 @@ class CreateHandler
             ]
         );
         $class->addUse(SimpleMigration::class);
+
         return $class;
     }
 
     /**
-     * Function writeClass
+     * Function writeClass.
      *
      * @param ClassGenerator $class
-     * @param Filesystem $filesystem
+     * @param Filesystem     $filesystem
      * @param $destinationDir
-     * @return string|bool
-     * @throws CliException
      *
+     * @return string|bool
+     *
+     * @throws CliException
      */
     protected function writeClass(ClassGenerator $class, Filesystem $filesystem, $destinationDir)
     {
         $className = $class->getName();
         $file = new FileGenerator([
-            'fileName' => $className . '.php',
+            'fileName' => $className.'.php',
             'classes' => [$class],
         ]);
         $contents = $file->generate();
 
-        $relativePath = $destinationDir . DIRECTORY_SEPARATOR . $file->getFilename();
+        $relativePath = $destinationDir.DIRECTORY_SEPARATOR.$file->getFilename();
         if ($filesystem->has($relativePath)) {
             throw new CliException(sprintf(
                 'Could not generate migration. File already exists: %s',

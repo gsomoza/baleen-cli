@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -23,7 +24,8 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Class Definition
+ * Class Definition.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class Definition implements ConfigurationInterface
@@ -50,7 +52,8 @@ class Definition implements ConfigurationInterface
     }
 
     /**
-     * addMigrationsNode
+     * addMigrationsNode.
+     *
      * @return \Symfony\Component\Config\Definition\Builder\NodeDefinition
      */
     protected function addMigrationsNode()
@@ -69,7 +72,8 @@ class Definition implements ConfigurationInterface
     }
 
     /**
-     * addStorageNode
+     * addStorageNode.
+     *
      * @return \Symfony\Component\Config\Definition\Builder\NodeDefinition
      */
     protected function addStorageNode()
