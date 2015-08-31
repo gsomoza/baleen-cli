@@ -135,7 +135,7 @@ class CreateHandler
      * @param Filesystem     $filesystem
      * @param $destinationDir
      *
-     * @return string|bool
+     * @return string|false
      *
      * @throws CliException
      */

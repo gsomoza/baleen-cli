@@ -96,7 +96,7 @@ class ConfigStorageTest extends BaseTestCase
      * doRead
      *
      * @param $yamlConfig
-     * @param null $file
+     * @param null|string $file
      * @param bool $fileExists
      * @throws \Baleen\Cli\Exception\CliException
      */

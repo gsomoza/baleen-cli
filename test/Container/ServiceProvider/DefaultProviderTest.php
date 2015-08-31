@@ -21,7 +21,6 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\InitMessage;
 use Baleen\Cli\Command\Util\ComparatorAwareInterface;
 use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\Command\Util\RepositoryAwareInterface;
