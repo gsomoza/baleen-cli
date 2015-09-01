@@ -76,12 +76,13 @@ class MigrateHandler
         $this->command = $command;
 
         $targetArg = $input->getArgument(MigrateCommand::ARG_TARGET);
-        $this->saveChanges = !$input->getOption(MigrateCommand::OPT_NO_STORAGE);
         $strategy = $this->getStrategyOption($input);
 
         $options = new Options(Options::DIRECTION_UP); // this value will get replaced by timeline later
         $options->setDryRun($input->getOption(MigrateCommand::OPT_DRY_RUN));
         $options->setExceptionOnSkip(false);
+
+        $this->saveChanges = !$input->getOption(MigrateCommand::OPT_NO_STORAGE) && !$options->isDryRun();
 
         $this->trackProgress = ($output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET)
             && !$input->getOption(MigrateCommand::OPT_NOPROGRESS);
