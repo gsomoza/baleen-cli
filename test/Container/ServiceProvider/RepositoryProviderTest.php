@@ -40,6 +40,7 @@ namespace BaleenTest\Baleen\Container\ServiceProvider;
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
 use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Composer\Autoload\ClassLoader;
 use Mockery as m;
@@ -50,11 +51,15 @@ use Mockery as m;
  */
 class RepositoryProviderTest extends ServiceProviderTestCase
 {
+    /** @var ClassLoader */
     protected $autoloader;
 
     /** @var boolean Used to mock PHP's "mkdir" function */
     public static $mkDirResult;
 
+    /**
+     * setUp
+     */
     public function setUp()
     {
         parent::setUp();
@@ -72,6 +77,9 @@ class RepositoryProviderTest extends ServiceProviderTestCase
             ->andReturn($this->autoloader);
     }
 
+    /**
+     * tearDown
+     */
     public function tearDown()
     {
         $this->config = null;
@@ -81,19 +89,31 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         parent::tearDown();
     }
 
+    /**
+     * testRegister
+     */
     public function testRegister()
     {
         $this->config->shouldReceive('getMigrationsNamespace')->once()->andReturn(__NAMESPACE__);
         $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn(__DIR__);
 
         $this->assertSingletonProvided(
+            Services::MIGRATION_FACTORY,
+            $this->assertCallbackInstanceOf(SimpleFactory::class),
+            'string'
+        );
+
+        $this->assertSingletonProvided(
             Services::REPOSITORY,
-            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
-        )->shouldReceive('withArgument')->with(Services::CONFIG);
+            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config, new SimpleFactory()])
+        )->shouldReceive('withArguments')->with([Services::CONFIG, Services::MIGRATION_FACTORY]);
 
         $this->getInstance()->register();
     }
 
+    /**
+     * testFactoryCreatesDirectory
+     */
     public function testFactoryCreatesDirectory()
     {
         $newDir = __DIR__ . '/newdir';
@@ -102,10 +122,17 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->config->shouldReceive('getMigrationsNamespace')->once()->andReturn(__NAMESPACE__);
         $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
 
+        // TODO: refactor across tests
+        $this->assertSingletonProvided(
+            Services::MIGRATION_FACTORY,
+            $this->assertCallbackInstanceOf(SimpleFactory::class),
+            'string'
+        );
+
         $this->assertSingletonProvided(
             Services::REPOSITORY,
-            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
-        )->shouldReceive('withArgument')->with(Services::CONFIG);
+            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config, new SimpleFactory()])
+        )->shouldReceive('withArguments')->with([Services::CONFIG, Services::MIGRATION_FACTORY]);
 
         try {
             $this->getInstance()->register();
@@ -117,6 +144,9 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         }
     }
 
+    /**
+     * testFactoryFailToCreateDirectory
+     */
     public function testFactoryFailToCreateDirectory()
     {
         $newDir = __DIR__ . '/newdir';
@@ -125,10 +155,17 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->config->shouldNotReceive('getMigrationsNamespace');
         $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
 
+        // TODO: refactor across tests
+        $this->assertSingletonProvided(
+            Services::MIGRATION_FACTORY,
+            $this->assertCallbackInstanceOf(SimpleFactory::class),
+            'string'
+        );
+
         $this->assertSingletonProvided(
             Services::REPOSITORY,
-            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config])
-        )->shouldReceive('withArgument')->with(Services::CONFIG);
+            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config, new SimpleFactory()])
+        )->shouldReceive('withArguments')->with([Services::CONFIG, Services::MIGRATION_FACTORY]);
 
         self::$mkDirResult = false;
 
