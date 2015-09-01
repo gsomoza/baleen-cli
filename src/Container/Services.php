@@ -56,6 +56,7 @@ interface Services
     // RepositoryProvider
     const REPOSITORY = 'repository';
     const REPOSITORY_FILESYSTEM = 'repository.filesystem';
+    const MIGRATION_FACTORY = 'repository.migration.factory';
 
     // Storage Provider
     const STORAGE = 'storage';

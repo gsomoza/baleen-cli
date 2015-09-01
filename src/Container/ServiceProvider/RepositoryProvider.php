@@ -23,6 +23,8 @@ namespace Baleen\Cli\Container\ServiceProvider;
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Migration\Factory\FactoryInterface;
+use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use League\Container\ServiceProvider;
 use League\Flysystem\Adapter\Local;
@@ -38,6 +40,7 @@ class RepositoryProvider extends ServiceProvider
     protected $provides = [
         Services::REPOSITORY,
         Services::REPOSITORY_FILESYSTEM,
+        Services::MIGRATION_FACTORY,
     ];
 
     /**
@@ -47,13 +50,15 @@ class RepositoryProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
+        $container->singleton(Services::MIGRATION_FACTORY, SimpleFactory::class);
+
         $container->singleton(Services::REPOSITORY_FILESYSTEM, function (Config $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
 
             return new Filesystem($adapter);
         })->withArgument(Services::CONFIG);
 
-        $container->singleton(Services::REPOSITORY, function (Config $config) {
+        $container->singleton(Services::REPOSITORY, function (Config $config, FactoryInterface $migrationFactory) {
             $migrationsDir = $config->getMigrationsDirectoryPath();
             if (!is_dir($migrationsDir)) {
                 $result = mkdir($migrationsDir, 0777, true);
@@ -69,7 +74,7 @@ class RepositoryProvider extends ServiceProvider
             $autoloader = $this->getContainer()->get(Services::AUTOLOADER);
             $autoloader->addPsr4($config->getMigrationsNamespace().'\\', $migrationsDir);
 
-            return new DirectoryRepository($migrationsDir);
-        })->withArgument(Services::CONFIG);
+            return new DirectoryRepository($migrationsDir, $migrationFactory);
+        })->withArguments([Services::CONFIG, Services::MIGRATION_FACTORY]);
     }
 }
