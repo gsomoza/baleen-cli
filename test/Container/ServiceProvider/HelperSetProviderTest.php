@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Container\ServiceProvider;
+namespace BaleenTest\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;

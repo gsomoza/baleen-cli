@@ -17,11 +17,11 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Config;
+namespace BaleenTest\Cli\Config;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
-use BaleenTest\Baleen\BaseTestCase;
+use BaleenTest\Cli\BaseTestCase;
 use League\Flysystem\FilesystemInterface;
 use Mockery as m;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;

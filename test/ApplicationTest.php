@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen;
+namespace BaleenTest\Cli;
 
 use Baleen\Cli\Application;
 use Mockery as m;

@@ -21,12 +21,12 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
-use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\Util\ComparatorAwareInterface;
-use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\Command\Util\RepositoryAwareInterface;
-use Baleen\Cli\Command\Util\StorageAwareInterface;
-use Baleen\Cli\Command\Util\TimelineAwareInterface;
+use Baleen\Cli\CommandBus\AbstractMessage;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
 use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 
@@ -78,7 +78,7 @@ class DefaultProvider extends ServiceProvider
         $container->inflector(ConfigStorageAwareInterface::class)
             ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);
 
-        $container->inflector(AbstractCommand::class)
+        $container->inflector(AbstractMessage::class)
             ->invokeMethod('setConfig', [Services::CONFIG]);
     }
 }

@@ -17,15 +17,15 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Container\ServiceProvider;
+namespace BaleenTest\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Application;
-use Baleen\Cli\Command\AbstractCommand;
-use Baleen\Cli\Command\Util\ComparatorAwareInterface;
-use Baleen\Cli\Command\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\Command\Util\RepositoryAwareInterface;
-use Baleen\Cli\Command\Util\StorageAwareInterface;
-use Baleen\Cli\Command\Util\TimelineAwareInterface;
+use Baleen\Cli\CommandBus\AbstractMessage;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
 use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
 use Baleen\Cli\Container\Services;
 use Mockery as m;
@@ -70,7 +70,7 @@ class DefaultProviderTest extends ServiceProviderTestCase
             ConfigStorageAwareInterface::class => [
                 'setConfigStorage' => [Services::CONFIG_STORAGE],
             ],
-            AbstractCommand::class => [
+            AbstractMessage::class => [
                 'setConfig' => [Services::CONFIG],
             ]
         ];

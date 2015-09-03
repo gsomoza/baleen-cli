@@ -21,21 +21,25 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\BaseCommand;
-use Baleen\Cli\Command\Config\InitCommand;
-use Baleen\Cli\Command\Config\InitHandler;
-use Baleen\Cli\Command\Repository\CreateCommand;
-use Baleen\Cli\Command\Repository\CreateHandler;
-use Baleen\Cli\Command\Repository\LatestCommand as RepositoryLatestCommand;
-use Baleen\Cli\Command\Repository\LatestHandler as RepositoryLatestHandler;
-use Baleen\Cli\Command\Repository\ListCommand;
-use Baleen\Cli\Command\Repository\ListHandler;
-use Baleen\Cli\Command\Storage\LatestCommand as StorageLatestCommand;
-use Baleen\Cli\Command\Storage\LatestHandler as StorageLatestHandler;
-use Baleen\Cli\Command\Timeline\ExecuteCommand;
-use Baleen\Cli\Command\Timeline\ExecuteHandler;
-use Baleen\Cli\Command\Timeline\MigrateCommand;
-use Baleen\Cli\Command\Timeline\MigrateHandler;
+use Baleen\Cli\CommandBus\Config\InitMessage;
+use Baleen\Cli\CommandBus\Config\InitHandler;
+use Baleen\Cli\CommandBus\Factory\DefaultFactory;
+use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
+use Baleen\Cli\CommandBus\Repository\CreateMessage;
+use Baleen\Cli\CommandBus\Repository\CreateHandler;
+use Baleen\Cli\CommandBus\Repository\LatestMessage as RepositoryLatestCommand;
+use Baleen\Cli\CommandBus\Repository\LatestHandler as RepositoryLatestHandler;
+use Baleen\Cli\CommandBus\Repository\ListMessage;
+use Baleen\Cli\CommandBus\Repository\ListHandler;
+use Baleen\Cli\CommandBus\Storage\LatestMessage as StorageLatestCommand;
+use Baleen\Cli\CommandBus\Storage\LatestHandler as StorageLatestHandler;
+use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
+use Baleen\Cli\CommandBus\Timeline\ExecuteHandler;
+use Baleen\Cli\CommandBus\Timeline\MigrateMessage;
+use Baleen\Cli\CommandBus\Timeline\MigrateHandler;
 use Baleen\Cli\Container\Services;
+use Baleen\Cli\Exception\CliException;
+use League\Container\Container;
 use League\Container\ContainerInterface;
 use League\Container\ServiceProvider;
 use League\Tactician\Setup\QuickStart;
@@ -55,11 +59,11 @@ class CommandsProvider extends ServiceProvider
     /** @var array */
     protected $commands = [
         Services::CMD_CONFIG_INIT => [
-            'class' => InitCommand::class,
+            'class' => InitMessage::class,
             'handler' => InitHandler::class,
         ],
         Services::CMD_REPOSITORY_CREATE => [
-            'class' => CreateCommand::class,
+            'class' => CreateMessage::class,
             'handler' => CreateHandler::class,
         ],
         Services::CMD_REPOSITORY_LATEST => [
@@ -67,7 +71,7 @@ class CommandsProvider extends ServiceProvider
             'handler' => RepositoryLatestHandler::class,
         ],
         Services::CMD_REPOSITORY_LIST => [
-            'class' => ListCommand::class,
+            'class' => ListMessage::class,
             'handler' => ListHandler::class,
         ],
         Services::CMD_STORAGE_LATEST => [
@@ -75,11 +79,11 @@ class CommandsProvider extends ServiceProvider
             'handler' => StorageLatestHandler::class,
         ],
         Services::CMD_TIMELINE_EXECUTE => [
-            'class' => ExecuteCommand::class,
+            'class' => ExecuteMessage::class,
             'handler' => ExecuteHandler::class,
         ],
         Services::CMD_TIMELINE_MIGRATE => [
-            'class' => MigrateCommand::class,
+            'class' => MigrateMessage::class,
             'handler' => MigrateHandler::class,
         ],
     ];
@@ -105,7 +109,19 @@ class CommandsProvider extends ServiceProvider
 
         // add all message classes to the container
         foreach ($commands as $alias => $config) {
-            $container->add($alias, $config['class']);
+            $container->add($alias, function (Container $container, $config) {
+                /** @var MessageFactoryInterface $factory */
+                $factory = !empty($config['factory']) ? $config['factory'] : DefaultFactory::class;
+                $factory = $container->get($factory);
+                if (!$factory instanceof MessageFactoryInterface) {
+                    throw new CliException(sprintf(
+                        'Expected factory to be an instance of "%s". Got "%s" instead.',
+                        MessageFactoryInterface::class,
+                        is_object($factory) ? get_class($factory) : gettype($factory)
+                    ));
+                }
+                return $factory->create($config['class']);
+            })->withArguments([ContainerInterface::class, $config]);
         }
 
         // setup the command bus to know which handler to use for each message class
@@ -128,6 +144,6 @@ class CommandsProvider extends ServiceProvider
             }
 
             return $commandList;
-        })->withArgument('League\Container\ContainerInterface');
+        })->withArgument(ContainerInterface::class);
     }
 }

@@ -17,11 +17,11 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Helper;
+namespace BaleenTest\Cli\Helper;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Helper\ConfigHelper;
-use BaleenTest\Baleen\BaseTestCase;
+use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 
 /**

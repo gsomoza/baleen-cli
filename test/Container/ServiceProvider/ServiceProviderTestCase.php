@@ -17,10 +17,10 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Container\ServiceProvider;
+namespace BaleenTest\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Config\Config;
-use BaleenTest\Baleen\BaseTestCase;
+use BaleenTest\Cli\BaseTestCase;
 use League\Container\Container;
 use League\Container\Definition\Factory;
 use League\Container\ServiceProvider;
@@ -114,10 +114,11 @@ class ServiceProviderTestCase extends BaseTestCase
      * @param string $concreteType
      * @return m\Mock
      */
-    private function assertServiceProvided($service, $type, $callback, $concreteType = 'callable')
+    protected function assertServiceProvided($service, $type, $callback, $concreteType = 'callable')
     {
         $this->getContainer()->shouldReceive($type)->with($service, m::type($concreteType))->once()
             ->andReturnUsing($callback);
+        return $this->getContainer();
     }
 
     /**
