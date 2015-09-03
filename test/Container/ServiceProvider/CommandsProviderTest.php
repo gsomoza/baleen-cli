@@ -17,13 +17,17 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Baleen\Container\ServiceProvider;
+namespace BaleenTest\Cli\Container\ServiceProvider;
 
+use Baleen\Cli\CommandBus\AbstractMessage;
+use Baleen\Cli\CommandBus\Config\InitMessage;
+use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
 use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
 use Baleen\Cli\Container\Services;
 use League\Container\Container;
 use League\Tactician\CommandBus;
 use Mockery as m;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class CommandsProviderTest
@@ -48,8 +52,16 @@ class CommandsProviderTest extends ServiceProviderTestCase
             Services::CMD_TIMELINE_EXECUTE,
             Services::CMD_TIMELINE_MIGRATE,
         ];
+
         foreach ($defaultCommands as $command) {
-            $container->shouldReceive('add')->with($command, m::type('string'))->once();
+            $config = [
+                'class' => InitMessage::class, // we only need to test a single command gets instantiated successfully
+            ];
+            $this->assertServiceProvided(
+                $command,
+                'add',
+                $this->assertCallbackInstanceOf(AbstractMessage::class, [new Container(), $config])
+            )->shouldReceive('withArguments')->with(m::type('array'))->once();
         }
 
         $container->shouldReceive('add')

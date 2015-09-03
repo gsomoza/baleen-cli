@@ -40,7 +40,7 @@ use Baleen\Cli\Container\ServiceProvider\StorageProvider;
 use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Storage\StorageInterface;
-use BaleenTest\Baleen\Container\ServiceProvider\ServiceProviderTestCase;
+use BaleenTest\Cli\Container\ServiceProvider\ServiceProviderTestCase;
 use Mockery as m;
 
 /**

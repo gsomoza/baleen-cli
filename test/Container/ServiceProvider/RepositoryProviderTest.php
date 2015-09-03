@@ -24,7 +24,7 @@
  */
 namespace Baleen\Cli\Container\ServiceProvider;
 
-use BaleenTest\Baleen\Container\ServiceProvider\RepositoryProviderTest;
+use BaleenTest\Cli\Container\ServiceProvider\RepositoryProviderTest;
 
 function mkdir()
 {
@@ -35,7 +35,7 @@ function mkdir()
     return $mkDirResult;
 }
 
-namespace BaleenTest\Baleen\Container\ServiceProvider;
+namespace BaleenTest\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
 use Baleen\Cli\Container\Services;

@@ -20,7 +20,7 @@
 
 namespace Baleen\Cli;
 
-use Baleen\Cli\Command\CommandInterface;
+use Baleen\Cli\CommandBus\MessageInterface;
 use Baleen\Cli\Container\Services;
 use Baleen\Migrations\Exception\InvalidArgumentException;
 use League\Container\Container;
@@ -31,7 +31,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class AbstractCommand.
+ * Class AbstractMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
@@ -59,11 +59,11 @@ class BaseCommand extends Command
     public function __construct(ContainerInterface $container, $serviceAlias, $serviceClass)
     {
         $serviceClass = (string) $serviceClass;
-        if (!class_exists($serviceClass) || !(new $serviceClass()) instanceof CommandInterface) {
+        if (!class_exists($serviceClass) || !(new $serviceClass()) instanceof MessageInterface) {
             throw new InvalidArgumentException(sprintf(
                 'Message class "%s" must exist and be an instance of %s',
                 $serviceClass,
-                CommandInterface::class
+                MessageInterface::class
             ));
         }
         $this->serviceClass = $serviceClass;
@@ -106,7 +106,7 @@ class BaseCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var CommandInterface $message */
+        /** @var MessageInterface $message */
         $message = $this->getContainer()->get($this->serviceAlias);
 
         if (get_class($message) !== $this->serviceClass) {
