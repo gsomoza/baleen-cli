@@ -23,6 +23,8 @@ namespace Baleen\Cli\Container\ServiceProvider;
 use Baleen\Cli\BaseCommand;
 use Baleen\Cli\CommandBus\Config\InitMessage;
 use Baleen\Cli\CommandBus\Config\InitHandler;
+use Baleen\Cli\CommandBus\Config\StatusHandler;
+use Baleen\Cli\CommandBus\Config\StatusMessage;
 use Baleen\Cli\CommandBus\Factory\DefaultFactory;
 use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
 use Baleen\Cli\CommandBus\Repository\CreateMessage;
@@ -61,6 +63,10 @@ class CommandsProvider extends ServiceProvider
         Services::CMD_CONFIG_INIT => [
             'class' => InitMessage::class,
             'handler' => InitHandler::class,
+        ],
+        Services::CMD_CONFIG_STATUS => [
+            'class' => StatusMessage::class,
+            'handler' => StatusHandler::class,
         ],
         Services::CMD_REPOSITORY_CREATE => [
             'class' => CreateMessage::class,

@@ -37,6 +37,7 @@ interface Services
     const COMMAND_BUS = 'commands.bus';
     const COMMANDS = 'commands';
     const CMD_CONFIG_INIT = 'commands.config.init';
+    const CMD_CONFIG_STATUS = 'commands.config.status';
     const CMD_TIMELINE_EXECUTE = 'commands.timeline.execute';
     const CMD_TIMELINE_MIGRATE = 'commands.timeline.migrate';
     const CMD_REPOSITORY_CREATE = 'commands.repository.create';

@@ -69,7 +69,7 @@ abstract class MessageTestCase extends BaseTestCase
                     break;
             }
         }
-        forward_static_call([$this->getCommandClass(), 'configure'], $command);
+        forward_static_call([$this->getClassName(), 'configure'], $command);
     }
 
     /**
@@ -78,10 +78,10 @@ abstract class MessageTestCase extends BaseTestCase
     abstract public function testConstructor();
 
     /**
-     * getCommandClass must return a string with the FQN of the command class being tested
+     * getClassName must return a string with the FQN of the command class being tested
      * @return string
      */
-    abstract protected function getCommandClass();
+    abstract protected function getClassName();
 
     /**
      * Must return an array in the format:

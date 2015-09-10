@@ -50,6 +50,10 @@ use Baleen\Cli\Container\ServiceProvider\ConfigProvider;
 use Baleen\Cli\Container\Services;
 use League\Container\Container;
 
+if (!defined('MIGRATIONS_EXECUTABLE')) {
+    define('MIGRATIONS_EXECUTABLE', $argv[0]);
+}
+
 $container = new Container();
 $container->add(Services::BALEEN_BASE_DIR, dirname(__DIR__));
 $container->add(Services::AUTOLOADER, $composerAutoloader);

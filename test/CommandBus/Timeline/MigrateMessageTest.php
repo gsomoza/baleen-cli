@@ -44,10 +44,10 @@ class MigrateMessageTest extends MessageTestCase
     }
 
     /**
-     * getCommandClass must return a string with the FQN of the command class being tested
+     * getClassName must return a string with the FQN of the command class being tested
      * @return string
      */
-    protected function getCommandClass()
+    protected function getClassName()
     {
         return MigrateMessage::class;
     }
