@@ -155,6 +155,9 @@ class CreateHandlerTest extends HandlerTestCase
 
         $config = m::mock(Config::class);
         $config->shouldReceive(['getMigrationsDirectory' => $migrationsDirectory])->once();
+        if ($editorCmd) {
+            $config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($migrationsDirectory);
+        }
         $this->command->shouldReceive('getConfig')->once()->andReturn($config);
 
         $argumentNamespace = key($namespace) ?: null;
@@ -207,13 +210,13 @@ class CreateHandlerTest extends HandlerTestCase
             [ // simple test
                 ['SimpleTitle' => 'SimpleTitle'],
                 ['SimpleNamespace' => 'SimpleNamespace'],
-                true,
+                true, // success
             ],
             [ // simple test with editor cmd
                 ['SimpleTitle' => 'SimpleTitle'],
                 ['SimpleNamespace' => 'SimpleNamespace'],
                 true,
-                'which' // FIXME: it would be better to test this gets called
+                'which' // FIXME: it would be better to test whether this gets called
             ],
             [ // test null namespace (load from config)
                 ['SimpleTitle' => 'SimpleTitle'],

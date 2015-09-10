@@ -90,7 +90,9 @@ class CreateHandler
             ));
             if ($editorCmd) {
                 $pipes = [];
-                proc_open($editorCmd.' '.escapeshellarg($result), array(), $pipes);
+                $baseDir = dirname($config->getMigrationsDirectoryPath());
+                $command = $editorCmd . ' ' . escapeshellarg($baseDir . DIRECTORY_SEPARATOR . $result);
+                proc_open($command, array(), $pipes);
             }
         } else {
             $output->writeln(
