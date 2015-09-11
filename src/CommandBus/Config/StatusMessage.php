@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,30 +14,41 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
 namespace Baleen\Cli\CommandBus\Config;
 
-use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\ConfigStorageAwareTrait;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareTrait;
+use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoryAwareTrait;
+use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * Class InitMessage.
- *
+ * Class StatusMessage
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class InitMessage extends AbstractConfigMessage
+class StatusMessage extends AbstractConfigMessage implements
+    RepositoryAwareInterface,
+    StorageAwareInterface,
+    ComparatorAwareInterface
 {
+    use RepositoryAwareTrait;
+    use StorageAwareTrait;
+    use ComparatorAwareTrait;
+
     /**
-     * @inheritdoc
+     * Configures a console command by setting name, description, arguments, etc.
+     *
+     * @param Command $command
      */
     public static function configure(Command $command)
     {
-        $command->setName('config:init');
-        $command->setAliases(['init']);
-        $command->setDescription('Initialises Baleen by creating a config file in the current directory.');
+        $command->setName('config:status');
+        $command->setAliases(['status']);
+        $command->setDescription('Shows the current migration status.');
     }
 }

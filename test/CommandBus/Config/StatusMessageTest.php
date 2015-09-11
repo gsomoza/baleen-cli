@@ -17,23 +17,21 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Cli\CommandBus\Timeline;
+namespace BaleenTest\Baleen\CommandBus\Config;
 
-use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
-use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
-use Baleen\Migrations\Migration\Options;
-use Baleen\Migrations\Timeline;
-use Baleen\Migrations\Version;
+use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
+use Baleen\Cli\CommandBus\Config\StatusMessage;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class ExecuteMessageTest
+ * Class StatusMessageTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ExecuteMessageTest extends MessageTestCase
+class StatusMessageTest extends MessageTestCase
 {
 
     /**
@@ -41,8 +39,16 @@ class ExecuteMessageTest extends MessageTestCase
      */
     public function testConstructor()
     {
-        $instance = new ExecuteMessage();
-        $this->assertInstanceOf(AbstractTimelineCommand::class, $instance);
+        $instance = new StatusMessage();
+        $list = [
+            AbstractConfigMessage::class,
+            RepositoryAwareInterface::class,
+            StorageAwareInterface::class,
+            ComparatorAwareInterface::class,
+        ];
+        foreach ($list as $expected) {
+            $this->assertInstanceOf($expected, $instance);
+        }
     }
 
     /**
@@ -51,7 +57,7 @@ class ExecuteMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return ExecuteMessage::class;
+        return StatusMessage::class;
     }
 
     /**
@@ -69,32 +75,18 @@ class ExecuteMessageTest extends MessageTestCase
     protected function getExpectations()
     {
         return [
-            [   'name' => 'setName',
-                'with' => 'timeline:execute',
+            [
+                'name' => 'setName',
+                'with' => 'config:status',
             ],
-            [   'name' => 'setAliases',
-                'with' => [['exec']],
+            [
+                'name' => 'setAliases',
+                'with' => [['status']],
             ],
-            [   'name' => 'setDescription',
+            [
+                'name' => 'setDescription',
                 'with' => m::type('string'),
-            ],
-            [   'name' => 'addOption',
-                'with' => [ExecuteMessage::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, m::type('string')],
-            ],
-            [   'name' => 'addOption',
-                'with' => [ExecuteMessage::OPT_NO_STORAGE, m::any(), InputOption::VALUE_NONE, m::type('string')],
-            ],
-            [   'name' => 'addArgument',
-                'with' => [ExecuteMessage::ARG_VERSION, InputArgument::REQUIRED, m::type('string')],
-            ],
-            [   'name' => 'addArgument',
-                'with' => [
-                    ExecuteMessage::ARG_DIRECTION,
-                    InputArgument::OPTIONAL,
-                    m::type('string'),
-                    Options::DIRECTION_UP,
-                ],
-            ],
+            ]
         ];
     }
 }

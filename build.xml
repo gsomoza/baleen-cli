@@ -15,8 +15,16 @@
             depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit-ci"
             description=""/>
 
+    <target name="build-coverage"
+            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit-ci-coverage"
+            description=""/>
+
     <target name="build-parallel"
-            depends="prepare,lint,tools-parallel,phpunit"
+            depends="prepare,lint,tools-parallel,phpunit-ci"
+            description=""/>
+
+    <target name="build-parallel-coverage"
+            depends="prepare,lint,tools-parallel,phpunit-ci-coverage"
             description=""/>
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -185,12 +193,21 @@
             unless="phpunit-ci.done"
             depends="prepare"
             description="Run unit tests with PHPUnit">
+        <exec executable="${toolsdir}phpunit" failonerror="true" taskname="phpunit" />
+
+        <property name="phpunit-ci.done" value="true"/>
+    </target>
+
+    <target name="phpunit-ci-coverage"
+            unless="phpunit-ci-coverage.done"
+            depends="prepare"
+            description="Run unit tests with PHPUnit">
         <exec executable="${toolsdir}phpunit" failonerror="true" taskname="phpunit">
             <arg value="--coverage-clover"/>
             <arg path="${basedir}/build/logs/coverage.xml" />
         </exec>
 
-        <property name="phpunit-ci.done" value="true"/>
+        <property name="phpunit-ci-coverage.done" value="true"/>
     </target>
 
     <!--<target name="phpdox"
