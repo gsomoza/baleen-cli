@@ -72,8 +72,8 @@ class MigrateHandler
         $output = $command->getOutput();
         $this->command = $command;
 
-        $targetArg = $input->getArgument(MigrateMessage::ARG_TARGET);
-        $strategy = $this->getStrategyOption($input);
+        $targetArg = (string) $input->getArgument(MigrateMessage::ARG_TARGET);
+        $strategy = (string) $this->getStrategyOption($input);
 
         $options = new Options(Options::DIRECTION_UP); // this value will get replaced by timeline later
         $options->setDryRun($input->getOption(MigrateMessage::OPT_DRY_RUN));
