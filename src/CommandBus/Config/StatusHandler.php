@@ -53,6 +53,7 @@ class StatusHandler
         $availableMigrations = $repository->fetchAll();
         $migratedVersions = $storage->fetchAll();
 
+        $migratedVersions->sortWith($message->getComparator());
         $headVersion = $migratedVersions->last();
 
         $currentMessage = $headVersion ?

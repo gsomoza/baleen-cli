@@ -69,8 +69,8 @@ class ExecuteHandlerTest extends HandlerTestCase
 
         if (!$isInteractive || $askResult) {
             $timeline->shouldReceive('runSingle')->with(
-                m::on(function (Version $version) {
-                    return $version->getId() === '123';
+                m::on(function ($version) {
+                    return (string) $version === '123';
                 }),
                 m::on(function (Options $options) use ($isUp, $isDryRun) {
                     return $options->isDryRun() === $isDryRun

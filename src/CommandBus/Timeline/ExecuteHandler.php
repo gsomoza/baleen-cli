@@ -35,7 +35,7 @@ class ExecuteHandler
     {
         $input = $command->getInput();
         $output = $command->getOutput();
-        $version = new Version($input->getArgument(ExecuteMessage::ARG_VERSION));
+        $version = (string) $input->getArgument(ExecuteMessage::ARG_VERSION);
 
         $direction = $input->getArgument(ExecuteMessage::ARG_DIRECTION) == Options::DIRECTION_DOWN ?
             Options::DIRECTION_DOWN :
@@ -60,7 +60,7 @@ class ExecuteHandler
                 $version = $result;
                 $command->getStorage()->update($version);
             }
-            $output->writeln("Version <info>{$version->getId()}</info> migrated <info>$direction</info> successfully.");
+            $output->writeln("Version <info>$version</info> migrated <info>$direction</info> successfully.");
         }
     }
 }

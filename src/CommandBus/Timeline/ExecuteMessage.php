@@ -33,7 +33,8 @@ use Symfony\Component\Console\Input\InputArgument;
 class ExecuteMessage extends AbstractTimelineCommand
 {
     const COMMAND_NAME = 'execute';
-    const COMMAND_ALIAS = 'exec';
+    const COMMAND_ALIAS_SHORT = 'exec';
+    const COMMAND_ALIAS = 'execute';
     const ARG_VERSION = 'version';
     const ARG_DIRECTION = 'direction';
 
@@ -44,7 +45,7 @@ class ExecuteMessage extends AbstractTimelineCommand
     {
         parent::configure($command);
         $command->setName('timeline:execute')
-            ->setAliases(['exec'])
+            ->setAliases([self::COMMAND_ALIAS_SHORT, self::COMMAND_ALIAS])
             ->setDescription('Execute a single migration version up or down manually.')
             ->addArgument(self::ARG_VERSION, InputArgument::REQUIRED, 'The version to execute.')
             ->addArgument(
