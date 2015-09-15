@@ -73,7 +73,7 @@ class ExecuteMessageTest extends MessageTestCase
                 'with' => 'timeline:execute',
             ],
             [   'name' => 'setAliases',
-                'with' => [['exec']],
+                'with' => [['exec', 'execute']],
             ],
             [   'name' => 'setDescription',
                 'with' => m::type('string'),
