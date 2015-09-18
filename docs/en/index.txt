@@ -8,6 +8,16 @@ be used as a starting point for your own migrations library.
 NOTE: this program is an early release and licensed under the MIT license. Please read the `LICENSE` file attached to
 the source-code before using this program to migrate sensitive data. And of course: always back up your data.
 
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+
+   index
+   framework
+   framework/architecture
+   framework/guide
+
 Installation
 ------------
 
@@ -55,4 +65,3 @@ Adding Your Code
 If you open that file you'll see it has two empty methods: ``up()`` and ``down()``, which will be called when migrating
 upwards or downwards (respectively). You can put any code you want inside those methods - for example code to
 transform your database, an image, a document, etc. - anything you want to migrate!
-

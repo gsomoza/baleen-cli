@@ -1,0 +1,8 @@
+Framework Guide
+===============
+
+Baleen CLI can perform migrations on its own, but it was also built as a framework that can help developers build their
+own migrations library without worrying about migrations boilerplate.
+
+The purpose of this section is to show how developers can use the Baleen CLI framework in order to supply a migrations
+library for their own framework or application.
