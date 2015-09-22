@@ -29,7 +29,7 @@ During the course of this tutorial we'll accomplish the following key goals:
 
     * Create the skeleton for our migrations library based in Baleen CLI.
     * Create a Doctrine-specific Storage service.
-    * Create a Doctrine-specific abstract Migration class that can be extended by concrete migration.
+    * Create a Doctrine-specific abstract Migration class that can be extended by concrete migrations.
     * Link to the application: inject the application's ObjectManager into that Migration class.
     * Customize the configuration schema to offer options to configure the Storage and other aspects of our new library.
 

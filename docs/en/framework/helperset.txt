@@ -1,0 +1,13 @@
+Helper Set
+==========
+
+Service Name: ``Services::HELPERSET``
+
+The ``HelperSetProvider`` supplies the Application with a ``Symfony\Component\Console\Helper\HelperSet``. The individual
+helpers are also registered as services to allow for easier customization.
+
+Customizing the HelperSet
+-------------------------
+
+If only the question or config helpers need to be customized then simply override their service. Otherwise its
+recommended to replace the ``HelperSetProvider`` entirely in order to customize the HelperSet service.

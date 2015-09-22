@@ -17,9 +17,11 @@ Contents:
    index
    framework
    framework/architecture
-   framework/providers
    framework/commands
    framework/configuration
+   framework/helperset
+   framework/providers
+   framework/repository
    framework/guide
 
 Installation
@@ -69,3 +71,8 @@ Adding Your Code
 If you open that file you'll see it has two empty methods: ``up()`` and ``down()``, which will be called when migrating
 upwards or downwards (respectively). You can put any code you want inside those methods - for example code to
 transform your database, an image, a document, etc. - anything you want to migrate!
+
+Indices and Tables
+==================
+
+* :ref:`genindex`

@@ -1,8 +1,38 @@
 Configuration
 =============
 
+Service Name: ``Services::CONFIG``
+
 The Baleen CLI framework allows you to easily define your configuration's schema using ``Symfony\Config`` definitions.
 A default schema is provided that covers the basic structure.
+
+The default configuration schema is as follows:
+
+.. code-block:: php
+
+    <?php
+    [
+        // list of Providers to load
+        'providers' => [
+            'key' => 'My\Provider', // FQCN
+            // ...
+        ],
+        // config for the Repository service
+        'migrations' => [
+            'directory' => '/path/to/migrations',
+            'namespace' => 'Migrations\Namespace', // for autoloading
+        ],
+        // config for the Storage service
+        'storage' => [
+            'file' => '/path/to/storage.txt', // path to storage file
+        ],
+    ];
+
+Throughout this tutorial we refer to specific configuration options using a dot (.) to indicate nesting levels. E.g.
+the configuratoion file location can be specified with the "storage.file" option.
+
+NOTE: the "migrations" section corresponds to the Repository. But we decided to name it "migrations" simply because
+that would be a more recognizable name for end-users who are not familiar with Baleen's domain language.
 
 Customizing the Configuration
 -------------------------

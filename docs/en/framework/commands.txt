@@ -1,6 +1,8 @@
 Commands
 ========
 
+Service Name: ``Service::COMMANDS``
+
 Symfony Console's commands are each of the actions that can be executed by an end-user of the migrations library.
 However we took a slightly different approach with commands than usual:
 
