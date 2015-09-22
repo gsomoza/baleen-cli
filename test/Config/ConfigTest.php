@@ -21,7 +21,7 @@ namespace BaleenTest\Cli\Config;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
+use Baleen\Cli\Container\ServiceProvider\ApplicationProvider;
 use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
 use Baleen\Cli\Container\ServiceProvider\StorageProvider;
@@ -45,7 +45,7 @@ class ConfigTest extends BaseTestCase
         $conf = new Config();
         $expected = [
             'providers' => [
-                'application' => DefaultProvider::class,
+                'application' => ApplicationProvider::class,
                 'storage' => StorageProvider::class,
                 'repository' => RepositoryProvider::class,
                 'timeline' => TimelineProvider::class,
@@ -84,7 +84,7 @@ class ConfigTest extends BaseTestCase
     {
         $defaultConfig = [
             'providers' => [
-                'application' => 'Baleen\Cli\Container\ServiceProvider\DefaultProvider',
+                'application' => 'Baleen\Cli\Container\ServiceProvider\ApplicationProvider',
                 'storage' => 'Baleen\Cli\Container\ServiceProvider\StorageProvider',
                 'repository' => 'Baleen\Cli\Container\ServiceProvider\RepositoryProvider',
                 'timeline' => 'Baleen\Cli\Container\ServiceProvider\TimelineProvider',

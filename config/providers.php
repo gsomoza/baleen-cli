@@ -19,7 +19,7 @@
 
 return [
     'providers' => [
-        'application' => \Baleen\Cli\Container\ServiceProvider\DefaultProvider::class,
+        'application' => \Baleen\Cli\Container\ServiceProvider\ApplicationProvider::class,
         'storage' => \Baleen\Cli\Container\ServiceProvider\StorageProvider::class,
         'repository' => \Baleen\Cli\Container\ServiceProvider\RepositoryProvider::class,
         'timeline' => \Baleen\Cli\Container\ServiceProvider\TimelineProvider::class,

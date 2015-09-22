@@ -45,7 +45,7 @@ interface Services
     const CMD_REPOSITORY_LIST = 'commands.repository.list';
     const CMD_STORAGE_LATEST = 'commands.storage.latest';
 
-    // DefaultProvider
+    // ApplicationProvider
     const APPLICATION = 'application';
     const AUTOLOADER = 'autoloader';
 

@@ -26,16 +26,16 @@ use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
+use Baleen\Cli\Container\ServiceProvider\ApplicationProvider;
 use Baleen\Cli\Container\Services;
 use Mockery as m;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
- * Class DefaultProviderTest
+ * Class ApplicationProviderTest
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class DefaultProviderTest extends ServiceProviderTestCase
+class ApplicationProviderTest extends ServiceProviderTestCase
 {
     /**
      * setUp
@@ -43,7 +43,7 @@ class DefaultProviderTest extends ServiceProviderTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->setInstance(m::mock(DefaultProvider::class)->makePartial());
+        $this->setInstance(m::mock(ApplicationProvider::class)->makePartial());
     }
 
     /**

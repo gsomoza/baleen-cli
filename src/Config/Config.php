@@ -21,7 +21,7 @@
 namespace Baleen\Cli\Config;
 
 use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
+use Baleen\Cli\Container\ServiceProvider\ApplicationProvider;
 use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;
 use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
 use Baleen\Cli\Container\ServiceProvider\StorageProvider;
@@ -105,7 +105,7 @@ class Config implements ConfigInterface
     protected function getProviderDefaults()
     {
         return [
-            'application' => DefaultProvider::class,
+            'application' => ApplicationProvider::class,
             'storage' => StorageProvider::class,
             'repository' => RepositoryProvider::class,
             'timeline' => TimelineProvider::class,

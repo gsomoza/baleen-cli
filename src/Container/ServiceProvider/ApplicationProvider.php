@@ -31,12 +31,12 @@ use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 
 /**
- * Class DefaultProvider.
+ * Class ApplicationProvider.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class DefaultProvider extends ServiceProvider
+class ApplicationProvider extends ServiceProvider
 {
     protected $provides = [
         Services::APPLICATION,
