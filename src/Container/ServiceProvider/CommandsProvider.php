@@ -61,35 +61,35 @@ class CommandsProvider extends ServiceProvider
     /** @var array */
     protected $commands = [
         Services::CMD_CONFIG_INIT => [
-            'class' => InitMessage::class,
+            'message' => InitMessage::class,
             'handler' => InitHandler::class,
         ],
         Services::CMD_CONFIG_STATUS => [
-            'class' => StatusMessage::class,
+            'message' => StatusMessage::class,
             'handler' => StatusHandler::class,
         ],
         Services::CMD_REPOSITORY_CREATE => [
-            'class' => CreateMessage::class,
+            'message' => CreateMessage::class,
             'handler' => CreateHandler::class,
         ],
         Services::CMD_REPOSITORY_LATEST => [
-            'class' => RepositoryLatestCommand::class,
+            'message' => RepositoryLatestCommand::class,
             'handler' => RepositoryLatestHandler::class,
         ],
         Services::CMD_REPOSITORY_LIST => [
-            'class' => ListMessage::class,
+            'message' => ListMessage::class,
             'handler' => ListHandler::class,
         ],
         Services::CMD_STORAGE_LATEST => [
-            'class' => StorageLatestCommand::class,
+            'message' => StorageLatestCommand::class,
             'handler' => StorageLatestHandler::class,
         ],
         Services::CMD_TIMELINE_EXECUTE => [
-            'class' => ExecuteMessage::class,
+            'message' => ExecuteMessage::class,
             'handler' => ExecuteHandler::class,
         ],
         Services::CMD_TIMELINE_MIGRATE => [
-            'class' => MigrateMessage::class,
+            'message' => MigrateMessage::class,
             'handler' => MigrateHandler::class,
         ],
     ];
@@ -126,7 +126,7 @@ class CommandsProvider extends ServiceProvider
                         is_object($factory) ? get_class($factory) : gettype($factory)
                     ));
                 }
-                return $factory->create($config['class']);
+                return $factory->create($config['message']);
             })->withArguments([ContainerInterface::class, $config]);
         }
 
@@ -134,7 +134,7 @@ class CommandsProvider extends ServiceProvider
         $container->singleton(Services::COMMAND_BUS, function () use ($commands) {
             $map = [];
             foreach ($commands as $alias => $config) {
-                $message = $config['class'];
+                $message = $config['message'];
                 $handler = $config['handler'];
                 $map[$message] = new $handler();
             }
@@ -146,7 +146,7 @@ class CommandsProvider extends ServiceProvider
         $container->add(Services::COMMANDS, function (ContainerInterface $container) use ($commands) {
             $commandList = [];
             foreach ($commands as $alias => $config) {
-                $commandList[] = new BaseCommand($container, $alias, $config['class']);
+                $commandList[] = new BaseCommand($container, $alias, $config['message']);
             }
 
             return $commandList;

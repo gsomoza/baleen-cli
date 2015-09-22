@@ -55,7 +55,7 @@ class CommandsProviderTest extends ServiceProviderTestCase
 
         foreach ($defaultCommands as $command) {
             $config = [
-                'class' => InitMessage::class, // we only need to test a single command gets instantiated successfully
+                'message' => InitMessage::class, // we only need to test a single command gets instantiated successfully
             ];
             $this->assertServiceProvided(
                 $command,

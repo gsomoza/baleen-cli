@@ -47,16 +47,16 @@ The CommandsProvider provides an easy and flexible way to customize them:
         {
             // custom message and custom handler
             $this->commands[Services::CMD_REPOSITORY_CREATE] = [
-                'class' => CreateMessage::class,
+                'message' => CreateMessage::class,
                 'handler' => CreateHandler::class,
             ];
 
             // customize message only - use default handler
-            $this->commands[Services::CMD_TIMELINE_EXECUTE]['class'] = ExecuteMessage::class;
+            $this->commands[Services::CMD_TIMELINE_EXECUTE]['message'] = ExecuteMessage::class;
 
             // custom message and custom handler
             $this->commands[Services::CMD_TIMELINE_MIGRATE] = [
-                'class' => MigrateMessage::class,
+                'message' => MigrateMessage::class,
                 'handler' => MigrateHandler::class,
             ];
             BaseCommandsProvider::__construct();
