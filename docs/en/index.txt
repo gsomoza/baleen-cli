@@ -16,6 +16,8 @@ Contents:
    index
    framework
    framework/architecture
+   framework/providers
+   framework/commands
    framework/guide
 
 Installation

@@ -20,41 +20,6 @@ We use ``Symfony\Config`` to define and validate configuration schemas, as well 
 
 We also use ``League\Tactician``, read about Commands for more details.
 
-Commands
---------
-
-One of the things that we found annoying in other migration libraries is that almost everything had to be configured
-before you could even execute a basic library command in the console. For example, in some libraries you can't even
-get help about available commands without first configuring your database connection - which usually doesn't make much
-sense.
-
-In order to solve that issue Baleen CLI decouples the Command definition from its execution (this might in fact be a
-good feature for future Symfony\Console versions). This decoupling is facilitated by ``League\Tactician`` - a simple
-CommandBus library - which works in tandem with ``League\Container`` to gather application dependencies ONLY once
-they're actually needed. This allows end-users to query the help for your executable without having to configure a
-database connection, because the database connection will only be instantiated when its ACTUALLY needed.
-
-All of this happens behind the scenes so you don't have to worry about it.
-
-Since we're using a CommandBus library, we decided to disambiguate the meaning of Command as follows:
-
-  * Whenever we refer to Commands we mean Symfony\Console commands. E.g. "status", or "migrate".
-  * But whenever we refer to Messages, we refer to a "command message" from the CommandBus pattern. These messages are
-    classes whose name ends with "Message", e.g. "StatusMessage" or "MigrateMessage" - which correspond to the example
-    commands on the previous item (they provide the command definition to Symfony\Console).
-
-
-Providers
----------
-
-Providers are a concept of ``League\Container``: they're simple classes that tell the container about a group of
-services they can provide. They only register those services in the container once at least one of those services is
-actually requested from the Container. Its important to keep that in mind. For more information about how Providers work
-refer to the ``League\Container`` documentation.
-
-Providers are central to Baleen CLI because they're the main way services are registered into a container. The
-Bootstrap section will explain more about that.
-
 Configuration
 -------------
 
