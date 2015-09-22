@@ -11,6 +11,7 @@ the source-code before using this program to migrate sensitive data. And of cour
 Contents:
 
 .. toctree::
+   :numbered:
    :maxdepth: 1
 
    index
@@ -18,10 +19,11 @@ Contents:
    framework/architecture
    framework/providers
    framework/commands
+   framework/configuration
    framework/guide
 
 Installation
-------------
+============
 
 Install with Composer:
 

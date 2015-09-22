@@ -20,12 +20,6 @@ We use ``Symfony\Config`` to define and validate configuration schemas, as well 
 
 We also use ``League\Tactician``, read about Commands for more details.
 
-Configuration
--------------
-
-The Baleen CLI framework allows you to easily define your configuration's schema using ``Symfony\Config`` definitions.
-A default schema is provided that covers the basic structure.
-
 Migrations
 ----------
 
