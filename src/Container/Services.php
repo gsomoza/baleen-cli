@@ -64,5 +64,5 @@ interface Services
 
     // TimelineProvider
     const TIMELINE = 'timeline';
-    const TIMELINE_COMPARATOR = 'timeline.comparator';
+    const COMPARATOR = 'comparator';
 }

@@ -73,7 +73,7 @@ class ApplicationProvider extends ServiceProvider
             ->invokeMethod('setTimeline', [Services::TIMELINE]);
 
         $container->inflector(ComparatorAwareInterface::class)
-            ->invokeMethod('setComparator', [Services::TIMELINE_COMPARATOR]);
+            ->invokeMethod('setComparator', [Services::COMPARATOR]);
 
         $container->inflector(ConfigStorageAwareInterface::class)
             ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);

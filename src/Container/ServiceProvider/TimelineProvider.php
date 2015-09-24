@@ -37,7 +37,7 @@ class TimelineProvider extends ServiceProvider
 {
     protected $provides = [
         Services::TIMELINE,
-        Services::TIMELINE_COMPARATOR,
+        Services::COMPARATOR,
     ];
 
     /**
@@ -47,8 +47,8 @@ class TimelineProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        if (!$container->isRegistered(Services::TIMELINE_COMPARATOR)) {
-            $container->singleton(Services::TIMELINE_COMPARATOR, DefaultComparator::class);
+        if (!$container->isRegistered(Services::COMPARATOR)) {
+            $container->singleton(Services::COMPARATOR, DefaultComparator::class);
         }
 
         $container->singleton(

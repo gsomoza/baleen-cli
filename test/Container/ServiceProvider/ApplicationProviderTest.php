@@ -65,7 +65,7 @@ class ApplicationProviderTest extends ServiceProviderTestCase
                 'setTimeline' => [Services::TIMELINE],
             ],
             ComparatorAwareInterface::class => [
-                'setComparator' => [Services::TIMELINE_COMPARATOR],
+                'setComparator' => [Services::COMPARATOR],
             ],
             ConfigStorageAwareInterface::class => [
                 'setConfigStorage' => [Services::CONFIG_STORAGE],
