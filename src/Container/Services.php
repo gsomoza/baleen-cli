@@ -29,40 +29,64 @@ namespace Baleen\Cli\Container;
 interface Services
 {
     // ConfigProvider
+    /** Reference to the Config service */
     const CONFIG = 'config';
+    /** Reference to the ConfigStorage service */
     const CONFIG_STORAGE = 'config-storage';
+    /** Reference to Baleen CLI's base directory */
     const BALEEN_BASE_DIR = 'baleen.base_dir';
 
     // CommandsProvider
+    /** Reference to the CommandBus service */
     const COMMAND_BUS = 'commands.bus';
+    /** Reference to an array of available commands */
     const COMMANDS = 'commands';
+    /** Reference to the config:init command */
     const CMD_CONFIG_INIT = 'commands.config.init';
+    /** Reference to the config:status command */
     const CMD_CONFIG_STATUS = 'commands.config.status';
+    /** Reference to the timeline:execute command */
     const CMD_TIMELINE_EXECUTE = 'commands.timeline.execute';
+    /** Reference to the timelien:migrate command */
     const CMD_TIMELINE_MIGRATE = 'commands.timeline.migrate';
+    /** Reference to the repository:create command */
     const CMD_REPOSITORY_CREATE = 'commands.repository.create';
+    /** Reference to the repository:latest command */
     const CMD_REPOSITORY_LATEST = 'commands.repository.latest';
+    /** Reference to the repository:list command */
     const CMD_REPOSITORY_LIST = 'commands.repository.list';
+    /** Reference to the storage:latest command */
     const CMD_STORAGE_LATEST = 'commands.storage.latest';
 
     // ApplicationProvider
+    /** Reference to the Symfony Console Application instance */
     const APPLICATION = 'application';
+    /** Reference to the Composer autoloader */
     const AUTOLOADER = 'autoloader';
 
     // HelperSetProvider
+    /** Reference to the Symfony Console HelperSet to be used for the Application */
     const HELPERSET = 'helperset';
+    /** Reference to the Question console helper */
     const HELPERSET_QUESTION = 'helperset.question';
+    /** Reference to the Config console helper */
     const HELPERSET_CONFIG = 'helperset.config';
 
     // RepositoryProvider
+    /** Reference to the Repository service */
     const REPOSITORY = 'repository';
+    /** Reference to the Filesystem to be used for the Repository service */
     const REPOSITORY_FILESYSTEM = 'repository.filesystem';
+    /** Reference to the factory to be used to instantiate Migrations */
     const MIGRATION_FACTORY = 'repository.migration.factory';
 
     // Storage Provider
+    /** Reference to the Storage service */
     const STORAGE = 'storage';
 
     // TimelineProvider
+    /** Reference to the Timeline service */
     const TIMELINE = 'timeline';
+    /** Reference to the Comparator service */
     const COMPARATOR = 'comparator';
 }

@@ -1,0 +1,36 @@
+--------------------------------------------------
+Baleen\\Cli\\CommandBus\\Repository\\CreateHandler
+--------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Repository
+
+.. php:class:: CreateHandler
+
+    Class CreateHandler.
+
+    .. php:method:: handle(CreateMessage $command)
+
+        handle.
+
+        :type $command: CreateMessage
+        :param $command:
+        :returns: false|string
+
+    .. php:method:: generate($className, $namespace = null)
+
+        :type $className: string
+        :param $className:
+        :type $namespace: string
+        :param $namespace:
+        :returns: ClassGenerator
+
+    .. php:method:: writeClass(ClassGenerator $class, Filesystem $filesystem, $destinationDir)
+
+        Function writeClass.
+
+        :type $class: ClassGenerator
+        :param $class:
+        :type $filesystem: Filesystem
+        :param $filesystem:
+        :param $destinationDir:
+        :returns: string|false

@@ -1,0 +1,83 @@
+-------------------------------------------------
+Baleen\\Cli\\CommandBus\\Timeline\\MigrateHandler
+-------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Timeline
+
+.. php:class:: MigrateHandler
+
+    Class MigrateHandler.
+
+    .. php:attr:: progress
+
+        protected ProgressBar
+
+    .. php:attr:: saveChanges
+
+        protected bool
+
+    .. php:attr:: strategies
+
+        protected array
+
+    .. php:attr:: trackProgress
+
+        protected bool
+
+    .. php:attr:: output
+
+        protected OutputInterface
+
+    .. php:attr:: command
+
+        protected MigrateMessage
+
+    .. php:method:: handle(MigrateMessage $command)
+
+        handle.
+
+        :type $command: MigrateMessage
+        :param $command:
+
+    .. php:method:: attachEvents(OutputInterface $output, EventDispatcherInterface $dispatcher)
+
+        :type $output: OutputInterface
+        :param $output:
+        :type $dispatcher: EventDispatcherInterface
+        :param $dispatcher:
+
+    .. php:method:: saveVersionListener(MigrationEvent $event)
+
+        saveVersionListener.
+
+        :type $event: MigrationEvent
+        :param $event:
+
+    .. php:method:: onMigrationBefore(MigrationEvent $event)
+
+        :type $event: MigrationEvent
+        :param $event:
+
+    .. php:method:: onMigrationAfter(MigrationEvent $event)
+
+        onMigrationAfter.
+
+        :type $event: MigrationEvent
+        :param $event:
+
+    .. php:method:: onCollectionBefore(CollectionEvent $event)
+
+        onCollectionBefore.
+
+        :type $event: CollectionEvent
+        :param $event:
+
+    .. php:method:: onCollectionAfter()
+
+        onCollectionAfter.
+
+    .. php:method:: getStrategyOption(InputInterface $input)
+
+        :type $input: InputInterface
+        :param $input:
+        :returns: string

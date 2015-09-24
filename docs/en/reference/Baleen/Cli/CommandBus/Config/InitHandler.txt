@@ -1,0 +1,14 @@
+--------------------------------------------
+Baleen\\Cli\\CommandBus\\Config\\InitHandler
+--------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Config
+
+.. php:class:: InitHandler
+
+    Class InitHandler.
+
+    .. php:method:: handle(InitMessage $command)
+
+        :type $command: InitMessage
+        :param $command:

@@ -1,0 +1,25 @@
+------------------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Repository\\AbstractRepositoryListHandler
+------------------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Repository
+
+.. php:class:: AbstractRepositoryListHandler
+
+    Class AbstractRepositoryListHandler.
+
+    .. php:method:: outputVersions(LinkedVersions $versions, OutputInterface $output)
+
+        :type $versions: LinkedVersions
+        :param $versions:
+        :type $output: OutputInterface
+        :param $output:
+
+    .. php:method:: getCollection(RepositoryInterface $repository, $comparator = null)
+
+        getCollection.
+
+        :type $repository: RepositoryInterface
+        :param $repository:
+        :param $comparator:
+        :returns: LinkedVersions

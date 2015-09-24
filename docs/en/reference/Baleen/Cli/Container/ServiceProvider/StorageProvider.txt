@@ -1,0 +1,15 @@
+--------------------------------------------------------
+Baleen\\Cli\\Container\\ServiceProvider\\StorageProvider
+--------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\Container\\ServiceProvider
+
+.. php:class:: StorageProvider
+
+    Class StorageProvider.
+
+    .. php:attr:: provides
+
+        protected
+
+    .. php:method:: register()

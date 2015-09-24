@@ -1,0 +1,16 @@
+-------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\FilesystemAwareInterface
+-------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:interface:: FilesystemAwareInterface
+
+    .. php:method:: getFilesystem()
+
+        :returns: Filesystem
+
+    .. php:method:: setFilesystem(Filesystem $filesystem)
+
+        :type $filesystem: Filesystem
+        :param $filesystem:

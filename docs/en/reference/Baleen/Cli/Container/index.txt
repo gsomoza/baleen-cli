@@ -1,0 +1,10 @@
+''''''''''''''''''''''
+Baleen\\Cli\\Container
+''''''''''''''''''''''
+
+.. php:namespace: Baleen\\Cli\\Container
+
+.. toctree::
+
+   ServiceProvider/index
+   Services

@@ -1,0 +1,41 @@
+------------------------------------
+Baleen\\Cli\\Config\\ConfigInterface
+------------------------------------
+
+.. php:namespace: Baleen\\Cli\\Config
+
+.. php:interface:: ConfigInterface
+
+    Interface ConfigInterface provides a common interface to be extended for applications based on this framework.
+    The resulting class will provide the config configClass (see Symfony's ConfigurationInterface).
+
+    .. php:method:: getDefaults()
+
+        Returns an array of default values.
+
+        :returns: array
+
+    .. php:method:: toArray()
+
+        Returns the entire configuration as an array,.
+
+        :returns: array
+
+    .. php:method:: getFileName()
+
+        Returns the default configuration file name.
+
+        :returns: string
+
+    .. php:method:: getDefinition()
+
+        Returns an instance of the configuration definition.
+
+        :returns: ConfigurationInterface
+
+    .. php:method:: getCleanArray()
+
+        Returns an array only with settings that can be configured by the
+        end-user.
+
+        :returns: array

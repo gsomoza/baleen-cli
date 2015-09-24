@@ -1,0 +1,16 @@
+-------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\ComparatorAwareInterface
+-------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:interface:: ComparatorAwareInterface
+
+    .. php:method:: getComparator()
+
+        :returns: callable
+
+    .. php:method:: setComparator($comparator)
+
+        :type $comparator: callable
+        :param $comparator:

@@ -1,0 +1,25 @@
+-------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\RepositoryAwareInterface
+-------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:interface:: RepositoryAwareInterface
+
+    .. php:method:: getRepository()
+
+        :returns: RepositoryInterface
+
+    .. php:method:: setRepository(RepositoryInterface $repository)
+
+        :type $repository: RepositoryInterface
+        :param $repository:
+
+    .. php:method:: getFilesystem()
+
+        :returns: Filesystem
+
+    .. php:method:: setFilesystem(Filesystem $filesystem)
+
+        :type $filesystem: Filesystem
+        :param $filesystem:

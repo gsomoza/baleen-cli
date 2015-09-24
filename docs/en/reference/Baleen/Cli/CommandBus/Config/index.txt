@@ -1,0 +1,13 @@
+"""""""""""""""""""""""""""""""
+Baleen\\Cli\\CommandBus\\Config
+"""""""""""""""""""""""""""""""
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Config
+
+.. toctree::
+
+   AbstractConfigMessage
+   InitHandler
+   InitMessage
+   StatusHandler
+   StatusMessage

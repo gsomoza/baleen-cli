@@ -1,0 +1,14 @@
+---------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Factory\\MessageFactoryInterface
+---------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Factory
+
+.. php:interface:: MessageFactoryInterface
+
+    .. php:method:: create($class)
+
+        create
+
+        :param $class:
+        :returns: AbstractMessage

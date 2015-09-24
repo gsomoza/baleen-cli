@@ -25,19 +25,25 @@ use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Helper\HelperSet;
 
 /**
- * Class Application.
+ * The entry point to Baleen CLI's commands.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class Application extends ConsoleApplication
 {
-    const VERSION = '0.4.0';
+    /** Version to show in the help / usage message. */
+    const VERSION = '0.5.0';
 
-    /** @var Container */
+    /**
+     * The League\Container instance used by Baleen CLI.
+     *
+     * @var Container
+     */
     protected $container;
 
     /**
-     * @inheritdoc
+     * @param \Symfony\Component\Console\Command\Command[] $commands  Array of Commands available for the Application.
+     * @param HelperSet                                    $helperSet HelperSet to be used with the Application.
      */
     public function __construct(array $commands, HelperSet $helperSet)
     {
@@ -46,8 +52,8 @@ class Application extends ConsoleApplication
     }
 
     /**
-     * @param array     $commands
-     * @param HelperSet $helperSet
+     * @param \Symfony\Component\Console\Command\Command[] $commands
+     * @param HelperSet                                    $helperSet
      */
     protected function init(array $commands, HelperSet $helperSet)
     {

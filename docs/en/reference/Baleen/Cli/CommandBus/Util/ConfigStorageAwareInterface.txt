@@ -1,0 +1,23 @@
+----------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\ConfigStorageAwareInterface
+----------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:interface:: ConfigStorageAwareInterface
+
+    Interface ConfigStorageAwareInterface.
+
+    .. php:method:: getConfigStorage()
+
+        getConfigStorage.
+
+        :returns: mixed
+
+    .. php:method:: setConfigStorage(ConfigStorage $configStorage)
+
+        setConfigStorage.
+
+        :type $configStorage: ConfigStorage
+        :param $configStorage:
+        :returns: mixed

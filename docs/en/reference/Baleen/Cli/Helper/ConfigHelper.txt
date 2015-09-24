@@ -1,0 +1,29 @@
+---------------------------------
+Baleen\\Cli\\Helper\\ConfigHelper
+---------------------------------
+
+.. php:namespace: Baleen\\Cli\\Helper
+
+.. php:class:: ConfigHelper
+
+    Class ConfigHelper.
+
+    .. php:attr:: config
+
+        protected
+
+    .. php:method:: __construct(Config $configuration)
+
+        :type $configuration: Config
+        :param $configuration:
+
+    .. php:method:: getName()
+
+    .. php:method:: getConfig()
+
+        :returns: Config
+
+    .. php:method:: setConfig(Config $configuration)
+
+        :type $configuration: Config
+        :param $configuration:

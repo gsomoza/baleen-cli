@@ -1,0 +1,9 @@
+''''''''''''''''''''''
+Baleen\\Cli\\Exception
+''''''''''''''''''''''
+
+.. php:namespace: Baleen\\Cli\\Exception
+
+.. toctree::
+
+   CliException

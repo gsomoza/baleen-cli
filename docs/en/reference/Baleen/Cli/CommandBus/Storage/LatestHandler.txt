@@ -1,0 +1,16 @@
+-----------------------------------------------
+Baleen\\Cli\\CommandBus\\Storage\\LatestHandler
+-----------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Storage
+
+.. php:class:: LatestHandler
+
+    Class LatestHandler.
+
+    .. php:method:: handle(LatestMessage $command)
+
+        handle.
+
+        :type $command: LatestMessage
+        :param $command:

@@ -1,0 +1,16 @@
+Helper Set
+==========
+
+.. php:namespace:: Baleen\Cli\Container
+
+Service Name: :php:const:`Services::HELPERSET`
+
+The :php:class:`HelperSetProvider` supplies the :php:class:`Application` with a
+``Symfony\Component\Console\Helper\HelperSet``. The individual helpers are also registered as services to allow for
+easier customization.
+
+Customizing the HelperSet
+-------------------------
+
+If only the question or config helpers need to be customized then simply override their service. Otherwise its
+recommended to replace the :php:class:`HelperSetProvider` class entirely in order to customize the HelperSet service.

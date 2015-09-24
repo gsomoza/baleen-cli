@@ -1,0 +1,60 @@
+----------------------------------------------
+Baleen\\Cli\\CommandBus\\Config\\StatusHandler
+----------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Config
+
+.. php:class:: StatusHandler
+
+    Class StatusHandler
+
+    .. php:attr:: output
+
+        protected OutputInterface
+
+    .. php:attr:: message
+
+        protected StatusMessage
+
+    .. php:method:: handle(StatusMessage $message)
+
+        handle
+
+        :type $message: StatusMessage
+        :param $message:
+
+    .. php:method:: printPendingVersion($version, $style)
+
+        printPendingVersion
+
+        :param $version:
+        :param $style:
+
+    .. php:method:: getRelativePath($from, $to)
+
+        getRelativePath
+
+        :param $from:
+        :param $to:
+        :returns: string
+
+    .. php:method:: printDiff($versions, $message, $style = self::STYLE_INFO)
+
+        printDiff
+
+        :type $versions: array
+        :param $versions:
+        :param $message:
+        :param $style:
+
+    .. php:method:: splitDiff($diff, $comparator, Version $head)
+
+        splitDiff
+
+        :type $diff: array
+        :param $diff:
+        :type $comparator: callable
+        :param $comparator:
+        :type $head: Version
+        :param $head:
+        :returns: array

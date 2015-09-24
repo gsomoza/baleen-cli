@@ -1,0 +1,11 @@
+""""""""""""""""""""""""""""""""
+Baleen\\Cli\\CommandBus\\Storage
+""""""""""""""""""""""""""""""""
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Storage
+
+.. toctree::
+
+   AbstractStorageMessage
+   LatestHandler
+   LatestMessage

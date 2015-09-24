@@ -1,0 +1,88 @@
+---------------------------
+Baleen\\Cli\\Config\\Config
+---------------------------
+
+.. php:namespace: Baleen\\Cli\\Config
+
+.. php:class:: Config
+
+    Class Config.
+
+    .. php:method:: __construct($config = [], $defaults = true)
+
+        :type $config: array
+        :param $config:
+        :param $defaults:
+
+    .. php:method:: getDefaults()
+
+        :returns: array
+
+    .. php:method:: getMigrationDefaults()
+
+        Default values for the migrations section.
+
+        :returns: array
+
+    .. php:method:: getStorageDefaults()
+
+        Default values for the storage section.
+
+        :returns: array
+
+    .. php:method:: getProviderDefaults()
+
+        Default values for the providers section.
+
+        :returns: array
+
+    .. php:method:: getProviders()
+
+        getProviders.
+
+        :returns: array
+
+    .. php:method:: getMigrationsDirectoryPath()
+
+        :returns: string
+
+    .. php:method:: getMigrationsDirectory()
+
+        :returns: mixed
+
+    .. php:method:: getMigrationsNamespace()
+
+        :returns: string
+
+    .. php:method:: getStorageFilePath()
+
+        :returns: string
+
+    .. php:method:: getStorageFile()
+
+        :returns: mixed
+
+    .. php:method:: getConfigFilePath()
+
+        :returns: string
+
+    .. php:method:: getFileName()
+
+        :returns: string
+
+    .. php:method:: toArray()
+
+        :returns: array
+
+    .. php:method:: getDefinition()
+
+        getDefinition.
+
+        :returns: Definition
+
+    .. php:method:: getCleanArray()
+
+        Returns a clone of itself but only with settings that can be configured by
+        the end-user.
+
+        :returns: array

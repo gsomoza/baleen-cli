@@ -1,0 +1,18 @@
+-----------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\TimelineAwareInterface
+-----------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:interface:: TimelineAwareInterface
+
+    Class AbstractTimelineCommand.
+
+    .. php:method:: getTimeline()
+
+        :returns: Timeline
+
+    .. php:method:: setTimeline(Timeline $timeline)
+
+        :type $timeline: Timeline
+        :param $timeline:

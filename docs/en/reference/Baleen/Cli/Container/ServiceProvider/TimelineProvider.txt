@@ -1,0 +1,15 @@
+---------------------------------------------------------
+Baleen\\Cli\\Container\\ServiceProvider\\TimelineProvider
+---------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\Container\\ServiceProvider
+
+.. php:class:: TimelineProvider
+
+    Class TimelineProvider.
+
+    .. php:attr:: provides
+
+        protected
+
+    .. php:method:: register()

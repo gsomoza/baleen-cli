@@ -1,0 +1,108 @@
+--------------------------------
+Baleen\\Cli\\Container\\Services
+--------------------------------
+
+.. php:namespace: Baleen\\Cli\\Container
+
+.. php:interface:: Services
+
+    This interface contains constants for the names of services in the Service Container. Its useful in order to:
+    A) reduce the coupling between classes for service providers (since they can use a single interface to reference
+    services) and B) provide an easy way to override certain services for libraries that use Baleen CLI as their
+    framework.
+
+    .. php:const:: CONFIG
+
+        Reference to the Config service
+
+    .. php:const:: CONFIG_STORAGE
+
+        Reference to the ConfigStorage service
+
+    .. php:const:: BALEEN_BASE_DIR
+
+        Reference to Baleen CLI's base directory
+
+    .. php:const:: COMMAND_BUS
+
+        Reference to the CommandBus service
+
+    .. php:const:: COMMANDS
+
+        Reference to an array of available commands
+
+    .. php:const:: CMD_CONFIG_INIT
+
+        Reference to the config:init command
+
+    .. php:const:: CMD_CONFIG_STATUS
+
+        Reference to the config:status command
+
+    .. php:const:: CMD_TIMELINE_EXECUTE
+
+        Reference to the timeline:execute command
+
+    .. php:const:: CMD_TIMELINE_MIGRATE
+
+        Reference to the timelien:migrate command
+
+    .. php:const:: CMD_REPOSITORY_CREATE
+
+        Reference to the repository:create command
+
+    .. php:const:: CMD_REPOSITORY_LATEST
+
+        Reference to the repository:latest command
+
+    .. php:const:: CMD_REPOSITORY_LIST
+
+        Reference to the repository:list command
+
+    .. php:const:: CMD_STORAGE_LATEST
+
+        Reference to the storage:latest command
+
+    .. php:const:: APPLICATION
+
+        Reference to the Symfony Console Application instance
+
+    .. php:const:: AUTOLOADER
+
+        Reference to the Composer autoloader
+
+    .. php:const:: HELPERSET
+
+        Reference to the Symfony Console HelperSet to be used for the Application
+
+    .. php:const:: HELPERSET_QUESTION
+
+        Reference to the Question console helper
+
+    .. php:const:: HELPERSET_CONFIG
+
+        Reference to the Config console helper
+
+    .. php:const:: REPOSITORY
+
+        Reference to the Repository service
+
+    .. php:const:: REPOSITORY_FILESYSTEM
+
+        Reference to the Filesystem to be used for the Repository service
+
+    .. php:const:: MIGRATION_FACTORY
+
+        Reference to the factory to be used to instantiate Migrations
+
+    .. php:const:: STORAGE
+
+        Reference to the Storage service
+
+    .. php:const:: TIMELINE
+
+        Reference to the Timeline service
+
+    .. php:const:: COMPARATOR
+
+        Reference to the Comparator service

@@ -1,0 +1,39 @@
+Providers
+=========
+
+Providers are a concept of :php:ns:`League\\Container`: they're simple classes that tell the container about a group of
+services they can provide. They only register those services in the container once at least one of those services is
+actually requested from the Container. Its important to keep that in mind.
+
+.. note::
+
+  For more information about how Providers work refer to the :php:ns:`League\\Container`: documentation.
+
+.. tip::
+
+  Providers are central to Baleen CLI because they're the main way services are registered into a container.
+
+Bootstrap
+---------
+
+The :file:`bootstrap.php` file is the one that handles the initialization of the Container and adds providers to it. The
+sequence is as follows:
+
+#. Container is initialized with a few default services.
+#. The :php:class:`ConfigProvider` gets registered as the first provider. This provider must provide the configuration
+   service (named after the :php:const:`Services::CONFIG` constant, which we'll refer to as the "Config service").
+#. The Config service is immediately fetched from the container.
+#. All providers supplied by the Config service are then added to the Container. At least one of them must supply the
+   :php:const:`Service::APPLICATION` service.
+#. The Application service is fetched and the :php:meth:`Application::run()` method is executed.
+
+Customizing Providers
+---------------------
+
+Providers can be customized (added, overwritten, removed, etc.) several ways:
+
+#. Directly in the :file:`boostrap.php` file. Not recommended, unless the provider can't be configured.
+#. By modifying the :file:`config/providers.php` file. This is the recommended method if you're building your own
+   migrations library (see the guide).
+#. On the end-user's configuration file, under the "providers" section (similar to #2). This just give end-users the
+   possibility to further customize the behaviour of the migrations library if desired.
