@@ -6,7 +6,7 @@ Baleen\\Cli\\CommandBus\\Config\\AbstractConfigMessage
 
 .. php:class:: AbstractConfigMessage
 
-    Class AbstractConfigMessage
+    Shared functionality for all configuration-related Messages.
 
     .. php:attr:: configStorage
 

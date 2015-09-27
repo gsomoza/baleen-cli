@@ -21,37 +21,43 @@
 namespace Baleen\Cli\CommandBus\Config;
 
 /**
- * Class InitHandler.
+ * Handles the config:init command.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class InitHandler
 {
-    public function handle(InitMessage $command)
+    /**
+     * Handle an InitMessage. Creates an end-user configuration file using default values. If the file already exists
+     * it simply exists without doing anything.
+     *
+     * @param InitMessage $message
+     */
+    public function handle(InitMessage $message)
     {
-        $output = $command->getOutput();
-        $configStorage = $command->getConfigStorage();
+        $output = $message->getOutput();
+        $configStorage = $message->getConfigStorage();
 
-        if ($configStorage->isInitialized($command->getConfig())) {
+        if ($configStorage->isInitialized($message->getConfig())) {
             $output->writeln(sprintf(
                 '%s is already initialised!',
-                $command->getCliCommand()->getApplication()->getName()
+                $message->getCliCommand()->getApplication()->getName()
             ));
 
             return;
         }
 
-        $result = $configStorage->write($command->getConfig());
+        $result = $configStorage->write($message->getConfig());
 
         if ($result !== false) {
-            $message = sprintf('Config file created at "<info>%s</info>".', $command->getConfig()->getFileName());
+            $msg = sprintf('Config file created at "<info>%s</info>".', $message->getConfig()->getFileName());
         } else {
-            $message = sprintf(
+            $msg = sprintf(
                 '<error>Error: Could not create and write file "<info>%s</info>". '.
                 'Please check file and directory permissions.</error>',
-                $command->getConfig()->getFileName()
+                $message->getConfig()->getFileName()
             );
         }
-        $output->writeln($message);
+        $output->writeln($msg);
     }
 }

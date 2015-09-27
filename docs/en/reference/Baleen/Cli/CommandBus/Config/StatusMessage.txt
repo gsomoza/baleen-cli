@@ -6,7 +6,7 @@ Baleen\\Cli\\CommandBus\\Config\\StatusMessage
 
 .. php:class:: StatusMessage
 
-    Class StatusMessage
+    Message class for the config:status command.
 
     .. php:attr:: repository
 

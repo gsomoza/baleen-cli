@@ -6,7 +6,7 @@ Baleen\\Cli\\CommandBus\\Config\\StatusHandler
 
 .. php:class:: StatusHandler
 
-    Class StatusHandler
+    Handles the config:status command.
 
     .. php:attr:: output
 
@@ -18,21 +18,25 @@ Baleen\\Cli\\CommandBus\\Config\\StatusHandler
 
     .. php:method:: handle(StatusMessage $message)
 
-        handle
+        Handles a StatusMessage, which prints the status of the migrations system
+        in a developer-friendly format
+        (inspired by "git status").
 
         :type $message: StatusMessage
         :param $message:
 
-    .. php:method:: printPendingVersion($version, $style)
+    .. php:method:: printPendingVersion(Version $version, $style)
 
-        printPendingVersion
+        Formats and prints a pending version with the given style.
 
-        :param $version:
-        :param $style:
+        :type $version: Version
+        :param $version: The Version to print.
+        :type $style: string
+        :param $style: One of the STYLE_* constants.
 
     .. php:method:: getRelativePath($from, $to)
 
-        getRelativePath
+        Returns the relative path between two known paths.
 
         :param $from:
         :param $to:
@@ -40,21 +44,28 @@ Baleen\\Cli\\CommandBus\\Config\\StatusHandler
 
     .. php:method:: printDiff($versions, $message, $style = self::STYLE_INFO)
 
-        printDiff
+        Prints an array (group) of Versions all with the given style. If the array
+        is empty then it prints nothing.
 
         :type $versions: array
         :param $versions:
-        :param $message:
-        :param $style:
+        :type $message: string|string[]
+        :param $message: Message(s) to print before the group of versions.
+        :type $style: string
+        :param $style: One of the STYLE_* constants.
 
     .. php:method:: splitDiff($diff, $comparator, Version $head)
 
-        splitDiff
+        Splits an array of Versions into two arrays and returns them. The first
+        one contains all versions before the HEAD
+        (latest migrated) Version, and the second one contains all Versions after
+        HEAD. Head is never included in either
+        of the arrays.
 
-        :type $diff: array
-        :param $diff:
+        :type $diff: Version[]
+        :param $diff: The array of Versions that should be split.
         :type $comparator: callable
-        :param $comparator:
+        :param $comparator: The comparator used to sort Versions.
         :type $head: Version
-        :param $head:
+        :param $head: The HEAD version.
         :returns: array

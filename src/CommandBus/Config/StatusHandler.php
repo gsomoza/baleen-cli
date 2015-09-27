@@ -23,7 +23,8 @@ use Baleen\Migrations\Version;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class StatusHandler
+ * Handles the config:status command.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class StatusHandler
@@ -38,7 +39,9 @@ class StatusHandler
     protected $message;
 
     /**
-     * handle
+     * Handles a StatusMessage, which prints the status of the migrations system in a developer-friendly format
+     * (inspired by "git status").
+     *
      * @param StatusMessage $message
      */
     public function handle(StatusMessage $message)
@@ -95,11 +98,12 @@ class StatusHandler
     }
 
     /**
-     * printPendingVersion
-     * @param $version
-     * @param $style
+     * Formats and prints a pending version with the given style.
+     *
+     * @param Version $version The Version to print.
+     * @param string $style One of the STYLE_* constants.
      */
-    protected function printPendingVersion($version, $style)
+    protected function printPendingVersion(Version $version, $style)
     {
         /** @var Version $version */
         $id = $version->getId();
@@ -110,10 +114,13 @@ class StatusHandler
     }
 
     /**
-     * getRelativePath
+     * Returns the relative path between two known paths.
+     *
      * @param $from
      * @param $to
+     *
      * @return string
+     *
      * @link http://stackoverflow.com/questions/2637945/getting-relative-path-from-absolute-path-in-php
      */
     protected function getRelativePath($from, $to)
@@ -148,33 +155,36 @@ class StatusHandler
     }
 
     /**
-     * printDiff
+     * Prints an array (group) of Versions all with the given style. If the array is empty then it prints nothing.
+     *
      * @param array $versions
-     * @param $message
-     * @param $style
+     * @param string|string[] $message Message(s) to print before the group of versions.
+     * @param string $style One of the STYLE_* constants.
      */
     protected function printDiff(array $versions, $message, $style = self::STYLE_INFO)
     {
-        $first = true;
+        if (empty($versions)) {
+            return;
+        }
+        $this->output->writeln($message);
+        $this->output->writeln('');
+
         foreach ($versions as $version) {
-            if ($first) {
-                $this->output->writeln($message);
-                $this->output->writeln('');
-                $first = false;
-            }
             $this->printPendingVersion($version, $style);
         }
-        if (!$first) {
-            // if there was at least one version in the array
-            $this->output->writeln('');
-        }
+
+        // if there was at least one version in the array
+        $this->output->writeln('');
     }
 
     /**
-     * splitDiff
-     * @param array $diff
-     * @param callable $comparator
-     * @param Version $head
+     * Splits an array of Versions into two arrays and returns them. The first one contains all versions before the HEAD
+     * (latest migrated) Version, and the second one contains all Versions after HEAD. Head is never included in either
+     * of the arrays.
+     *
+     * @param Version[] $diff The array of Versions that should be split.
+     * @param callable $comparator The comparator used to sort Versions.
+     * @param Version $head The HEAD version.
      * @return array
      */
     protected function splitDiff(array $diff, callable $comparator, Version $head)

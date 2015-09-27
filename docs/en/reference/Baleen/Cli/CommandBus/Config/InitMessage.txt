@@ -6,7 +6,7 @@ Baleen\\Cli\\CommandBus\\Config\\InitMessage
 
 .. php:class:: InitMessage
 
-    Class InitMessage.
+    Message class for the config:init command.
 
     .. php:attr:: configStorage
 
