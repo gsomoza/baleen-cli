@@ -21,7 +21,6 @@
 namespace Baleen\Cli\Container\ServiceProvider;
 
 use Baleen\Cli\Container\Services;
-use Baleen\Cli\Helper\ConfigHelper;
 use League\Container\ServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -36,7 +35,6 @@ class HelperSetProvider extends ServiceProvider
     protected $provides = [
         Services::HELPERSET,
         Services::HELPERSET_QUESTION,
-        Services::HELPERSET_CONFIG,
     ];
 
     /**
@@ -48,14 +46,11 @@ class HelperSetProvider extends ServiceProvider
         $container->singleton(Services::HELPERSET, function () use ($container) {
             $helperSet = new HelperSet();
             $helperSet->set($container->get(Services::HELPERSET_QUESTION), 'question');
-            $helperSet->set($container->get(Services::HELPERSET_CONFIG));
 
             return $helperSet;
         })
             ->withArgument(Services::CONFIG);
 
         $container->add(Services::HELPERSET_QUESTION, QuestionHelper::class);
-        $container->add(Services::HELPERSET_CONFIG, ConfigHelper::class)
-            ->withArgument(Services::CONFIG);
     }
 }

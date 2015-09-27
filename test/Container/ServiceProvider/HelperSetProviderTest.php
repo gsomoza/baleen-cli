@@ -41,20 +41,10 @@ class HelperSetProviderTest extends ServiceProviderTestCase
         $this->container->shouldReceive('withArgument')->with(Services::CONFIG)->once();
         $this->container->shouldReceive('add')->with(Services::HELPERSET_QUESTION, QuestionHelper::class)->once();
 
-        $configHelperExpectation = m::mock();
-        $configHelperExpectation->shouldReceive('withArgument')->with(Services::CONFIG)->once();
-        $this->container
-            ->shouldReceive('add')
-            ->with(Services::HELPERSET_CONFIG, ConfigHelper::class)
-            ->once()
-            ->andReturn($configHelperExpectation);
-
         $this->setInstance(m::mock(HelperSetProvider::class)->makePartial());
 
         $this->container->shouldReceive('get')->with(Services::HELPERSET_QUESTION)
             ->andReturn(new QuestionHelper());
-        $this->container->shouldReceive('get')->with(Services::HELPERSET_CONFIG)
-            ->andReturn(new ConfigHelper(m::mock(Config::class)));
 
         $this->assertSingletonProvided(
             Services::HELPERSET,
