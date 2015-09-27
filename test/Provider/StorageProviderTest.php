@@ -17,9 +17,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
-use Baleen\Baleen\Container\ServiceProvider\StorageProviderTest;
+use BaleenTest\Cli\Provider\StorageProviderTest;
 
 /**
  * Override PHP's native "touch" function under the target namespace.
@@ -34,13 +34,12 @@ function touch() {
     return $result;
 }
 
-namespace Baleen\Baleen\Container\ServiceProvider;
+namespace BaleenTest\Cli\Provider;
 
-use Baleen\Cli\Container\ServiceProvider\StorageProvider;
-use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Provider\Services;
+use Baleen\Cli\Provider\StorageProvider;
 use Baleen\Migrations\Storage\StorageInterface;
-use BaleenTest\Cli\Container\ServiceProvider\ServiceProviderTestCase;
 use Mockery as m;
 
 /**

@@ -17,12 +17,12 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Cli\Container\ServiceProvider;
+namespace BaleenTest\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
-use Baleen\Cli\Container\ServiceProvider\ConfigProvider;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\Provider\ConfigProvider;
+use Baleen\Cli\Provider\Services;
 use Mockery as m;
 
 /**

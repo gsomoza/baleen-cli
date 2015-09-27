@@ -18,9 +18,8 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
-use Baleen\Cli\Container\Services;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline\TimelineFactory;

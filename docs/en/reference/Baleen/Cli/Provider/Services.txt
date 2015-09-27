@@ -1,8 +1,8 @@
---------------------------------
-Baleen\\Cli\\Container\\Services
---------------------------------
+-------------------------------
+Baleen\\Cli\\Provider\\Services
+-------------------------------
 
-.. php:namespace: Baleen\\Cli\\Container
+.. php:namespace: Baleen\\Cli\\Provider
 
 .. php:interface:: Services
 

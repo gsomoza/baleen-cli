@@ -46,8 +46,8 @@ if (!$composerAutoloader = $findAutoloader()) {
 }
 
 use Baleen\Cli\Application;
-use Baleen\Cli\Container\ServiceProvider\ConfigProvider;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\Provider\ConfigProvider;
+use Baleen\Cli\Provider\Services;
 use League\Container\Container;
 
 if (!defined('MIGRATIONS_EXECUTABLE')) {

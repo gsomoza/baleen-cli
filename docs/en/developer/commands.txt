@@ -1,7 +1,7 @@
 Commands
 ========
 
-.. php:namespace:: Baleen\Cli\Container
+.. php:namespace:: Baleen\Cli\Provider
 
 Service Name: :php:const:`Services::COMMANDS`
 
@@ -37,8 +37,6 @@ Since we're using a CommandBus library, we decided to disambiguate the meaning o
 
 Customizing Commands
 --------------------
-
-.. php:namespace:: Baleen\Cli\Container\ServiceProvider
 
 The list of available commands is configured and provided by :php:class:`CommandsProvider`. The ``CommandsProvider``
 provides an easy and flexible way to customize them:

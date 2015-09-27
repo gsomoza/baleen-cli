@@ -17,12 +17,10 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Cli\Container\ServiceProvider;
+namespace BaleenTest\Cli\Provider;
 
-use Baleen\Cli\Config\Config;
-use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;
-use Baleen\Cli\Container\Services;
 use Baleen\Cli\Helper\ConfigHelper;
+use Baleen\Cli\Provider\Services;
 use Mockery as m;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -41,7 +39,7 @@ class HelperSetProviderTest extends ServiceProviderTestCase
         $this->container->shouldReceive('withArgument')->with(Services::CONFIG)->once();
         $this->container->shouldReceive('add')->with(Services::HELPERSET_QUESTION, QuestionHelper::class)->once();
 
-        $this->setInstance(m::mock(HelperSetProvider::class)->makePartial());
+        $this->setInstance(m::mock(\Baleen\Cli\Provider\HelperSetProvider::class)->makePartial());
 
         $this->container->shouldReceive('get')->with(Services::HELPERSET_QUESTION)
             ->andReturn(new QuestionHelper());

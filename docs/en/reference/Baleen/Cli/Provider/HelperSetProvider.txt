@@ -1,0 +1,15 @@
+----------------------------------------
+Baleen\\Cli\\Provider\\HelperSetProvider
+----------------------------------------
+
+.. php:namespace: Baleen\\Cli\\Provider
+
+.. php:class:: HelperSetProvider
+
+    Class HelperSetProvider.
+
+    .. php:attr:: provides
+
+        protected
+
+    .. php:method:: register()

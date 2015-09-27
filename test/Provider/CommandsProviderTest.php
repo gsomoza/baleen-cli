@@ -17,17 +17,14 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Cli\Container\ServiceProvider;
+namespace BaleenTest\Cli\Provider;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Config\InitMessage;
-use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
-use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\Provider\Services;
 use League\Container\Container;
 use League\Tactician\CommandBus;
 use Mockery as m;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class CommandsProviderTest
@@ -40,7 +37,7 @@ class CommandsProviderTest extends ServiceProviderTestCase
      */
     public function testRegister()
     {
-        $this->setInstance(m::mock(CommandsProvider::class)->makePartial());
+        $this->setInstance(m::mock(\Baleen\Cli\Provider\CommandsProvider::class)->makePartial());
         $container = $this->getContainer();
 
         $defaultCommands = [

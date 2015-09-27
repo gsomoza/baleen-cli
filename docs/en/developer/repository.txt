@@ -1,8 +1,6 @@
 Repository
 ==========
 
-.. php:namespace:: Baleen\Cli\Container
-
 Service Name: :php:const:`Services::REPOSITORY`
 
 The repository service must implement ``Baleen\Migrations\Repository\RepositoryInterface``, and we recommend that it

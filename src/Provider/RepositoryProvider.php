@@ -18,10 +18,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
-use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;

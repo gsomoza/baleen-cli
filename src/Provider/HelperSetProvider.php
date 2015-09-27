@@ -18,23 +18,22 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
-use Baleen\Cli\Config\Config;
-use Baleen\Cli\Container\Services;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Storage\FileStorage;
 use League\Container\ServiceProvider;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\QuestionHelper;
 
 /**
- * Class StorageProvider.
+ * Class HelperSetProvider.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class StorageProvider extends ServiceProvider
+class HelperSetProvider extends ServiceProvider
 {
     protected $provides = [
-        Services::STORAGE,
+        Services::HELPERSET,
+        Services::HELPERSET_QUESTION,
     ];
 
     /**
@@ -43,18 +42,14 @@ class StorageProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(Services::STORAGE, function (Config $config) {
-            $storageFile = $config->getStorageFilePath();
-            $result = touch($storageFile);
-            if (!$result) {
-                throw new CliException(sprintf(
-                    'Could not write storage file "%s".',
-                    $config->getStorageFile()
-                ));
-            }
+        $container->singleton(Services::HELPERSET, function () use ($container) {
+            $helperSet = new HelperSet();
+            $helperSet->set($container->get(Services::HELPERSET_QUESTION), 'question');
 
-            return new FileStorage($storageFile);
+            return $helperSet;
         })
             ->withArgument(Services::CONFIG);
+
+        $container->add(Services::HELPERSET_QUESTION, QuestionHelper::class);
     }
 }

@@ -1,7 +1,7 @@
-Helper Set
+HelperSet
 ==========
 
-.. php:namespace:: Baleen\Cli\Container
+.. php:namespace:: Baleen\Cli\Provider
 
 Service Name: :php:const:`Services::HELPERSET`
 

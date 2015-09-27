@@ -19,11 +19,11 @@
 
 return [
     'providers' => [
-        'application' => \Baleen\Cli\Container\ServiceProvider\ApplicationProvider::class,
-        'storage' => \Baleen\Cli\Container\ServiceProvider\StorageProvider::class,
-        'repository' => \Baleen\Cli\Container\ServiceProvider\RepositoryProvider::class,
-        'timeline' => \Baleen\Cli\Container\ServiceProvider\TimelineProvider::class,
-        'helperSet' => \Baleen\Cli\Container\ServiceProvider\HelperSetProvider::class,
-        'commands' => \Baleen\Cli\Container\ServiceProvider\CommandsProvider::class,
+        'application' => \Baleen\Cli\Provider\ApplicationProvider::class,
+        'storage' => \Baleen\Cli\Provider\StorageProvider::class,
+        'repository' => \Baleen\Cli\Provider\RepositoryProvider::class,
+        'timeline' => \Baleen\Cli\Provider\TimelineProvider::class,
+        'helperSet' => \Baleen\Cli\Provider\HelperSetProvider::class,
+        'commands' => \Baleen\Cli\Provider\CommandsProvider::class,
     ],
 ];

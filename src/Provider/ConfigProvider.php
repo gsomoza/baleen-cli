@@ -18,11 +18,10 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
-use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;

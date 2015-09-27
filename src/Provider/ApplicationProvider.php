@@ -18,7 +18,7 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\CommandBus\AbstractMessage;
@@ -27,7 +27,6 @@ use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
-use Baleen\Cli\Container\Services;
 use League\Container\ServiceProvider;
 
 /**

@@ -21,7 +21,7 @@
 namespace Baleen\Cli;
 
 use Baleen\Cli\CommandBus\MessageInterface;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\Provider\Services;
 use Baleen\Migrations\Exception\InvalidArgumentException;
 use League\Container\Container;
 use League\Container\ContainerInterface;

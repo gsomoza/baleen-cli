@@ -18,7 +18,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Container;
+namespace Baleen\Cli\Provider;
 
 /**
  * This interface contains constants for the names of services in the Service Container. Its useful in order to:

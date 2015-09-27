@@ -22,9 +22,9 @@
  *
  * @return int
  */
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
-use BaleenTest\Cli\Container\ServiceProvider\RepositoryProviderTest;
+use BaleenTest\Cli\Provider\RepositoryProviderTest;
 
 function mkdir()
 {
@@ -35,11 +35,10 @@ function mkdir()
     return $mkDirResult;
 }
 
-namespace BaleenTest\Cli\Container\ServiceProvider;
+namespace BaleenTest\Cli\Provider;
 
-use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
-use Baleen\Cli\Container\Services;
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Provider\Services;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Composer\Autoload\ClassLoader;
@@ -68,7 +67,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $autoloaderMock->shouldReceive('addPsr4')->with(__NAMESPACE__ . '\\', __DIR__);
         $this->autoloader = $autoloaderMock;
 
-        $this->setInstance(m::mock(RepositoryProvider::class)->makePartial());
+        $this->setInstance(m::mock(\Baleen\Cli\Provider\RepositoryProvider::class)->makePartial());
 
         $this->getContainer()
             ->shouldReceive('get')

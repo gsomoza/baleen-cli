@@ -18,28 +18,27 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\Container\ServiceProvider;
+namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\BaseCommand;
-use Baleen\Cli\CommandBus\Config\InitMessage;
 use Baleen\Cli\CommandBus\Config\InitHandler;
+use Baleen\Cli\CommandBus\Config\InitMessage;
 use Baleen\Cli\CommandBus\Config\StatusHandler;
 use Baleen\Cli\CommandBus\Config\StatusMessage;
 use Baleen\Cli\CommandBus\Factory\DefaultFactory;
 use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
-use Baleen\Cli\CommandBus\Repository\CreateMessage;
 use Baleen\Cli\CommandBus\Repository\CreateHandler;
-use Baleen\Cli\CommandBus\Repository\LatestMessage as RepositoryLatestCommand;
+use Baleen\Cli\CommandBus\Repository\CreateMessage;
 use Baleen\Cli\CommandBus\Repository\LatestHandler as RepositoryLatestHandler;
-use Baleen\Cli\CommandBus\Repository\ListMessage;
+use Baleen\Cli\CommandBus\Repository\LatestMessage as RepositoryLatestCommand;
 use Baleen\Cli\CommandBus\Repository\ListHandler;
-use Baleen\Cli\CommandBus\Storage\LatestMessage as StorageLatestCommand;
+use Baleen\Cli\CommandBus\Repository\ListMessage;
 use Baleen\Cli\CommandBus\Storage\LatestHandler as StorageLatestHandler;
-use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
+use Baleen\Cli\CommandBus\Storage\LatestMessage as StorageLatestCommand;
 use Baleen\Cli\CommandBus\Timeline\ExecuteHandler;
-use Baleen\Cli\CommandBus\Timeline\MigrateMessage;
+use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
 use Baleen\Cli\CommandBus\Timeline\MigrateHandler;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\CommandBus\Timeline\MigrateMessage;
 use Baleen\Cli\Exception\CliException;
 use League\Container\Container;
 use League\Container\ContainerInterface;

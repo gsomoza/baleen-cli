@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace BaleenTest\Cli\Container\ServiceProvider;
+namespace BaleenTest\Cli\Provider;
 
 use Baleen\Cli\Application;
 use Baleen\Cli\CommandBus\AbstractMessage;
@@ -26,8 +26,7 @@ use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
-use Baleen\Cli\Container\ServiceProvider\ApplicationProvider;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\Provider\Services;
 use Mockery as m;
 use Symfony\Component\Console\Helper\HelperSet;
 
@@ -43,7 +42,7 @@ class ApplicationProviderTest extends ServiceProviderTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->setInstance(m::mock(ApplicationProvider::class)->makePartial());
+        $this->setInstance(m::mock(\Baleen\Cli\Provider\ApplicationProvider::class)->makePartial());
     }
 
     /**

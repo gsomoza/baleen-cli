@@ -1,8 +1,8 @@
--------------------------------------------------------
-Baleen\\Cli\\Container\\ServiceProvider\\ConfigProvider
--------------------------------------------------------
+-------------------------------------
+Baleen\\Cli\\Provider\\ConfigProvider
+-------------------------------------
 
-.. php:namespace: Baleen\\Cli\\Container\\ServiceProvider
+.. php:namespace: Baleen\\Cli\\Provider
 
 .. php:class:: ConfigProvider
 
