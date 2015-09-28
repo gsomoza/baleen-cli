@@ -1,0 +1,66 @@
+------------------------
+Baleen\\Cli\\BaseCommand
+------------------------
+
+.. php:namespace: Baleen\\Cli
+
+.. php:class:: BaseCommand
+
+    The base Command class used to build all the command definitions for the Application.
+
+    .. php:attr:: container
+
+        protected Container
+
+    .. php:attr:: commandBus
+
+        protected CommandBus
+
+        A reference to the CommandBus in charge of handling Messages.
+
+    .. php:attr:: serviceAlias
+
+        protected string
+
+    .. php:attr:: serviceClass
+
+        protected string
+
+    .. php:method:: __construct(ContainerInterface $container, $serviceAlias, $serviceClass)
+
+        :type $container: ContainerInterface
+        :param $container: A reference to the Application's Container.
+        :type $serviceAlias: string
+        :param $serviceAlias: The key in the Container for the command that the instance of this class represents.
+        :type $serviceClass: string
+        :param $serviceClass: Needed in order to run certain checks against the class before instantiating it with the container. This helps us make those checks without triggering all the other services through the Container's DI functionality.
+
+    .. php:method:: getContainer()
+
+        :returns: Container
+
+    .. php:method:: getCommandBus()
+
+        getCommandBus.
+
+        :returns: CommandBus
+
+    .. php:method:: execute(InputInterface $input, OutputInterface $output)
+
+        Executes the current command by retrieving its associated Message from the
+        Container, setting the Input and
+        Output according to what was received as parameters, and finally passing
+        that Message to the CommandBus for
+        handling.
+
+        :type $input: InputInterface
+        :param $input: An InputInterface instance
+        :type $output: OutputInterface
+        :param $output: An OutputInterface instance
+        :returns: int|null null or 0 if everything went fine, or an error code
+
+    .. php:method:: configure()
+
+        Calls the message's static "configure" public function passing $this as
+        argument to allow the message to
+        configure the command.

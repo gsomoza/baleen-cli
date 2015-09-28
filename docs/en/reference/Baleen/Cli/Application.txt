@@ -1,0 +1,33 @@
+------------------------
+Baleen\\Cli\\Application
+------------------------
+
+.. php:namespace: Baleen\\Cli
+
+.. php:class:: Application
+
+    The entry point to Baleen CLI's commands.
+
+    .. php:const:: VERSION
+
+        Version to show in the help / usage message.
+
+    .. php:attr:: container
+
+        protected Container
+
+        The League\Container instance used by Baleen CLI.
+
+    .. php:method:: __construct($commands, HelperSet $helperSet)
+
+        :type $commands: \Symfony\Component\Console\Command\Command[]
+        :param $commands: Array of Commands available for the Application.
+        :type $helperSet: HelperSet
+        :param $helperSet:
+
+    .. php:method:: init($commands, HelperSet $helperSet)
+
+        :type $commands: \Symfony\Component\Console\Command\Command[]
+        :param $commands:
+        :type $helperSet: HelperSet
+        :param $helperSet:

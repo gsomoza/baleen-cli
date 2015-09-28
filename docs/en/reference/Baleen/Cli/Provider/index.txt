@@ -1,0 +1,16 @@
+'''''''''''''''''''''
+Baleen\\Cli\\Provider
+'''''''''''''''''''''
+
+.. php:namespace: Baleen\\Cli\\Provider
+
+.. toctree::
+
+   ApplicationProvider
+   CommandsProvider
+   ConfigProvider
+   HelperSetProvider
+   RepositoryProvider
+   Services
+   StorageProvider
+   TimelineProvider

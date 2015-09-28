@@ -1,0 +1,16 @@
+"""""""""""""""""""""""""""""""""""
+Baleen\\Cli\\CommandBus\\Repository
+"""""""""""""""""""""""""""""""""""
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Repository
+
+.. toctree::
+
+   AbstractRepositoryListHandler
+   AbstractRepositoryMessage
+   CreateHandler
+   CreateMessage
+   LatestHandler
+   LatestMessage
+   ListHandler
+   ListMessage

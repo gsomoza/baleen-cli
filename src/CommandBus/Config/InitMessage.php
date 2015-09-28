@@ -20,13 +20,10 @@
 
 namespace Baleen\Cli\CommandBus\Config;
 
-use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\ConfigStorageAwareTrait;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * Class InitMessage.
+ * Message class for the config:init command.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */

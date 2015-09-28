@@ -1,0 +1,75 @@
+------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Config\\AbstractConfigMessage
+------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Config
+
+.. php:class:: AbstractConfigMessage
+
+    Shared functionality for all configuration-related Messages.
+
+    .. php:attr:: configStorage
+
+        protected ConfigStorage
+
+    .. php:attr:: config
+
+        protected ConfigInterface
+
+    .. php:attr:: input
+
+        protected InputInterface
+
+    .. php:attr:: output
+
+        protected OutputInterface
+
+    .. php:attr:: cliCommand
+
+        protected Command
+
+    .. php:method:: getConfigStorage()
+
+        :returns: ConfigStorage
+
+    .. php:method:: setConfigStorage(ConfigStorage $configStorage)
+
+        :type $configStorage: ConfigStorage
+        :param $configStorage:
+
+    .. php:method:: getConfig()
+
+    .. php:method:: setConfig(ConfigInterface $config)
+
+        :type $config: ConfigInterface
+        :param $config:
+
+    .. php:method:: getInput()
+
+    .. php:method:: setInput(InputInterface $input)
+
+        :type $input: InputInterface
+        :param $input:
+
+    .. php:method:: getOutput()
+
+    .. php:method:: setOutput(OutputInterface $output)
+
+        :type $output: OutputInterface
+        :param $output:
+
+    .. php:method:: getCliCommand()
+
+        :returns: Command
+
+    .. php:method:: setCliCommand(Command $cliCommand)
+
+        :type $cliCommand: Command
+        :param $cliCommand:
+
+    .. php:method:: configure(Command $command)
+
+        Configures a console command by setting name, description, arguments, etc.
+
+        :type $command: Command
+        :param $command:

@@ -1,0 +1,20 @@
+-------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\TimelineAwareTrait
+-------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:trait:: TimelineAwareTrait
+
+    .. php:attr:: timeline
+
+        protected Timeline
+
+    .. php:method:: getTimeline()
+
+        :returns: Timeline
+
+    .. php:method:: setTimeline(Timeline $timeline)
+
+        :type $timeline: Timeline
+        :param $timeline:

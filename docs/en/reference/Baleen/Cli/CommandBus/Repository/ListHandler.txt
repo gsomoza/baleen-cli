@@ -1,0 +1,32 @@
+------------------------------------------------
+Baleen\\Cli\\CommandBus\\Repository\\ListHandler
+------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Repository
+
+.. php:class:: ListHandler
+
+    Class ListHandler.
+
+    .. php:method:: handle(ListMessage $command)
+
+        handle.
+
+        :type $command: ListMessage
+        :param $command:
+
+    .. php:method:: outputVersions(LinkedVersions $versions, OutputInterface $output)
+
+        :type $versions: LinkedVersions
+        :param $versions:
+        :type $output: OutputInterface
+        :param $output:
+
+    .. php:method:: getCollection(RepositoryInterface $repository, $comparator = null)
+
+        getCollection.
+
+        :type $repository: RepositoryInterface
+        :param $repository:
+        :param $comparator:
+        :returns: LinkedVersions

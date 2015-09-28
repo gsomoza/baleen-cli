@@ -20,12 +20,12 @@
 namespace BaleenTest\Cli\Config;
 
 use Baleen\Cli\Config\Config;
-use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
-use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;
-use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
-use Baleen\Cli\Container\ServiceProvider\StorageProvider;
-use Baleen\Cli\Container\ServiceProvider\TimelineProvider;
+use Baleen\Cli\Provider\ApplicationProvider;
+use Baleen\Cli\Provider\CommandsProvider;
+use Baleen\Cli\Provider\HelperSetProvider;
+use Baleen\Cli\Provider\RepositoryProvider;
+use Baleen\Cli\Provider\StorageProvider;
+use Baleen\Cli\Provider\TimelineProvider;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -45,7 +45,7 @@ class ConfigTest extends BaseTestCase
         $conf = new Config();
         $expected = [
             'providers' => [
-                'application' => DefaultProvider::class,
+                'application' => ApplicationProvider::class,
                 'storage' => StorageProvider::class,
                 'repository' => RepositoryProvider::class,
                 'timeline' => TimelineProvider::class,
@@ -84,12 +84,12 @@ class ConfigTest extends BaseTestCase
     {
         $defaultConfig = [
             'providers' => [
-                'application' => 'Baleen\Cli\Container\ServiceProvider\DefaultProvider',
-                'storage' => 'Baleen\Cli\Container\ServiceProvider\StorageProvider',
-                'repository' => 'Baleen\Cli\Container\ServiceProvider\RepositoryProvider',
-                'timeline' => 'Baleen\Cli\Container\ServiceProvider\TimelineProvider',
-                'helperSet' => 'Baleen\Cli\Container\ServiceProvider\HelperSetProvider',
-                'commands' => 'Baleen\Cli\Container\ServiceProvider\CommandsProvider',
+                'application' => 'Baleen\Cli\Provider\ApplicationProvider',
+                'storage' => 'Baleen\Cli\Provider\StorageProvider',
+                'repository' => 'Baleen\Cli\Provider\RepositoryProvider',
+                'timeline' => 'Baleen\Cli\Provider\TimelineProvider',
+                'helperSet' => 'Baleen\Cli\Provider\HelperSetProvider',
+                'commands' => 'Baleen\Cli\Provider\CommandsProvider',
             ],
             'migrations' => [
                 'directory' => 'migrations',

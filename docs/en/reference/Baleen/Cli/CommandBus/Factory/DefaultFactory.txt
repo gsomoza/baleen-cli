@@ -1,0 +1,16 @@
+------------------------------------------------
+Baleen\\Cli\\CommandBus\\Factory\\DefaultFactory
+------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Factory
+
+.. php:class:: DefaultFactory
+
+    Class DefaultFactory
+
+    .. php:method:: create($class)
+
+        create
+
+        :param $class:
+        :returns: AbstractMessage

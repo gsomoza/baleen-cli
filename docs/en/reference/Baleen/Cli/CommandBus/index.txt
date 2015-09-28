@@ -1,0 +1,16 @@
+'''''''''''''''''''''''
+Baleen\\Cli\\CommandBus
+'''''''''''''''''''''''
+
+.. php:namespace: Baleen\\Cli\\CommandBus
+
+.. toctree::
+
+   AbstractMessage
+   Config/index
+   Factory/index
+   MessageInterface
+   Repository/index
+   Storage/index
+   Timeline/index
+   Util/index

@@ -1,0 +1,63 @@
+----------------------------------
+Baleen\\Cli\\Config\\ConfigStorage
+----------------------------------
+
+.. php:namespace: Baleen\\Cli\\Config
+
+.. php:class:: ConfigStorage
+
+    Class ConfigStorage.
+
+    .. php:attr:: projectFileSystem
+
+        protected FilesystemInterface
+
+    .. php:attr:: localConfigStack
+
+        protected array
+
+    .. php:attr:: processor
+
+        protected Processor
+
+    .. php:attr:: configClass
+
+        protected string
+
+    .. php:attr:: definition
+
+        protected ConfigurationInterface
+
+    .. php:attr:: defaultFileName
+
+        protected string
+
+    .. php:method:: __construct($configClass, FilesystemInterface $projectFileSystem, $localConfigStack = [])
+
+        ConfigStorage constructor.
+
+        :param $configClass:
+        :type $projectFileSystem: FilesystemInterface
+        :param $projectFileSystem:
+        :param $localConfigStack:
+
+    .. php:method:: load($configFileName = null)
+
+        :type $configFileName: string
+        :param $configFileName: The path to the consumer's config file (eg .baleen.yml) relative to the project filesystem
+        :returns: Config
+
+    .. php:method:: write(ConfigInterface $config)
+
+        :type $config: ConfigInterface
+        :param $config:
+        :returns: bool
+
+    .. php:method:: isInitialized(ConfigInterface $config)
+
+        Returns whether the specified configuration has an existing user-facing
+        config file.
+
+        :type $config: ConfigInterface
+        :param $config:
+        :returns: bool

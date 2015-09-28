@@ -20,12 +20,12 @@
 
 namespace Baleen\Cli\Config;
 
-use Baleen\Cli\Container\ServiceProvider\CommandsProvider;
-use Baleen\Cli\Container\ServiceProvider\DefaultProvider;
-use Baleen\Cli\Container\ServiceProvider\HelperSetProvider;
-use Baleen\Cli\Container\ServiceProvider\RepositoryProvider;
-use Baleen\Cli\Container\ServiceProvider\StorageProvider;
-use Baleen\Cli\Container\ServiceProvider\TimelineProvider;
+use Baleen\Cli\Provider\ApplicationProvider;
+use Baleen\Cli\Provider\CommandsProvider;
+use Baleen\Cli\Provider\HelperSetProvider;
+use Baleen\Cli\Provider\RepositoryProvider;
+use Baleen\Cli\Provider\StorageProvider;
+use Baleen\Cli\Provider\TimelineProvider;
 use Symfony\Component\Config\Definition\Processor;
 
 /**
@@ -105,7 +105,7 @@ class Config implements ConfigInterface
     protected function getProviderDefaults()
     {
         return [
-            'application' => DefaultProvider::class,
+            'application' => ApplicationProvider::class,
             'storage' => StorageProvider::class,
             'repository' => RepositoryProvider::class,
             'timeline' => TimelineProvider::class,

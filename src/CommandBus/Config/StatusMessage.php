@@ -28,7 +28,8 @@ use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * Class StatusMessage
+ * Message class for the config:status command.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 class StatusMessage extends AbstractConfigMessage implements

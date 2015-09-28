@@ -21,7 +21,7 @@
 namespace Baleen\Cli;
 
 use Baleen\Cli\CommandBus\MessageInterface;
-use Baleen\Cli\Container\Services;
+use Baleen\Cli\Provider\Services;
 use Baleen\Migrations\Exception\InvalidArgumentException;
 use League\Container\Container;
 use League\Container\ContainerInterface;
@@ -31,7 +31,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class AbstractMessage.
+ * The base Command class used to build all the command definitions for the Application.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
@@ -40,7 +40,11 @@ class BaseCommand extends Command
     /** @var Container */
     protected $container;
 
-    /** @var CommandBus */
+    /**
+     * A reference to the CommandBus in charge of handling Messages.
+     *
+     * @var CommandBus
+     */
     protected $commandBus;
 
     /** @var string */
@@ -50,9 +54,13 @@ class BaseCommand extends Command
     protected $serviceClass;
 
     /**
-     * @param ContainerInterface $container
-     * @param $serviceAlias
-     * @param $serviceClass
+     * @param ContainerInterface $container A reference to the Application's Container.
+     *
+     * @param string $serviceAlias The key in the Container for the command that the instance of this class represents.
+     *
+     * @param string $serviceClass Needed in order to run certain checks against the class before instantiating it
+     *                             with the container. This helps us make those checks without triggering all the other
+     *                             services through the Container's DI functionality.
      *
      * @throws InvalidArgumentException
      */
@@ -102,7 +110,16 @@ class BaseCommand extends Command
     }
 
     /**
-     * @inheritDoc
+     * Executes the current command by retrieving its associated Message from the Container, setting the Input and
+     * Output according to what was received as parameters, and finally passing that Message to the CommandBus for
+     * handling.
+     *
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     *
+     * @return int|null null or 0 if everything went fine, or an error code
+     *
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

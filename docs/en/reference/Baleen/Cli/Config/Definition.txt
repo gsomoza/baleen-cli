@@ -1,0 +1,23 @@
+-------------------------------
+Baleen\\Cli\\Config\\Definition
+-------------------------------
+
+.. php:namespace: Baleen\\Cli\\Config
+
+.. php:class:: Definition
+
+    Class Definition.
+
+    .. php:method:: getConfigTreeBuilder()
+
+    .. php:method:: addMigrationsNode()
+
+        addMigrationsNode.
+
+        :returns: \Symfony\Component\Config\Definition\Builder\NodeDefinition
+
+    .. php:method:: addStorageNode()
+
+        addStorageNode.
+
+        :returns: \Symfony\Component\Config\Definition\Builder\NodeDefinition

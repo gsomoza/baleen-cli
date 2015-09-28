@@ -1,0 +1,77 @@
+Commands
+========
+
+.. php:namespace:: Baleen\Cli\Provider
+
+Service Name: :php:const:`Services::COMMANDS`
+
+Symfony Console's commands are each of the actions that can be executed by an end-user of the migrations library.
+However we took a slightly different approach with commands than usual:
+
+Commands vs Messages & Handlers
+-------------------------------
+
+One of the things that we found annoying in other migration libraries is that almost everything had to be configured
+before you could even execute a basic library command in the console. For example, in some libraries you can't even
+get help about available commands without first configuring your database connection - which usually doesn't make much
+sense.
+
+In order to solve that issue Baleen CLI decouples the Command definition from its execution (this might in fact be a
+good feature for future Symfony\Console versions). This decoupling is facilitated by :php:ns:`League\\Tactician`
+together with :php:ns:`League\\Container` to gather application dependencies ONLY once they're actually needed. This
+allows end-users to query the help for your executable without having to configure a database connection, because the
+database connection will only be instantiated when its ACTUALLY needed.
+
+.. tip::
+
+    All of this happens behind the scenes so you don't have to worry about it. Refer to the :php:class:`BaseCommand`
+    class for more information.
+
+Since we're using a CommandBus library, we decided to disambiguate the meaning of Command as follows:
+
+  * Whenever we refer to Commands we mean :php:ns:`Symfony\\Console` commands, and we'll mark them with **bold**. E.g.
+    **status**, or **migrate**.
+  * But whenever we refer to Messages, we refer to a "command message" from the CommandBus pattern. These messages are
+    classes whose name ends with "Message", e.g. "StatusMessage" or "MigrateMessage" - which correspond to the example
+    commands on the previous item (they provide the command definition to ``Symfony\\Console``).
+
+Customizing Commands
+--------------------
+
+The list of available commands is configured and provided by :php:class:`CommandsProvider`. The ``CommandsProvider``
+provides an easy and flexible way to customize them:
+
+1. Create your own commands provider class (you can name it whatever you want).
+2. Have it extend :php:class:`CommandsProvider`.
+3. Add a public constructor and use it to customize the contents of the ``$commands`` protected property. E.g.:
+
+    .. code-block:: php
+
+        /**
+         * Example from Doctrine Migrations
+         * __construct
+         */
+        public function __construct()
+        {
+            // custom message and custom handler
+            $this->commands[Services::CMD_REPOSITORY_CREATE] = [
+                'message' => CreateMessage::class,
+                'handler' => CreateHandler::class,
+            ];
+
+            // customize message only - use default handler
+            $this->commands[Services::CMD_TIMELINE_EXECUTE]['message'] = ExecuteMessage::class;
+
+            // custom message and custom handler
+            $this->commands[Services::CMD_TIMELINE_MIGRATE] = [
+                'message' => MigrateMessage::class,
+                'handler' => MigrateHandler::class,
+            ];
+            BaseCommandsProvider::__construct();
+        }
+
+4. Overwrite the default commands provider by supplying a reference to your own inside :file:`config/providers.php`.
+
+In other words, adding or modifying commands is as simple as extending the default ``CommandsProvider`` and customizing
+the ``$commands`` property to point to the correct messages and handlers. The base ``CommandsProvider`` will do the rest
+of the work for you.

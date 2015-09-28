@@ -1,0 +1,20 @@
+------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\StorageAwareTrait
+------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:trait:: StorageAwareTrait
+
+    .. php:attr:: storage
+
+        protected StorageInterface
+
+    .. php:method:: getStorage()
+
+        :returns: StorageInterface
+
+    .. php:method:: setStorage(StorageInterface $storage = null)
+
+        :type $storage: StorageInterface
+        :param $storage:

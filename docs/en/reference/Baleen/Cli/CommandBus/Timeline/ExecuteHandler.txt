@@ -1,0 +1,14 @@
+-------------------------------------------------
+Baleen\\Cli\\CommandBus\\Timeline\\ExecuteHandler
+-------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Timeline
+
+.. php:class:: ExecuteHandler
+
+    Class ExecuteHandler.
+
+    .. php:method:: handle(ExecuteMessage $command)
+
+        :type $command: ExecuteMessage
+        :param $command:

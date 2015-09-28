@@ -1,0 +1,20 @@
+Comparator
+==========
+
+.. php:namespace:: Baleen\Cli\Provider
+
+Service Name: :php:const:`Services::COMPARATOR`
+
+The comparator is simply an invokable class that receives two Versions as arguments by implementing
+``Baleen\Migrations\Version\Comparator\ComparatorInterface``. The reason its a class is that we preferred to make sure
+we had control over the comparator's signature - if we had accepted closures we would have forced implementations to
+make many unnecessary argument type-checks.
+
+When invoked, the comparator must return an integer less than, equal to, or greater than 0 (zero) in order to indicate
+if the first version is earlier than, equal to, or later than the second version (respectively). By earlier/later we
+refer to the order in which the versions should be executed.
+
+The Comparator service is used at different points in the domain logic so its useful to have it as a service.
+
+The default comparator used by Baleen CLI is an instance of ``Baleen\Migrations\Version\Comparator\DefaultComparator``.
+The service is registered by default in the :php:class:`TimelineProvider`.

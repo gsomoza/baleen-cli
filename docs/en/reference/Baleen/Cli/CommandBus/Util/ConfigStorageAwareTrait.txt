@@ -1,0 +1,22 @@
+------------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\ConfigStorageAwareTrait
+------------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:trait:: ConfigStorageAwareTrait
+
+    Class ConfigStorageAwareTrait.
+
+    .. php:attr:: configStorage
+
+        protected ConfigStorage
+
+    .. php:method:: getConfigStorage()
+
+        :returns: ConfigStorage
+
+    .. php:method:: setConfigStorage(ConfigStorage $configStorage)
+
+        :type $configStorage: ConfigStorage
+        :param $configStorage:

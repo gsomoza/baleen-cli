@@ -1,0 +1,68 @@
+-----------------------------------------
+Baleen\\Cli\\CommandBus\\MessageInterface
+-----------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus
+
+.. php:interface:: MessageInterface
+
+    Interface MessageInterface.
+
+    .. php:method:: configure(Command $command)
+
+        Configures a console command by setting name, description, arguments, etc.
+
+        :type $command: Command
+        :param $command:
+
+    .. php:method:: getConfig()
+
+        getConfig.
+
+        :returns: ConfigInterface
+
+    .. php:method:: setConfig(ConfigInterface $config)
+
+        setConfig.
+
+        :type $config: ConfigInterface
+        :param $config:
+
+    .. php:method:: getInput()
+
+        getInput.
+
+        :returns: InputInterface
+
+    .. php:method:: setInput(InputInterface $input)
+
+        setInput.
+
+        :type $input: InputInterface
+        :param $input:
+
+    .. php:method:: getOutput()
+
+        getOutput.
+
+        :returns: OutputInterface
+
+    .. php:method:: setOutput(OutputInterface $output)
+
+        setOutput.
+
+        :type $output: OutputInterface
+        :param $output:
+
+    .. php:method:: getCliCommand()
+
+        getCliCommand.
+
+        :returns: Command
+
+    .. php:method:: setCliCommand(Command $command)
+
+        setCliCommand.
+
+        :type $command: Command
+        :param $command:

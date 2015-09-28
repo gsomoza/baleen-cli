@@ -1,0 +1,22 @@
+---------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\FilesystemAwareTrait
+---------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:trait:: FilesystemAwareTrait
+
+    Class FilesystemAwareTrait.
+
+    .. php:attr:: filesystem
+
+        protected Filesystem
+
+    .. php:method:: getFilesystem()
+
+        :returns: Filesystem
+
+    .. php:method:: setFilesystem(Filesystem $filesystem)
+
+        :type $filesystem: Filesystem
+        :param $filesystem:

@@ -1,0 +1,14 @@
+:::::::::::
+Baleen\\Cli
+:::::::::::
+
+.. php:namespace: Baleen\\Cli
+
+.. toctree::
+
+   Application
+   BaseCommand
+   CommandBus/index
+   Config/index
+   Exception/index
+   Provider/index

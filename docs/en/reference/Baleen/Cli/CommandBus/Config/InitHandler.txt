@@ -1,0 +1,18 @@
+--------------------------------------------
+Baleen\\Cli\\CommandBus\\Config\\InitHandler
+--------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Config
+
+.. php:class:: InitHandler
+
+    Handles the config:init command.
+
+    .. php:method:: handle(InitMessage $message)
+
+        Handle an InitMessage. Creates an end-user configuration file using
+        default values. If the file already exists
+        it simply exists without doing anything.
+
+        :type $message: InitMessage
+        :param $message:

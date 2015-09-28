@@ -1,0 +1,20 @@
+---------------------------------------------------
+Baleen\\Cli\\CommandBus\\Util\\ComparatorAwareTrait
+---------------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Util
+
+.. php:trait:: ComparatorAwareTrait
+
+    .. php:attr:: comparator
+
+        protected callable
+
+    .. php:method:: getComparator()
+
+        :returns: callable
+
+    .. php:method:: setComparator($comparator)
+
+        :type $comparator: callable
+        :param $comparator:

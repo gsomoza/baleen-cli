@@ -1,0 +1,10 @@
+""""""""""""""""""""""""""""""""
+Baleen\\Cli\\CommandBus\\Factory
+""""""""""""""""""""""""""""""""
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Factory
+
+.. toctree::
+
+   DefaultFactory
+   MessageFactoryInterface

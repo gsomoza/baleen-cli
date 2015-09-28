@@ -24,7 +24,8 @@ use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\ConfigStorageAwareTrait;
 
 /**
- * Class AbstractConfigMessage
+ * Shared functionality for all configuration-related Messages.
+ *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
 abstract class AbstractConfigMessage extends AbstractMessage implements ConfigStorageAwareInterface

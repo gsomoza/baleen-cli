@@ -1,0 +1,86 @@
+-----------------------------------------------
+Baleen\\Cli\\CommandBus\\Storage\\LatestMessage
+-----------------------------------------------
+
+.. php:namespace: Baleen\\Cli\\CommandBus\\Storage
+
+.. php:class:: LatestMessage
+
+    Class ListMessage.
+
+    .. php:attr:: storage
+
+        protected StorageInterface
+
+    .. php:attr:: comparator
+
+        protected callable
+
+    .. php:attr:: config
+
+        protected ConfigInterface
+
+    .. php:attr:: input
+
+        protected InputInterface
+
+    .. php:attr:: output
+
+        protected OutputInterface
+
+    .. php:attr:: cliCommand
+
+        protected Command
+
+    .. php:method:: configure(Command $command)
+
+        :type $command: Command
+        :param $command:
+
+    .. php:method:: getStorage()
+
+        :returns: StorageInterface
+
+    .. php:method:: setStorage(StorageInterface $storage = null)
+
+        :type $storage: StorageInterface
+        :param $storage:
+
+    .. php:method:: getComparator()
+
+        :returns: callable
+
+    .. php:method:: setComparator($comparator)
+
+        :type $comparator: callable
+        :param $comparator:
+
+    .. php:method:: getConfig()
+
+    .. php:method:: setConfig(ConfigInterface $config)
+
+        :type $config: ConfigInterface
+        :param $config:
+
+    .. php:method:: getInput()
+
+    .. php:method:: setInput(InputInterface $input)
+
+        :type $input: InputInterface
+        :param $input:
+
+    .. php:method:: getOutput()
+
+    .. php:method:: setOutput(OutputInterface $output)
+
+        :type $output: OutputInterface
+        :param $output:
+
+    .. php:method:: getCliCommand()
+
+        :returns: Command
+
+    .. php:method:: setCliCommand(Command $cliCommand)
+
+        :type $cliCommand: Command
+        :param $cliCommand:
