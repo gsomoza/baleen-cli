@@ -4,12 +4,14 @@ Baleen CLI Documentation
 
 Welcome to Baleen CLI's documentation!
 
-Baleen CLI is a command-line wrapper that uses Symfony Console and leverages the power of Baleen Migrations. Its
-primary purpose is to provide out-of-the-box functionality for Baleen Migrations. But thanks to its flexible
-architecture it can also be used as a starting point for your own migrations library.
+Baleen CLI is a command-line wrapper that uses Symfony Console and leverages the power of Baleen Migrations. Its primary
+purpose is to provide out-of-the-box functionality for Baleen Migrations. But thanks to its flexible architecture it can
+also be used as a starting point for your own migrations library.
 
-NOTE: this program is an early release and licensed under the MIT license. Please read the `LICENSE` file attached to
-the source-code before using this program to migrate sensitive data. And of course: always back up your data.
+.. warning::
+    This program is an early release and licensed under the MIT license. Please read the `LICENSE` file attached to
+    the source-code before using this program to migrate sensitive data. And of course: always back up your data before
+    migrating.
 
 Contents:
 

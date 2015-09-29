@@ -3,10 +3,10 @@ Storage
 
 Service Name: ``Services::STORAGE``
 
-The Storage service must implement ``Baleen\Migrations\Storage\StorageInterface``, and we recommend that it additionally
-extends ``Baleen\Migrations\Storage\AbstractStorage``. For more information on how to implement ``StorageInterface``
-please refer to the Baleen Migrations documentation.
+The Storage service must implement :php:interface:`StorageInterface`, and we recommend that it additionally extends
+:php:class:`Baleen\Migrations\Storage\AbstractStorage`. For more information on how to implement
+:php:interface:`StorageInterface` please refer to the Baleen Migrations documentation.
 
-The default Storage service implementation is the ``Baleen\Migrations\Storage\FileStorage`` class, which saves versions
-into a local file. The file's location can be specified using the configuration option "storage.file", and defaults to
+The default Storage service implementation is the :php:class:`FileStorage` class, which saves versions into a local
+file. The file's location can be specified using the configuration option "storage.file", and defaults to
 :file:`.baleen_versions`.

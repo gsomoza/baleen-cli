@@ -31,17 +31,17 @@ Since we're using a CommandBus library, we decided to disambiguate the meaning o
 
   * Whenever we refer to Commands we mean :php:ns:`Symfony\\Console` commands, and we'll mark them with **bold**. E.g.
     **status**, or **migrate**.
-  * But whenever we refer to Messages, we refer to a "command message" from the CommandBus pattern. These messages are
-    classes whose name ends with "Message", e.g. "StatusMessage" or "MigrateMessage" - which correspond to the example
-    commands on the previous item (they provide the command definition to ``Symfony\\Console``).
+  * But whenever we refer to Messages, we refer to a "command message" from the `CommandBus`_ pattern. These messages
+    are classes whose name ends with "Message", e.g. "StatusMessage" or "MigrateMessage" - which correspond to the
+    example commands on the previous item (they provide the command definition to :php:ns:`Symfony\\Console`).
 
 Customizing Commands
 --------------------
 
-The list of available commands is configured and provided by :php:class:`CommandsProvider`. The ``CommandsProvider``
-provides an easy and flexible way to customize them:
+The list of available commands is configured and provided by :php:class:`CommandsProvider`, which also allows for a
+flexible way to customize them:
 
-1. Create your own commands provider class (you can name it whatever you want).
+1. Create your own commands provider class.
 2. Have it extend :php:class:`CommandsProvider`.
 3. Add a public constructor and use it to customize the contents of the ``$commands`` protected property. E.g.:
 
@@ -75,3 +75,5 @@ provides an easy and flexible way to customize them:
 In other words, adding or modifying commands is as simple as extending the default ``CommandsProvider`` and customizing
 the ``$commands`` property to point to the correct messages and handlers. The base ``CommandsProvider`` will do the rest
 of the work for you.
+
+.. _CommandBus: http://php-and-symfony.matthiasnoback.nl/2015/01/responsibilities-of-the-command-bus/

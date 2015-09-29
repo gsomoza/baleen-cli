@@ -1,0 +1,60 @@
+3rd Party Components
+====================
+
+Baleen CLI uses a series of 3rd-party components to power its functionality. Here's a quick overview of the main
+components being used and how. Throughout the rest of the guide we will assume you know how those components work, so we
+recommend reading up on each component's documentation on an as-needed basis.
+
+Main components (used directly by Baleen CLI) listed in alphabetical order. Their dependencies are not included in
+this list unless they're used directly as well.
+
+Baleen\\Migrations
+------------------
+    .. php:namespace:: Baleen\Migrations
+
+    Provides the domain model for migrations. Many of the architectural concepts from that library also apply to Baleen
+    CLI. We recommend reading up on the Baleen Migrations documentation for a better understanding of how this library
+    works. For example, you might want to know what the "Storage" is meant to do.
+
+    `Baleen Migrations on Github <https://github.com/baleen/migrations>`_
+
+League\\Container
+-----------------
+    .. php:namespace:: League\Container
+
+    Allows for easy customization of almost every aspect of the framework.
+
+    `League Container on Github <https://github.com/thephpleague/container>`_
+
+League\\Flysystem
+-----------------
+    .. php:namespace:: League\Flysystem
+
+    A file-system abstraction library. Used e.g. to read/write config files.
+
+    `League Flysystem on Github <https://github.com/thephpleague/flysystem>`_
+
+League\\Tactician
+-----------------
+    .. php:namespace:: League\Tactician
+
+    A simple library that implements the CommandBus pattern. More about it in the :doc:`commands` section.
+
+    `League Tactician on Github <https://github.com/thephpleague/tactician>`_
+
+Symfony\\Config
+---------------
+    .. php:namespace:: Symfony\Config
+
+    A library that facilitates creating and validating configuration schemas. More about it in the :doc:`configuration`
+    section.
+
+    `Symfony Config on Github <https://github.com/symfony/config>`_
+
+Symfony\\Console
+----------------
+    .. php:namespace:: Symfony\Console
+
+    A widely-adopted library for interacting with the command-line.
+
+    `Symfony Console on Github <https://github.com/symfony/console>`_

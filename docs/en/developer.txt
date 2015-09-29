@@ -9,7 +9,7 @@ library for their own framework or application.
 
 .. toctree::
 
-   developer/architecture
+   developer/3rd-party
    developer/commands
    developer/comparator
    developer/configuration

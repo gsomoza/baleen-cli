@@ -3,16 +3,15 @@ Timeline
 
 Service Name: ``Services::TIMELINE``
 
-This service provides an instance of ``Baleen\Migrations\Timeline`` and sets its :doc:`comparator`. Since this service
-almost exclusively relies on other services in the framework, migration libraries will hardly ever need to replace this
-service.
+This service provides an instance of :php:class:`Baleen\Migrations\Timeline` and sets its :doc:`comparator`. Since this
+service almost exclusively relies on other services in the framework, migration libraries will hardly ever need to
+replace this service.
 
 By default a special factory is used to instantiate the Timeline. The factory is an instance of
-``Baleen\Migrations\Timeline\TimelineFactory``. When instantiating a Timeline, the factory creates a collection of
-available migrations by "enriching" the migrations available in the :doc:`repository` service with the state data
-available from the :doc:`storage` service. In the process, it also makes sure that there's no missing migration files in
-the Repository (e.g. a version that is reported as migrated in the Storage but that has no corresponding file in the
-Repository).
+:php:class:`TimelineFactory`. When instantiating a Timeline, the factory creates a collection of available migrations by
+"enriching" the migrations available in the :doc:`repository` service with the state data available from the
+:doc:`storage` service. In the process, it also makes sure that there's no missing migration files in the Repository
+(e.g. a version that is reported as migrated in the Storage but that has no corresponding file in the Repository).
 
 In Baleen CLI the default :php:class:`TimelineProvider` provides also the :php:const:`Services::COMPARATOR` service.
 Refer to the :doc:`comparator` page for more information.

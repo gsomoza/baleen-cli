@@ -32,7 +32,7 @@ Customizing Providers
 
 Providers can be customized (added, overwritten, removed, etc.) several ways:
 
-#. Directly in the :file:`boostrap.php` file. Not recommended, unless the provider can't be configured.
+#. Directly in the :file:`bin/boostrap.php` file. Not recommended, unless the provider can't be configured.
 #. By modifying the :file:`config/providers.php` file. This is the recommended method if you're building your own
    migrations library (see the guide).
 #. On the end-user's configuration file, under the "providers" section (similar to #2). This just give end-users the

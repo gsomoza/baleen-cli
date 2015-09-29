@@ -1,8 +1,6 @@
-:::::::::
 Reference
-:::::::::
+=========
 
 .. toctree::
 
-    reference/3rd-party
-    reference/Baleen/Cli/index
+    ref/Baleen/Cli/index
