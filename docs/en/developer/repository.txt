@@ -3,16 +3,15 @@ Repository
 
 Service Name: :php:const:`Services::REPOSITORY`
 
-The repository service must implement ``Baleen\Migrations\Repository\RepositoryInterface``, and we recommend that it
-additionally extends ``Baleen\Migrations\Repository\AbstractRepository``. For more information on how to implement
-``RepositoryInterface`` refer to the Baleen Migrations documentation.
+The repository service must either implement :php:interface:`RepositoryInterface` directly or extend
+:php:class:`AbstractRepository`, which provides some convenient boilerplate functionality.
 
-The ``RepositoryProvider`` must also provide the :php:const:`Services::REPOSITORY_FILESYSTEM` and
+The Repository Provider` must also provide the :php:const:`Services::REPOSITORY_FILESYSTEM` and
 :php:const`Services::MIGRATION_FACTORY` services.
 
-The default implementation for this service is ``Baleen\Migrations\Repository\DirectoryRepository``. And unless you need
-to load migrations for another source other than the filesystem, or from multiple folders at a time, the default
-implementation should cover the needs of most migration libraries.
+The default implementation for this service is :php:class:`DirectoryRepository`. And unless you need to load migrations
+for another source other than the filesystem, or from multiple folders at a time, the default implementation should
+cover the needs of most migration libraries.
 
 Repository Filesystem
 ---------------------
@@ -31,8 +30,7 @@ Migration Factory
 
 Service Name: :php:const:`Services::MIGRATION_FACTORY`
 
-This service must implement ``Baleen\Migrations\Migration\Factory\FactoryInterface``. It's used to instantiate all
-migrations that are loaded by the repository, which is useful for example if the migration class needs certain
-dependencies to be injected.
+This service must implement :php:interface:`FactoryInterface`. It's used to instantiate all migrations that are loaded by
+the repository, which is useful for example if the migration class needs certain dependencies to be injected.
 
-The default implementation used for this service is ``Baleen\Migrations\Migration\Factory\SimpleFactory``.
+The default implementation used for this service is :php:class:`SimpleFactory`.

@@ -29,7 +29,10 @@ import shlex
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinxcontrib.phpdomain']
+extensions = [
+    'sphinxcontrib.phpdomain',
+    'sphinx.ext.intersphinx',
+]
 
 # The name of the default domain.
 primary_domain = 'php'
@@ -109,6 +112,9 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+intersphinx_mapping = {
+    'baleen': ('http://baleen.readthedocs.org/en/latest/', None),
+}
 
 # -- Options for HTML output ----------------------------------------------
 

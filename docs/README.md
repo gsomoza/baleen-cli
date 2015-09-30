@@ -6,11 +6,12 @@ To install Sphinx and all required dependencies you must first install Python >=
 
 ### Unix (tested only on Mac)
 
-Simply run `pip install sphinx sphinx-autobuild sphinx_rtd_theme sphinxcontrib-phpdomain`.
+Simply run `pip install -r requirements.txt`.
 
 ## Regenerating the Class Reference
 
-Whenever changes are made to the source-code the class reference must be re-generated in order to incorporate those latest changes.
+Whenever changes are made to the source-code the class reference must be re-generated in order to incorporate those 
+latest changes.
 
 ### Unix (tested only on Mac)
 
