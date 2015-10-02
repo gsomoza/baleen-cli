@@ -85,6 +85,10 @@ By default it will migrate `up` to the latest available version.
 
 If you'd like to see a log instead of the progress-bar then just add the `--no-progress` option to the migrate command above.
 
+## Documentation
+
+Documentation can be found either in the `./docs` folder or compiled and online at Read The Docs: http://baleen-cli.readthedocs.org/en/latest/
+
 ## License
 Licensed under MIT - for more details please refer to the [LICENSE](https://github.com/baleen/cli/blob/master/LICENSE) 
 file at the root directory.
