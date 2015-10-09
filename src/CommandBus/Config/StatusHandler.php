@@ -64,10 +64,11 @@ class StatusHandler
             'Nothing has been migrated yet.';
         $output->writeln($currentMessage);
 
-        $pendingCount = $availableMigrations->count() - $migratedVersions->count();
+        $diff = array_diff($availableMigrations->toArray(), $migratedVersions->toArray());
+
+        $pendingCount = count($diff);
 
         if ($pendingCount > 0) {
-            $diff = array_diff($availableMigrations->toArray(), $migratedVersions->toArray());
             $executable = defined('MIGRATIONS_EXECUTABLE') ? MIGRATIONS_EXECUTABLE . ' ' : '';
             $output->writeln([
                 "Your database is out-of-date by $pendingCount versions, and can be migrated.",

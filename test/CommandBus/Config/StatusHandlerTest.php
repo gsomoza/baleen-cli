@@ -183,11 +183,14 @@ class StatusHandlerTest extends HandlerTestCase
 
     /**
      * testHandle
+     *
      * @param LinkedVersions $available
      * @param MigratedVersions $migrated
+     * @param $pendingCount
+     *
      * @dataProvider handleProvider
      */
-    public function testHandle(LinkedVersions $available, MigratedVersions $migrated)
+    public function testHandle(LinkedVersions $available, MigratedVersions $migrated, $pendingCount)
     {
         $this->repository->shouldReceive('fetchAll')->once()->andReturn($available);
         $this->storage->shouldReceive('fetchAll')->once()->andReturn($migrated);
@@ -197,7 +200,6 @@ class StatusHandlerTest extends HandlerTestCase
             '/[Nn]othing has been migrated/' :
             '/[Cc]urrent version.*?' . $migrated->last()->getId() . '.*?$/';
         $this->output->shouldReceive('writeln')->once()->with($currentMsg);
-        $pendingCount = $available->count() - $migrated->count();
         if ($pendingCount > 0) {
             $this->output->shouldReceive('writeln')->with(m::on(function($messages) use ($pendingCount) {
                 return preg_match("/out\\-of\\-date.*?by $pendingCount versions/", $messages[0])
@@ -231,9 +233,12 @@ class StatusHandlerTest extends HandlerTestCase
      */
     public function handleProvider()
     {
+        // Calculate combinations of different repository and storage states.
+        // All test-cases here should assume sequential execution of migrations, so that we can easily calculate
+        // the number of pending migrations with the foreach loop below (see comment below).
         $repVersions = [
             [],
-            Version::fromArray(range(1,10))
+            Version::fromArray(range(1,10)),
         ];
         $repositories = [];
         foreach ($repVersions as $versions) {
@@ -249,7 +254,29 @@ class StatusHandlerTest extends HandlerTestCase
             $this->linkVersions($versions, true);
             $storages[] = new MigratedVersions($versions);
         }
-        return $this->combinations([$repositories, $storages]);
+
+        $combinations = $this->combinations([$repositories, $storages]);
+
+        // calculate pending number of migrations and set that as the third parameter. See note in function header.
+        foreach($combinations as &$combination) { // NB: addressing by reference!
+            $pending = $combination[0]->count() - $combination[1]->count();
+            $combination[] = $pending;
+        }
+
+        // Additional "special" use-cases below. Pending count (third parameter) should be set manually.
+
+        // Test case for https://github.com/baleen/cli/issues/23
+        $repositoryVersions23 = [new V(1), new V(3)];
+        $this->linkVersions($repositoryVersions23);
+        $storageVersions23 = [new V(1), new V(2)];
+        $this->linkVersions($storageVersions23, true);
+        $combinations[] = [
+            new LinkedVersions($repositoryVersions23),
+            new MigratedVersions($storageVersions23),
+            1 // one migration pending: v3
+        ];
+
+        return $combinations;
     }
 
     /**
