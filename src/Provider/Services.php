@@ -61,6 +61,8 @@ interface Services
     // ApplicationProvider
     /** Reference to the Symfony Console Application instance */
     const APPLICATION = 'application';
+    /** Reference to a Symfony Event Dispatcher to be attached to the application */
+    const APPLICATION_DISPATCHER = 'application.dispatcher';
     /** Reference to the Composer autoloader */
     const AUTOLOADER = 'autoloader';
 
