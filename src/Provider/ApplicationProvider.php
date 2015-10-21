@@ -51,11 +51,15 @@ class ApplicationProvider extends ServiceProvider
         $container = $this->getContainer();
 
         if (!$container->isRegistered(Services::APPLICATION)) {
+            $args = [
+                Services::COMMANDS,
+                Services::HELPERSET,
+            ];
+            if ($container->isInServiceProvider(Services::APPLICATION_DISPATCHER)) {
+                $args[] = Services::APPLICATION_DISPATCHER;
+            }
             $container->singleton(Services::APPLICATION, Application::class)
-                ->withArguments([
-                    Services::COMMANDS,
-                    Services::HELPERSET,
-                ]);
+                ->withArguments($args);
         }
 
         // register inflectors for the different types of commands

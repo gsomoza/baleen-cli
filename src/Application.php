@@ -23,6 +23,7 @@ namespace Baleen\Cli;
 use League\Container\Container;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * The entry point to Baleen CLI's commands.
@@ -42,12 +43,16 @@ class Application extends ConsoleApplication
     protected $container;
 
     /**
-     * @param \Symfony\Component\Console\Command\Command[] $commands  Array of Commands available for the Application.
-     * @param HelperSet                                    $helperSet HelperSet to be used with the Application.
+     * @param \Symfony\Component\Console\Command\Command[] $commands Array of Commands available for the Application.
+     * @param HelperSet $helperSet HelperSet to be used with the Application.
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(array $commands, HelperSet $helperSet)
+    public function __construct(array $commands, HelperSet $helperSet, EventDispatcherInterface $dispatcher = null)
     {
         parent::__construct('Baleen', self::VERSION);
+        if (null !== $dispatcher) {
+            $this->setDispatcher($dispatcher);
+        }
         $this->init($commands, $helperSet);
     }
 
