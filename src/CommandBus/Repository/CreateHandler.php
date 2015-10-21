@@ -24,7 +24,10 @@ use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;
 use League\Flysystem\Filesystem;
+use phpDocumentor\Reflection\DocBlock\Tag;
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\DocBlock\Tag\GenericTag;
+use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\FileGenerator;
 use Zend\Code\Generator\MethodGenerator;
 
@@ -121,9 +124,22 @@ class CreateHandler
             [],
             [],
             [
-                new MethodGenerator('up', [], 'public', 'echo \'Hello world!\';'),
-                new MethodGenerator('down', [], 'public', 'echo \'Goodbye world!\';'),
-            ]
+                new MethodGenerator(
+                    'up',
+                    [],
+                    'public',
+                    null,
+                    new DocBlockGenerator('Executed when migrating upwards.', 'TODO: implement')
+                ),
+                new MethodGenerator(
+                    'down',
+                    [],
+                    'public',
+                    null,
+                    new DocBlockGenerator('Executed when migrating downwards / rolling back.', 'TODO: implement')
+                ),
+            ],
+            new DocBlockGenerator($className . ' class', null, [new GenericTag('link', 'http://baleen.org')])
         );
         $class->addUse(SimpleMigration::class);
 
