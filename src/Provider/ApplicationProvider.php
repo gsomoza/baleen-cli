@@ -28,6 +28,7 @@ use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
 use League\Container\ServiceProvider;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Class ApplicationProvider.
@@ -39,6 +40,7 @@ class ApplicationProvider extends ServiceProvider
 {
     protected $provides = [
         Services::APPLICATION,
+        Services::APPLICATION_DISPATCHER,
     ];
 
     /**
@@ -50,14 +52,14 @@ class ApplicationProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
+        $container->singleton(Services::APPLICATION_DISPATCHER, EventDispatcher::class);
+
         if (!$container->isRegistered(Services::APPLICATION)) {
             $args = [
                 Services::COMMANDS,
                 Services::HELPERSET,
+                Services::APPLICATION_DISPATCHER,
             ];
-            if ($container->isInServiceProvider(Services::APPLICATION_DISPATCHER)) {
-                $args[] = Services::APPLICATION_DISPATCHER;
-            }
             $container->singleton(Services::APPLICATION, Application::class)
                 ->withArguments($args);
         }

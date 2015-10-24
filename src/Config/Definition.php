@@ -44,6 +44,11 @@ class Definition implements ConfigurationInterface
                 ->useAttributeAsKey('name')
                 ->prototype('scalar')->end()
             ->end()
+            ->arrayNode('plugins')
+                ->treatNullLike([])
+                ->useAttributeAsKey('name')
+                ->prototype('scalar')->end()
+            ->end()
             ->append($this->addMigrationsNode())
             ->append($this->addStorageNode())
         ->end();
