@@ -46,6 +46,8 @@ if (!$composerAutoloader = $findAutoloader()) {
 }
 
 use Baleen\Cli\Application;
+use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\PluginInterface;
 use Baleen\Cli\Provider\ConfigProvider;
 use Baleen\Cli\Provider\Services;
 use League\Container\Container;
@@ -64,9 +66,21 @@ $container->addServiceProvider(new ConfigProvider());
 /** @var \Baleen\Cli\Config\Config $appConfig */
 $appConfig = $container->get(Services::CONFIG);
 
+// Load core providers
 foreach ($appConfig->getProviders() as $name => $class) {
     $provider = new $class();
     $container->addServiceProvider($provider);
+}
+
+// Load plugins
+foreach ($appConfig->getPlugins() as $pluginClass) {
+    $plugin = $container->isRegistered($pluginClass) ? $container->get($pluginClass) : new $pluginClass();
+    if (!$plugin instanceof PluginInterface) {
+        throw new CliException(
+            sprintf('Plugin "%s" must implement "%s".', $pluginClass, PluginInterface::class)
+        );
+    }
+    $plugin->init($container);
 }
 
 /** @var Application $app */

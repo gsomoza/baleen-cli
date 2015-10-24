@@ -59,6 +59,7 @@ class ConfigTest extends BaseTestCase
             'storage' => [
                 'file' => Config::VERSIONS_FILE_NAME
             ],
+            'plugins' => [],
         ];
         $this->assertEquals($expected, $conf->getDefaults());
         $this->assertEquals($expected, $conf->toArray());
@@ -98,6 +99,7 @@ class ConfigTest extends BaseTestCase
             'storage' => [
                 'file' => '.baleen_versions',
             ],
+            'plugins' => [],
         ];
         $resultSet0 = $defaultConfig;
         $resultSet0['migrations']['directory'] = 'custom-directory';

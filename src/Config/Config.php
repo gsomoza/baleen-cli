@@ -69,7 +69,17 @@ class Config implements ConfigInterface
             'providers' => $this->getProviderDefaults(),
             'migrations' => $this->getMigrationDefaults(),
             'storage' => $this->getStorageDefaults(),
+            'plugins' => $this->getPluginDefaults(),
         ];
+    }
+
+    /**
+     * getPluginDefaults
+     * @return array
+     */
+    public function getPluginDefaults()
+    {
+        return []; // default to no plugins
     }
 
     /**
@@ -122,6 +132,18 @@ class Config implements ConfigInterface
     public function getProviders()
     {
         return $this->config['providers'];
+    }
+
+    /**
+     * Returns a sorted list of plugins
+     *
+     * @return array
+     */
+    public function getPlugins()
+    {
+        $plugins = $this->config['plugins'];
+        ksort($plugins, SORT_NUMERIC);
+        return $plugins;
     }
 
     /**

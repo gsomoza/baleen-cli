@@ -29,6 +29,7 @@ use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
 use Baleen\Cli\Provider\Services;
 use Mockery as m;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Class ApplicationProviderTest
@@ -85,10 +86,17 @@ class ApplicationProviderTest extends ServiceProviderTestCase
         if (!$isAppRegistered) {
             $this->assertSingletonProvided(
                 Services::APPLICATION,
-                $this->assertCallbackInstanceOf( Application::class, [[], new HelperSet()]),
+                $this->assertCallbackInstanceOf(Application::class, [[], new HelperSet()]),
                 'string'
-            )->shouldReceive('withArguments')->with([Services::COMMANDS, Services::HELPERSET])->once();
+            )->shouldReceive('withArguments')
+                ->with([Services::COMMANDS, Services::HELPERSET, Services::APPLICATION_DISPATCHER])->once();
         }
+
+        $this->assertSingletonProvided(
+            Services::APPLICATION_DISPATCHER,
+            $this->assertCallbackInstanceOf(EventDispatcher::class),
+            'string'
+        );
 
 
         $this->getInstance()->register();
