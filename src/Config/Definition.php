@@ -68,7 +68,12 @@ class Definition implements ConfigurationInterface
 
         $node->isRequired()
             ->children()
-                ->scalarNode('directory')->defaultValue('migrations')->end()
+                ->arrayNode('directories')
+                    ->isRequired()
+                    ->requiresAtLeastOneElement()
+                    ->useAttributeAsKey('name')
+                    ->prototype('scalar')->end()
+                ->end()
                 ->scalarNode('namespace')->defaultValue('Migrations')->end()
             ->end()
         ->end();

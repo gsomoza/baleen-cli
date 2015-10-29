@@ -55,7 +55,15 @@ class CreateHandler
         /** @var Config $config */
         $config = $command->getConfig();
 
-        $directory = $config->getMigrationsDirectory();
+        $directories = $config->getMigrationsDirectories();
+        if (empty($directories)) {
+            throw new CliException(sprintf(
+                'No migration directories configured. Please check your configuration definition to ensure at least ' .
+                'one element is required to be present.'
+            ));
+        }
+        $directory = reset($directories);
+
         $filesystem = $command->getFilesystem();
         if (!$filesystem->has($directory)) {
             throw new CliException(sprintf(
@@ -93,7 +101,7 @@ class CreateHandler
             ));
             if ($editorCmd) {
                 $pipes = [];
-                $baseDir = dirname($config->getMigrationsDirectoryPath());
+                $baseDir = dirname($config->getDefaultMigrationsDirectoryPath());
                 $command = $editorCmd . ' ' . escapeshellarg($baseDir . DIRECTORY_SEPARATOR . $result);
                 proc_open($command, array(), $pipes);
             }

@@ -130,7 +130,7 @@ class ConfigTest extends BaseTestCase
         $customDirectory = 'some-directory';
         $config = ['migrations' => ['directory' => $customDirectory]];
         $instance = new Config($config);
-        $this->assertContains(DIRECTORY_SEPARATOR . $customDirectory, $instance->getMigrationsDirectoryPath());
+        $this->assertContains(DIRECTORY_SEPARATOR . $customDirectory, $instance->getDefaultMigrationsDirectoryPath());
     }
 
     /**

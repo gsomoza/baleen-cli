@@ -20,7 +20,9 @@
 return [
     'providers' => [],
     'migrations' => [
-        'directory' => 'migrations',
+        'directories' => [
+            'Migrations\\' => 'migrations'
+        ],
         'namespace' => 'Migrations',
     ],
     'storage' => [

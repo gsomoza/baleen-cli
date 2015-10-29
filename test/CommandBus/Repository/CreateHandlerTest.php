@@ -134,7 +134,7 @@ class CreateHandlerTest extends HandlerTestCase
     {
         $this->filesystem->shouldReceive('has')->once()->andReturn(false);
         $config = m::mock(Config::class);
-        $config->shouldReceive(['getMigrationsDirectory' => 'migrations']);
+        $config->shouldReceive(['getMigrationsDirectories' => 'migrations']);
         $this->command->shouldReceive('getConfig')->once()->andReturn($config);
         $this->setExpectedException(CliException::class, 'not exist');
         $this->handle();
@@ -154,9 +154,9 @@ class CreateHandlerTest extends HandlerTestCase
         $this->filesystem->shouldReceive('has')->once()->with($migrationsDirectory)->andReturn(true);
 
         $config = m::mock(Config::class);
-        $config->shouldReceive(['getMigrationsDirectory' => $migrationsDirectory])->once();
+        $config->shouldReceive(['getMigrationsDirectories' => $migrationsDirectory])->once();
         if ($editorCmd) {
-            $config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($migrationsDirectory);
+            $config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn($migrationsDirectory);
         }
         $this->command->shouldReceive('getConfig')->once()->andReturn($config);
 

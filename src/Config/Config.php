@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\Config;
 
+use Baleen\Cli\Exception\CliException;
 use Baleen\Cli\Provider\ApplicationProvider;
 use Baleen\Cli\Provider\CommandsProvider;
 use Baleen\Cli\Provider\HelperSetProvider;
@@ -90,8 +91,9 @@ class Config implements ConfigInterface
     protected function getMigrationDefaults()
     {
         return [
-            'directory' => 'migrations',
-            'namespace' => 'Migrations',
+            'directories' => [
+                'Migrations\\' => 'migrations'
+            ],
         ];
     }
 
@@ -148,18 +150,27 @@ class Config implements ConfigInterface
 
     /**
      * @return string
+     * @throws CliException
      */
-    public function getMigrationsDirectoryPath()
+    public function getDefaultMigrationsDirectoryPath()
     {
-        return getcwd().DIRECTORY_SEPARATOR.$this->getMigrationsDirectory();
+        $directories = $this->getMigrationsDirectories();
+        if (empty($directories)) {
+            throw new CliException(
+                'No migration directories configured. Please check your configuration definition to ensure at least ' .
+                'one element is required to be present.'
+            );
+        }
+        $directory = reset($directories);
+        return getcwd().DIRECTORY_SEPARATOR.$directory;
     }
 
     /**
-     * @return mixed
+     * @return string[]
      */
-    public function getMigrationsDirectory()
+    public function getMigrationsDirectories()
     {
-        return $this->config['migrations']['directory'];
+        return $this->config['migrations']['directories'];
     }
 
     /**

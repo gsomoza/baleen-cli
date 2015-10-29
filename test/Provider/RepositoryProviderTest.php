@@ -94,7 +94,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
     public function testRegister()
     {
         $this->config->shouldReceive('getMigrationsNamespace')->once()->andReturn(__NAMESPACE__);
-        $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn(__DIR__);
+        $this->config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn(__DIR__);
 
         $this->assertSingletonProvided(
             Services::MIGRATION_FACTORY,
@@ -119,7 +119,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->assertFalse(file_exists($newDir), sprintf('expected directory "%s" to not exist', $newDir));
 
         $this->config->shouldReceive('getMigrationsNamespace')->once()->andReturn(__NAMESPACE__);
-        $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
+        $this->config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn($newDir);
 
         // TODO: refactor across tests
         $this->assertSingletonProvided(
@@ -152,7 +152,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $this->assertFalse(file_exists($newDir), sprintf('expected directory "%s" to not exist', $newDir));
 
         $this->config->shouldNotReceive('getMigrationsNamespace');
-        $this->config->shouldReceive('getMigrationsDirectoryPath')->once()->andReturn($newDir);
+        $this->config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn($newDir);
 
         // TODO: refactor across tests
         $this->assertSingletonProvided(

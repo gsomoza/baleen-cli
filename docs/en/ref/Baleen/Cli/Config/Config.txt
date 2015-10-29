@@ -42,11 +42,11 @@ Baleen\\Cli\\Config\\Config
 
         :returns: array
 
-    .. php:method:: getMigrationsDirectoryPath()
+    .. php:method:: getDefaultMigrationsDirectoryPath()
 
         :returns: string
 
-    .. php:method:: getMigrationsDirectory()
+    .. php:method:: getMigrationsDirectories()
 
         :returns: mixed
 
