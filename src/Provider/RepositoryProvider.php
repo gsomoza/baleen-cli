@@ -22,10 +22,13 @@ namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Repository\RepositoryFactory;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Baleen\Migrations\Repository\RepositoryStack;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Composer\Autoload\ClassLoader;
 use League\Container\ServiceProvider;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -61,48 +64,28 @@ class RepositoryProvider extends ServiceProvider
 
         $container->singleton(
             Services::REPOSITORY,
-            function (Config $config, FactoryInterface $migrationFactory, FilesystemInterface $filesystem) {
-                $repositoryStack = new RepositoryStack();
-                $directories = $config->getMigrationsDirectories();
-                // to make sure classes in the migration directory are autoloaded
-                /** @var \Composer\Autoload\ClassLoader $autoloader */
-                $autoloader = $this->getContainer()->get(Services::AUTOLOADER);
-
-                foreach ($directories as $ns => $directory) {
-                    if (!$filesystem->has($directory)) {
-                        $result = $filesystem->createDir($directory);
-                        if (!$result) {
-                            throw new CliException(sprintf(
-                                'Could not create directory "$s.',
-                                $directories
-                            ));
-                        }
-                    } else {
-                        $meta = $filesystem->getMetadata($directory);
-                        if ($meta['type'] !== 'dir') {
-                            throw new CliException(sprintf(
-                                'Expected path "%s" to be a directory, but its a %s.',
-                                $directory,
-                                $meta['type']
-                            ));
-                        }
-                    }
-
-                    // normalize the namespace
-                    $ns = rtrim($ns, '\\') . '\\';
-                    // add to the autoloader if necessary
-                    if (!in_array($ns, $autoloader->getPrefixes())
-                        && !in_array($ns, $autoloader->getPrefixesPsr4())
-                    ) {
-                        $autoloader->addPsr4($ns, getcwd() . DIRECTORY_SEPARATOR . $directory);
-                    }
-
-                    $repo = new DirectoryRepository($directory, $migrationFactory);
-                    $repositoryStack->addRepository($repo);
-                }
-
-                return $repositoryStack;
+            function (
+                Config $config,
+                FactoryInterface $migrationFactory,
+                FilesystemInterface $filesystem,
+                ComparatorInterface $comparator,
+                ClassLoader $autoloader
+            ) {
+                // a factory class is cleaner easier to test
+                return (new RepositoryFactory(
+                        $config->getMigrationsConfig(),
+                        $migrationFactory,
+                        $filesystem,
+                        $comparator,
+                        $autoloader
+                ))->create();
             }
-        )->withArguments([Services::CONFIG, Services::MIGRATION_FACTORY, Services::REPOSITORY_FILESYSTEM]);
+        )->withArguments([
+            Services::CONFIG,
+            Services::MIGRATION_FACTORY,
+            Services::REPOSITORY_FILESYSTEM,
+            Services::COMPARATOR,
+            Services::AUTOLOADER,
+        ]);
     }
 }

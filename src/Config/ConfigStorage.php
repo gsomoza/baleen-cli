@@ -112,8 +112,7 @@ class ConfigStorage
         // load all local configs (config files that are not user-facing)
         $localConfig = [];
         foreach ($this->localConfigStack as $file) {
-            $config = include $file;
-            $localConfig = array_merge_recursive($localConfig, $config);
+            $localConfig = array_merge($localConfig, include $file);
         }
         if (!empty($localConfig)) {
             $configs[] = $localConfig;
@@ -145,7 +144,7 @@ class ConfigStorage
     {
         $fileName = $config->getFileName() ?: Config::CONFIG_FILE_NAME;
         $array = $config->getCleanArray();
-        $contents = Yaml::dump($array);
+        $contents = Yaml::dump($array, 3);
 
         return $this->projectFileSystem->write($fileName, $contents);
     }

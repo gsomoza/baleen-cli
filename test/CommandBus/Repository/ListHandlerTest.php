@@ -55,8 +55,7 @@ class ListHandlerTest extends HandlerTestCase
     {
         foreach ($versions as $version) {
             $id = $version->getId();
-            $class = str_replace('\\', '\\\\', get_class($version->getMigration()));
-            $this->output->shouldReceive('writeln')->with("/$id.*$class/")->once();
+            $this->output->shouldReceive('writeln')->with("/$id/")->once();
         }
         $this->instance->outputVersions($versions, $this->output);
     }
@@ -69,15 +68,8 @@ class ListHandlerTest extends HandlerTestCase
      */
     public function testHandle(LinkedVersions $versions, $newestFirst)
     {
-        $comparator = function(){};
-        $repository = m::mock(RepositoryInterface::class);
-        $this->command->shouldReceive([
-            'getRepository' => $repository,
-            'getComparator' => $comparator,
-        ])->once();
-
         $this->input->shouldReceive('getOption')->with('newest-first')->once()->andReturn($newestFirst);
-        $this->instance->shouldReceive('getCollection')->once()->andReturn($versions);
+        $this->command->shouldReceive('getRepository->fetchAll')->once()->andReturn($versions);
 
         if (count($versions)) {
             $firstVersion = $newestFirst ? $versions->getReverse()->current() : $versions->current();

@@ -36,45 +36,21 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  */
 class ConfigTest extends BaseTestCase
 {
-
-    /**
-     * testDefaults
-     */
-    public function testDefaults()
-    {
-        $conf = new Config();
-        $expected = [
-            'providers' => [
-                'application' => ApplicationProvider::class,
-                'storage' => StorageProvider::class,
-                'repository' => RepositoryProvider::class,
-                'timeline' => TimelineProvider::class,
-                'helperSet' => HelperSetProvider::class,
-                'commands' => CommandsProvider::class,
-            ],
-            'migrations' => [
-                'directory' => 'migrations',
-                'namespace' => 'Migrations',
-            ],
-            'storage' => [
-                'file' => Config::VERSIONS_FILE_NAME
-            ],
-            'plugins' => [],
-        ];
-        $this->assertEquals($expected, $conf->getDefaults());
-        $this->assertEquals($expected, $conf->toArray());
-    }
-
     /**
      * testConstruct
+     *
      * @dataProvider constructProvider
+     *
+     * @param $config
+     * @param $useDefaults
+     * @param $expected
      */
-    public function testConstruct($config, $useDefaults, $expected)
+    public function testConstruct($config, $expected)
     {
         if ($expected === 'ERROR') {
             $this->setExpectedException(InvalidConfigurationException::class);
         }
-        $instance = new Config($config, $useDefaults);
+        $instance = new Config($config);
         $this->assertEquals($expected, $instance->toArray());
     }
 
@@ -83,7 +59,7 @@ class ConfigTest extends BaseTestCase
      */
     public function constructProvider()
     {
-        $defaultConfig = [
+        $validConfig = [
             'providers' => [
                 'application' => 'Baleen\Cli\Provider\ApplicationProvider',
                 'storage' => 'Baleen\Cli\Provider\StorageProvider',
@@ -93,55 +69,39 @@ class ConfigTest extends BaseTestCase
                 'commands' => 'Baleen\Cli\Provider\CommandsProvider',
             ],
             'migrations' => [
-                'directory' => 'migrations',
-                'namespace' => 'Migrations',
+                [
+                    'namespace' => 'Custom',
+                    'directory' => 'custom',
+                ]
             ],
             'storage' => [
-                'file' => '.baleen_versions',
+                'file' => '.custom_versions',
             ],
-            'plugins' => [],
+            'plugins' => [
+                'Foo' => '\\Bar'
+            ],
         ];
-        $resultSet0 = $defaultConfig;
-        $resultSet0['migrations']['directory'] = 'custom-directory';
+
+        $invalid1 = $validConfig;
+        $invalid1['storage'] = '';
+
+        $invalid2 = $validConfig;
+        $invalid2['migrations'] = [];
+
+        $invalid3 = $validConfig;
+        $invalid3['providers'] = [];
+
+        $invalid4 = $validConfig;
+        $invalid4['plugins'] = 'nope';
+
         return [
-            [
-                [],
-                true,
-                $defaultConfig,
-            ],
-            [
-                ['migrations' => ['directory' => 'custom-directory',],],
-                true,
-                $resultSet0,
-            ],
-            [
-                [],
-                false,
-                'ERROR'
-            ]
+            [[], null],
+            [$validConfig, $validConfig],
+            [$invalid1, 'ERROR'],
+            [$invalid2, 'ERROR'],
+            [$invalid3, 'ERROR'],
+            [$invalid4, 'ERROR']
         ];
-    }
-
-    /**
-     * testGetMigrationsDirectoryPath
-     */
-    public function testGetMigrationsDirectoryPath()
-    {
-        $customDirectory = 'some-directory';
-        $config = ['migrations' => ['directory' => $customDirectory]];
-        $instance = new Config($config);
-        $this->assertContains(DIRECTORY_SEPARATOR . $customDirectory, $instance->getDefaultMigrationsDirectoryPath());
-    }
-
-    /**
-     * testGetMigrationsNamespace
-     */
-    public function testGetMigrationsNamespace()
-    {
-        $customNamespace = 'some-namespace';
-        $config = ['migrations' => ['namespace' => $customNamespace]];
-        $instance = new Config($config);
-        $this->assertEquals($customNamespace, $instance->getMigrationsNamespace());
     }
 
     /**

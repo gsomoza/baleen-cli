@@ -55,7 +55,7 @@ class CreateHandler
         /** @var Config $config */
         $config = $command->getConfig();
 
-        $directories = $config->getMigrationsDirectories();
+        $directories = $config->getMigrationsConfig();
         if (empty($directories)) {
             throw new CliException(sprintf(
                 'No migration directories configured. Please check your configuration definition to ensure at least ' .

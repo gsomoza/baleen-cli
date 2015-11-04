@@ -38,10 +38,14 @@ function mkdir()
 namespace BaleenTest\Cli\Provider;
 
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Provider\RepositoryProvider;
 use Baleen\Cli\Provider\Services;
+use Baleen\Cli\Repository\RepositoryFactory;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Repository\DirectoryRepository;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Composer\Autoload\ClassLoader;
+use League\Flysystem\FilesystemInterface;
 use Mockery as m;
 
 /**
@@ -67,7 +71,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $autoloaderMock->shouldReceive('addPsr4')->with(__NAMESPACE__ . '\\', __DIR__);
         $this->autoloader = $autoloaderMock;
 
-        $this->setInstance(m::mock(\Baleen\Cli\Provider\RepositoryProvider::class)->makePartial());
+        $this->setInstance(m::mock(RepositoryProvider::class)->makePartial());
 
         $this->getContainer()
             ->shouldReceive('get')
@@ -93,8 +97,8 @@ class RepositoryProviderTest extends ServiceProviderTestCase
      */
     public function testRegister()
     {
-        $this->config->shouldReceive('getMigrationsNamespace')->once()->andReturn(__NAMESPACE__);
-        $this->config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn(__DIR__);
+        $directories = [__DIR__];
+        $this->config->shouldReceive('getMigrationsConfig')->once()->andReturn($directories);
 
         $this->assertSingletonProvided(
             Services::MIGRATION_FACTORY,
@@ -102,73 +106,30 @@ class RepositoryProviderTest extends ServiceProviderTestCase
             'string'
         );
 
+        $repository = m::mock(DirectoryRepository::class);
+        $repositoryFactory = m::mock('overload:'.RepositoryFactory::class)->makePartial();
+        $repositoryFactory->shouldReceive('create')->once()->andReturn($repository);
+
         $this->assertSingletonProvided(
             Services::REPOSITORY,
-            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config, new SimpleFactory()])
-        )->shouldReceive('withArguments')->with([Services::CONFIG, Services::MIGRATION_FACTORY]);
-
-        $this->getInstance()->register();
-    }
-
-    /**
-     * testFactoryCreatesDirectory
-     */
-    public function testFactoryCreatesDirectory()
-    {
-        $newDir = __DIR__ . '/newdir';
-        $this->assertFalse(file_exists($newDir), sprintf('expected directory "%s" to not exist', $newDir));
-
-        $this->config->shouldReceive('getMigrationsNamespace')->once()->andReturn(__NAMESPACE__);
-        $this->config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn($newDir);
-
-        // TODO: refactor across tests
-        $this->assertSingletonProvided(
+            $this->assertCallbackInstanceOf(
+                DirectoryRepository::class,
+                [
+                    $this->config,
+                    new SimpleFactory(),
+                    m::mock(FilesystemInterface::class),
+                    m::mock(ComparatorInterface::class),
+                    m::mock(ClassLoader::class),
+                ]
+            )
+        )->shouldReceive('withArguments')->with([
+            Services::CONFIG,
             Services::MIGRATION_FACTORY,
-            $this->assertCallbackInstanceOf(SimpleFactory::class),
-            'string'
-        );
+            Services::REPOSITORY_FILESYSTEM,
+            Services::COMPARATOR,
+            Services::AUTOLOADER,
+        ]);
 
-        $this->assertSingletonProvided(
-            Services::REPOSITORY,
-            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config, new SimpleFactory()])
-        )->shouldReceive('withArguments')->with([Services::CONFIG, Services::MIGRATION_FACTORY]);
-
-        try {
-            $this->getInstance()->register();
-            $this->assertTrue(file_exists($newDir), sprintf('expected directory "%s" to have been created', $newDir));
-        } catch (\Exception $e) {
-            // nothing
-        } finally {
-            rmdir($newDir);
-        }
-    }
-
-    /**
-     * testFactoryFailToCreateDirectory
-     */
-    public function testFactoryFailToCreateDirectory()
-    {
-        $newDir = __DIR__ . '/newdir';
-        $this->assertFalse(file_exists($newDir), sprintf('expected directory "%s" to not exist', $newDir));
-
-        $this->config->shouldNotReceive('getMigrationsNamespace');
-        $this->config->shouldReceive('getDefaultMigrationsDirectoryPath')->once()->andReturn($newDir);
-
-        // TODO: refactor across tests
-        $this->assertSingletonProvided(
-            Services::MIGRATION_FACTORY,
-            $this->assertCallbackInstanceOf(SimpleFactory::class),
-            'string'
-        );
-
-        $this->assertSingletonProvided(
-            Services::REPOSITORY,
-            $this->assertCallbackInstanceOf(DirectoryRepository::class, [$this->config, new SimpleFactory()])
-        )->shouldReceive('withArguments')->with([Services::CONFIG, Services::MIGRATION_FACTORY]);
-
-        self::$mkDirResult = false;
-
-        $this->setExpectedException(CliException::class);
         $this->getInstance()->register();
     }
 }

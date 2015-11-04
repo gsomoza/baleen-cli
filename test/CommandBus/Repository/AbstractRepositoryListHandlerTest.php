@@ -48,37 +48,6 @@ class AbstractRepositoryListHandlerTest extends BaseTestCase
     }
 
     /**
-     * @param callable|null $comparator
-     * @dataProvider comparatorProvider
-     */
-    public function testGetCollectionWithNoVersions(callable $comparator = null)
-    {
-        $repository = m::mock(RepositoryInterface::class);
-        $versions = m::mock(LinkedVersions::class);
-        $repository->shouldReceive('fetchAll')->once()->andReturn($versions);
-
-        if ($comparator) {
-            $versions->shouldReceive('sortWith')->with($comparator)->once();
-        }
-
-        $result = $this->invokeMethod('getCollection', $this->instance, [$repository, $comparator]);
-        $this->assertSame($versions, $result);
-    }
-
-    /**
-     * @return array
-     */
-    public function comparatorProvider()
-    {
-        return [
-            [null],
-            [function(Version $v1, Version $v2) {
-                return $v1->getId() - $v2->getId();
-            }] // implementation doesn't really matter
-        ];
-    }
-
-    /**
      * testOutputVersions
      */
     public function testOutputVersions()

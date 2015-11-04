@@ -46,7 +46,7 @@ Baleen\\Cli\\Config\\Config
 
         :returns: string
 
-    .. php:method:: getMigrationsDirectories()
+    .. php:method:: getMigrationsConfig()
 
         :returns: mixed
 

@@ -74,8 +74,7 @@ class ServiceProviderTestCase extends BaseTestCase
         $prop->setAccessible(true);
         $prop->setValue($this->container, new Factory());
 
-        $config = m::mock(Config::class);
-        $this->config = $config;
+        $this->config = m::mock(Config::class);
     }
 
     public function tearDown()

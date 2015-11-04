@@ -20,6 +20,8 @@
 
 namespace Baleen\Cli\Provider;
 
+use Baleen\Migrations\Version\Collection\Resolver\ResolverInterface;
+
 /**
  * This interface contains constants for the names of services in the Service Container. Its useful in order to:
  * A) reduce the coupling between classes for service providers (since they can use a single interface to reference
@@ -91,4 +93,6 @@ interface Services
     const TIMELINE = 'timeline';
     /** Reference to the Comparator service */
     const COMPARATOR = 'comparator';
+    /** Reference to a collection resolver service */
+    const RESOLVER = ResolverInterface::class;
 }

@@ -43,12 +43,6 @@ class LatestHandlerTest extends HandlerTestCase
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $this->command = m::mock(LatestMessage::class);
-        $comparator = function(){};
-        $repository = m::mock(RepositoryInterface::class);
-        $this->command->shouldReceive([
-            'getRepository' => $repository,
-            'getComparator' => $comparator,
-        ])->once();
         parent::setUp();
     }
 
@@ -63,10 +57,9 @@ class LatestHandlerTest extends HandlerTestCase
         $version->setMigration($migration);
         $versions = new LinkedVersions([$version]); // only thing that matters is count > 0
 
-        $this->instance
-            ->shouldReceive('getCollection')
+        $this->command
+            ->shouldReceive('getRepository->fetchAll')
             ->once()
-            ->with(m::type(RepositoryInterface::class), m::type('callable'))
             ->andReturn($versions);
         $this->instance->shouldReceive('outputVersions')->once()->with($versions, $this->output);
 
@@ -79,7 +72,7 @@ class LatestHandlerTest extends HandlerTestCase
     public function testHandleNoVersions()
     {
         // only thing that matters is that its empty
-        $this->instance->shouldReceive('getCollection')->once()->andReturn([]);
+        $this->command->shouldReceive('getRepository->fetchAll')->once()->andReturn([]);
         $this->instance->shouldNotReceive('outputVersions');
         $this->output->shouldReceive('writeln')->once(); // some error message
         $this->handle();

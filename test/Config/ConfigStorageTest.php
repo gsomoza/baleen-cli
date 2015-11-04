@@ -125,8 +125,18 @@ class ConfigStorageTest extends BaseTestCase
     public function yamlFixtures()
     {
         return [
-            ["test: that\nfoo: bar", false],
-            ["providers: { foo: bar }\nmigrations: { directory: migrations, namespace: Migrations }\nstorage: { file: .baleen_versions }", true],
+            [
+                "test: that" . PHP_EOL .
+                "foo: bar",
+                false
+            ],
+            [
+                'providers: { foo: bar }' . PHP_EOL .
+                'migrations:' . PHP_EOL .
+                '  - { namespace: Migrations, directory: migrations }' . PHP_EOL .
+                'storage: { file: .baleen_versions }'
+                , true
+            ],
         ];
     }
 

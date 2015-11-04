@@ -41,9 +41,9 @@ class ListHandler extends AbstractRepositoryListHandler
         $output = $command->getOutput();
 
         $reverse = $input->getOption('newest-first');
-        $versions = $this->getCollection($command->getRepository(), $command->getComparator());
+        $versions = $command->getRepository()->fetchAll();
 
-        if (count($versions) > 0) {
+        if (count($versions)) {
             if ($reverse) {
                 $versions = $versions->getReverse();
             }
@@ -60,7 +60,7 @@ class ListHandler extends AbstractRepositoryListHandler
     protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
     {
         foreach ($versions as $version) {
-            $output->writeln('<comment>('.$version->getId().')</comment> '.get_class($version->getMigration()));
+            $output->writeln($version->getId());
         }
     }
 }

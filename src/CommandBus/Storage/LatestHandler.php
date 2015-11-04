@@ -38,20 +38,15 @@ class LatestHandler
      */
     public function handle(LatestMessage $command)
     {
-        $comparator = $command->getComparator();
-        if (!is_callable($comparator)) {
-            throw new CliException('No comparator available, cannot order versions!');
-        }
-
         $output = $command->getOutput();
         $migrated = $command->getStorage()->fetchAll();
-        if (count($migrated) === 0) {
-            $output->writeln('No migrated versions found in storage.');
 
-            return;
+        if ($migrated->count() === 0) {
+            $message = 'No migrated versions found in storage.';
+        } else {
+            $message = $migrated->last()->getId();
         }
+        $output->writeln($message);
 
-        $migrated->sortWith($comparator);
-        $output->writeln($migrated->last()->getId());
     }
 }

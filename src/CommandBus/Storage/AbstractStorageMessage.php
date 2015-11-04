@@ -31,8 +31,7 @@ use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractStorageMessage extends AbstractMessage implements StorageAwareInterface, ComparatorAwareInterface
+abstract class AbstractStorageMessage extends AbstractMessage implements StorageAwareInterface
 {
     use StorageAwareTrait;
-    use ComparatorAwareTrait;
 }

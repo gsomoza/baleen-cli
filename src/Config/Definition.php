@@ -66,17 +66,19 @@ class Definition implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('migrations');
 
-        $node->isRequired()
-            ->children()
-                ->arrayNode('directories')
-                    ->isRequired()
-                    ->requiresAtLeastOneElement()
-                    ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
+        $node
+            ->requiresAtLeastOneElement()
+            ->addDefaultChildrenIfNoneSet(0)
+            ->prototype('array')
+                ->children()
+                    ->scalarNode('namespace')
+                        ->defaultValue('Migrations')
+                    ->end()
+                    ->scalarNode('directory')
+                        ->defaultValue('migrations')
+                    ->end()
                 ->end()
-                ->scalarNode('namespace')->defaultValue('Migrations')->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -91,9 +93,14 @@ class Definition implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('storage');
 
-        $node->isRequired()
+        $node
+            ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('file')->defaultValue('.baleen_versions')->end()
+                ->scalarNode('file')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->defaultValue('.baleen_versions')
+                ->end()
             ->end()
         ->end();
 

@@ -44,86 +44,17 @@ class Config implements ConfigInterface
 
     /**
      * @param array $config
-     * @param bool  $defaults
      */
-    public function __construct(array $config = [], $defaults = true)
+    public function __construct(array $config = [])
     {
-        $configs = [$config];
-        if ($defaults) {
-            // insert at the beginning of the array
-            array_unshift($configs, $this->getDefaults());
+        if (!empty($config)) {
+            $processor = new Processor();
+            $config = $processor->processConfiguration(
+                $this->getDefinition(),
+                [$config]
+            );
+            $this->config = $config;
         }
-        $processor = new Processor();
-        $config = $processor->processConfiguration(
-            $this->getDefinition(),
-            $configs
-        );
-        $this->config = $config;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaults()
-    {
-        return [
-            'providers' => $this->getProviderDefaults(),
-            'migrations' => $this->getMigrationDefaults(),
-            'storage' => $this->getStorageDefaults(),
-            'plugins' => $this->getPluginDefaults(),
-        ];
-    }
-
-    /**
-     * getPluginDefaults
-     * @return array
-     */
-    public function getPluginDefaults()
-    {
-        return []; // default to no plugins
-    }
-
-    /**
-     * Default values for the migrations section.
-     *
-     * @return array
-     */
-    protected function getMigrationDefaults()
-    {
-        return [
-            'directories' => [
-                'Migrations\\' => 'migrations'
-            ],
-        ];
-    }
-
-    /**
-     * Default values for the storage section.
-     *
-     * @return array
-     */
-    protected function getStorageDefaults()
-    {
-        return [
-            'file' => self::VERSIONS_FILE_NAME,
-        ];
-    }
-
-    /**
-     * Default values for the providers section.
-     *
-     * @return array
-     */
-    protected function getProviderDefaults()
-    {
-        return [
-            'application' => ApplicationProvider::class,
-            'storage' => StorageProvider::class,
-            'repository' => RepositoryProvider::class,
-            'timeline' => TimelineProvider::class,
-            'helperSet' => HelperSetProvider::class,
-            'commands' => CommandsProvider::class,
-        ];
     }
 
     /**
@@ -149,36 +80,11 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @return string
-     * @throws CliException
-     */
-    public function getDefaultMigrationsDirectoryPath()
-    {
-        $directories = $this->getMigrationsDirectories();
-        if (empty($directories)) {
-            throw new CliException(
-                'No migration directories configured. Please check your configuration definition to ensure at least ' .
-                'one element is required to be present.'
-            );
-        }
-        $directory = reset($directories);
-        return getcwd().DIRECTORY_SEPARATOR.$directory;
-    }
-
-    /**
      * @return string[]
      */
-    public function getMigrationsDirectories()
+    public function getMigrationsConfig()
     {
-        return $this->config['migrations']['directories'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getMigrationsNamespace()
-    {
-        return $this->config['migrations']['namespace'];
+        return $this->config['migrations'];
     }
 
     /**
@@ -240,6 +146,7 @@ class Config implements ConfigInterface
     {
         $config = $this->config;
         unset($config['providers']);
+        unset($config['plugins']);
 
         return $config;
     }

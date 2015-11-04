@@ -51,7 +51,6 @@ class AbstractStorageMessageTest extends BaseTestCase
     {
         $this->assertInstanceOf(AbstractMessage::class, $this->instance);
         $this->assertInstanceOf(StorageAwareInterface::class, $this->instance);
-        $this->assertInstanceOf(ComparatorAwareInterface::class, $this->instance);
     }
 
     /**
@@ -62,15 +61,5 @@ class AbstractStorageMessageTest extends BaseTestCase
         $storage = m::mock(StorageInterface::class);
         $this->instance->setStorage($storage);
         $this->assertSame($storage, $this->instance->getStorage());
-    }
-
-    /**
-     * testGetSetComparator
-     */
-    public function testGetSetComparator()
-    {
-        $comparator = function(){};
-        $this->instance->setComparator($comparator);
-        $this->assertSame($comparator, $this->instance->getComparator());
     }
 }

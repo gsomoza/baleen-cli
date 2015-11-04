@@ -35,8 +35,8 @@ class LatestHandler extends AbstractRepositoryListHandler
     public function handle(LatestMessage $command)
     {
         $output = $command->getOutput();
+        $versions = $command->getRepository()->fetchAll();
 
-        $versions = $this->getCollection($command->getRepository(), $command->getComparator());
         if (count($versions) > 0) {
             $this->outputVersions($versions, $output);
         } else {

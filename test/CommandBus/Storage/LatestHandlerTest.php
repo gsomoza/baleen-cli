@@ -22,6 +22,7 @@ use Baleen\Cli\CommandBus\Storage\LatestMessage;
 use Baleen\Cli\CommandBus\Storage\LatestHandler;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Version;
+use Baleen\Migrations\Version\Collection\MigratedVersions;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
@@ -46,49 +47,33 @@ class LatestHandlerTest extends HandlerTestCase
 
     /**
      * testHandle
-     * @param $versions
-     * @param $lastId
-     * @param callable $comparator
-     * @dataProvider executeProvider
+     *
+     * @param $count
+     * @dataProvider handleProvider
      */
-    public function testHandle($versions, $lastId, callable $comparator = null)
+    public function testHandle($count)
     {
-        $this->command->shouldReceive('getComparator')->once()->andReturn($comparator ?: new DefaultComparator());
-        if (count($versions) > 0) {
-            $migrated = $this->getMigratedCollection($versions);
-            $this->output->shouldReceive('writeln')->with($lastId)->once();
+        $migrated = m::mock(MigratedVersions::class);
+        $migrated->shouldReceive('count')->once()->andReturn($count);
+        if ($count > 0) {
+            $last = 'v123';
+            $migrated->shouldReceive('last->getId')->andReturn($last);
+            $this->output->shouldReceive('writeln')->with($last)->once();
         } else {
-            $migrated = $versions;
             $this->output->shouldReceive('writeln')->with(m::type('string'))->once();
         }
-        $this->command->shouldReceive('getStorage')->once()->andReturn($this->storage);
-        $this->storage->shouldReceive('fetchAll')->once()->andReturn($migrated);
+        $this->command->shouldReceive('getStorage->fetchAll')->once()->andReturn($migrated);
         $this->handle();
     }
 
     /**
-     * testHandleWithInvalidComparator
-     */
-    public function testHandleWithInvalidComparator()
-    {
-        $this->command->shouldReceive('getComparator')->once()->andReturn('notCallable');
-        $this->command->shouldNotReceive('getStorage');
-        $this->setExpectedException(CliException::class, 'comparator');
-        $this->handle();
-    }
-    /**
+     * handleProvider
      * @return array
      */
-    public function executeProvider()
+    public function handleProvider()
     {
         return [
-            [ [], 5, new DefaultComparator()],
-            [ Version::fromArray(1, 2, 3, 4, 5),      5],  // simple
-            [ Version::fromArray(1, 2, 3, 4, 5, -6), -6],  // last item is -6
-            [ Version::fromArray(3, 5, 1, 6, 7, 2),   7],  // default order
-            [ Version::fromArray(3, 5, 1, 6, 7, 2),   1, function(Version $v1, Version $v2) { // reverse order
-                return (int) $v2->getId() - (int) $v1->getId();
-            }],
+            [0], [99]
         ];
     }
 }

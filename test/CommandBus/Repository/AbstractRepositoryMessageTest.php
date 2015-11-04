@@ -55,7 +55,6 @@ class AbstractRepositoryMessageTest extends BaseTestCase
     {
         $this->assertInstanceOf(AbstractMessage::class, $this->instance);
         $this->assertInstanceOf(RepositoryAwareInterface::class, $this->instance);
-        $this->assertInstanceOf(ComparatorAwareInterface::class, $this->instance);
     }
 
     /**

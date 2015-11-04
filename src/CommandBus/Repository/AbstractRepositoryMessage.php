@@ -31,10 +31,7 @@ use Baleen\Cli\CommandBus\Util\RepositoryAwareTrait;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractRepositoryMessage extends AbstractMessage implements
-    RepositoryAwareInterface,
-    ComparatorAwareInterface
+abstract class AbstractRepositoryMessage extends AbstractMessage implements RepositoryAwareInterface
 {
     use RepositoryAwareTrait;
-    use ComparatorAwareTrait;
 }

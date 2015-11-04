@@ -31,13 +31,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 interface ConfigInterface
 {
     /**
-     * Returns an array of default values.
-     *
-     * @return array
-     */
-    public function getDefaults();
-
-    /**
      * Returns the entire configuration as an array,.
      *
      * @return array

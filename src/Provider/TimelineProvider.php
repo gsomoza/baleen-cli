@@ -23,6 +23,8 @@ namespace Baleen\Cli\Provider;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline\TimelineFactory;
+use Baleen\Migrations\Version\Collection\Resolver\DefaultResolverStackFactory;
+use Baleen\Migrations\Version\Collection\Resolver\ResolverInterface;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use League\Container\ServiceProvider;
@@ -34,8 +36,12 @@ use League\Container\ServiceProvider;
  */
 class TimelineProvider extends ServiceProvider
 {
+    /**
+     * @inheritdoc
+     */
     protected $provides = [
         Services::TIMELINE,
+        Services::RESOLVER,
         Services::COMPARATOR,
     ];
 
@@ -50,19 +56,32 @@ class TimelineProvider extends ServiceProvider
             $container->singleton(Services::COMPARATOR, DefaultComparator::class);
         }
 
+        if (!$container->isRegistered(Services::RESOLVER)) {
+            $container->add(Services::RESOLVER, function() {
+                $factory = new DefaultResolverStackFactory();
+                return $factory->create();
+            });
+        }
+
         $container->singleton(
             Services::TIMELINE,
-            function (RepositoryInterface $repository, StorageInterface $storage, ComparatorInterface $comparator) {
+            function (
+                RepositoryInterface $repository,
+                StorageInterface $storage,
+                ComparatorInterface $comparator,
+                ResolverInterface $resolver
+            ) {
                 $available = $repository->fetchAll();
                 $migrated = $storage->fetchAll();
-                $factory = new TimelineFactory($available, $migrated);
+                $factory = new TimelineFactory($resolver, $comparator);
 
-                return $factory->create($comparator);
+                return $factory->create($available, $migrated);
             }
         )->withArguments([
             Services::REPOSITORY,
             Services::STORAGE,
             DefaultComparator::class,
+            Services::RESOLVER,
         ]);
     }
 }

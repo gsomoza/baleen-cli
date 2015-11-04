@@ -39,22 +39,4 @@ class AbstractRepositoryListHandler
     {
         $output->writeln($versions->last()->getId());
     }
-
-    /**
-     * getCollection.
-     *
-     * @param RepositoryInterface $repository
-     * @param callable|null       $comparator
-     *
-     * @return LinkedVersions
-     */
-    protected function getCollection(RepositoryInterface $repository, callable $comparator = null)
-    {
-        $versions = $repository->fetchAll();
-        if ($comparator) {
-            $versions->sortWith($comparator);
-        }
-
-        return $versions;
-    }
 }
