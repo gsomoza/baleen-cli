@@ -88,7 +88,7 @@ class RepositoryFactory
             $this->ensureDirectoryExists($dir);
             $this->configureAutoloader($config['namespace'], $dir);
 
-            $repo = new DirectoryRepository($dir, $this->migrationFactory, $this->comparator);
+            $repo = new DirectoryRepository($dir, null, $this->migrationFactory, $this->comparator);
             $repositoryStack->addRepository($repo);
         }
         return $repositoryStack;

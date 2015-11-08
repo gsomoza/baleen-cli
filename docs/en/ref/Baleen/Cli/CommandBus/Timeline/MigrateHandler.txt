@@ -76,7 +76,7 @@ Baleen\\Cli\\CommandBus\\Timeline\\MigrateHandler
 
         onCollectionAfter.
 
-    .. php:method:: getStrategyOption(InputInterface $input)
+    .. php:method:: getStrategy(InputInterface $input)
 
         :type $input: InputInterface
         :param $input:

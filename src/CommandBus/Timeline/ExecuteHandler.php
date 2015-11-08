@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\CommandBus\Timeline;
 
+use Baleen\Migrations\Exception\TimelineException;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -31,11 +32,25 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class ExecuteHandler
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @param ExecuteMessage $command
+     *
+     * @throws \Baleen\Migrations\Exception\TimelineException
+     */
     public function handle(ExecuteMessage $command)
     {
         $input = $command->getInput();
         $output = $command->getOutput();
-        $version = (string) $input->getArgument(ExecuteMessage::ARG_VERSION);
+        $versionKey = (string) $input->getArgument(ExecuteMessage::ARG_VERSION);
+        $version = $command->getTimeline()->getVersions()->get($versionKey);
+        if (null === $version) {
+            throw new TimelineException(sprintf(
+                'Could not find a version with key "%s".',
+                $versionKey
+            ));
+        }
 
         $direction = $input->getArgument(ExecuteMessage::ARG_DIRECTION) == Options::DIRECTION_DOWN ?
             Options::DIRECTION_DOWN :
@@ -48,7 +63,7 @@ class ExecuteHandler
         $canExecute = true;
         if ($input->isInteractive()) {
             $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that '.
-                'could result in schema changes and data lost.');
+                'could result in schema changes and data loss.');
             $question = sprintf('Are you sure you wish to migrate "%s" (y/n)? ', $direction);
             $canExecute = $command->getCliCommand()
                 ->getHelper('question')
@@ -57,10 +72,9 @@ class ExecuteHandler
         if ($canExecute) {
             $result = $command->getTimeline()->runSingle($version, $options);
             if ($result && !$options->isDryRun()) {
-                $version = $result;
-                $command->getStorage()->update($version);
+                $command->getStorage()->update($result);
             }
-            $output->writeln("Version <info>$version</info> migrated <info>$direction</info> successfully.");
+            $output->writeln('Version <info>$versionKey</info> migrated <info>$direction</info> successfully.');
         }
     }
 }

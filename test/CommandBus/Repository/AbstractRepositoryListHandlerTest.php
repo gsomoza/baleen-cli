@@ -22,7 +22,7 @@ namespace BaleenTest\Cli\CommandBus\Repository;
 use Baleen\Cli\CommandBus\Repository\AbstractRepositoryListHandler;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
+use Baleen\Migrations\Version\Collection\Linked;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,7 +53,7 @@ class AbstractRepositoryListHandlerTest extends BaseTestCase
     public function testOutputVersions()
     {
         $lastVersionId = 123;
-        $versions = m::mock(LinkedVersions::class);
+        $versions = m::mock(Linked::class);
         $versions->shouldReceive('last->getId')->once()->andReturn($lastVersionId);
 
         $output = m::mock(OutputInterface::class);

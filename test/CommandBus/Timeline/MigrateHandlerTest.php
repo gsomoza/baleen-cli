@@ -81,7 +81,7 @@ class MigrateHandlerTest extends HandlerTestCase
         $this->input->shouldReceive('getArgument')->with(MigrateMessage::ARG_TARGET)->once()->andReturn($target);
         $this->input->shouldReceive('getOption')->with(MigrateMessage::OPT_DRY_RUN)->once()->andReturn($dryRun);
         $this->input->shouldReceive('getOption')->with(MigrateMessage::OPT_NO_STORAGE)->once()->andReturn($noStorage);
-        $this->instance->shouldReceive('getStrategyOption')->with($this->input)->andReturn($strategy);
+        $this->instance->shouldReceive('getStrategy')->with($this->input)->andReturn($strategy);
         $this->instance->shouldReceive('attachEvents')->once()->with($this->output, $dispatcher);
         $this->command->shouldReceive('getTimeline->' . $strategy)->once()->with($target, m::type(Options::class));
 
@@ -128,7 +128,7 @@ class MigrateHandlerTest extends HandlerTestCase
             $this->setExpectedException(CliException::class, 'Unknown');
         }
 
-        $this->invokeMethod('getStrategyOption', $this->instance, [$this->input]);
+        $this->invokeMethod('getStrategy', $this->instance, [$this->input]);
     }
 
     /**

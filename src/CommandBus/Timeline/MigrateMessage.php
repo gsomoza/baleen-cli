@@ -20,12 +20,14 @@
 
 namespace Baleen\Cli\CommandBus\Timeline;
 
+use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
-use Baleen\Migrations\Version;
+use Baleen\Migrations\Version\VersionInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class MigrateMessage.
@@ -37,6 +39,13 @@ class MigrateMessage extends AbstractTimelineCommand
     const ARG_TARGET = 'target';
     const OPT_STRATEGY = 'strategy';
     const OPT_NOPROGRESS = 'no-progress';
+
+    /** @var array */
+    private $strategies = [
+        Options::DIRECTION_UP => 'upTowards',
+        Options::DIRECTION_DOWN => 'downTowards',
+        'both' => 'goTowards',
+    ];
 
     /**
      * @inheritdoc
@@ -62,5 +71,92 @@ class MigrateMessage extends AbstractTimelineCommand
                 'Strategy to migrate with (up/down/both).',
                 Options::DIRECTION_UP // 'up'
             );
+    }
+
+    /**
+     * isDryRun
+     * @return bool
+     */
+    public function isDryRun()
+    {
+        return (bool) $this->getInput()->getOption(MigrateMessage::OPT_DRY_RUN);
+    }
+
+    /**
+     * isNoStorage
+     * @return bool
+     */
+    public function isNoStorage()
+    {
+        return (bool) $this->getInput()->getOption(MigrateMessage::OPT_NO_STORAGE);
+    }
+
+    /**
+     * isNoProgress
+     *
+     * @return bool
+     */
+    public function isNoProgress()
+    {
+        return (bool) $this->getInput()->getOption(MigrateMessage::OPT_NOPROGRESS);
+    }
+
+    /**
+     * shouldSaveChanges
+     *
+     * @return bool
+     */
+    public function shouldSaveChanges()
+    {
+        return !$this->isNoStorage() && !$this->isDryRun();
+    }
+
+    /**
+     * shouldTrackProgress
+     *
+     * @return bool
+     */
+    public function shouldTrackProgress()
+    {
+        return ($this->getOutput()->getVerbosity() !== OutputInterface::VERBOSITY_QUIET) && !$this->isNoProgress();
+    }
+
+    /**
+     * @return string
+     *
+     * @throws CliException
+     */
+    public function getStrategy()
+    {
+        $strategy = strtolower($this->getInput()->getOption(MigrateMessage::OPT_STRATEGY));
+        if (!isset($this->strategies[$strategy])) {
+            throw new CliException(sprintf(
+                'Unknown strategy "%s". Must be one of: %s',
+                $strategy,
+                implode(', ', array_keys($this->strategies))
+            ));
+        }
+
+        return $this->strategies[$strategy];
+    }
+
+    /**
+     * Returns the migration target
+     *
+     * @return VersionInterface
+     *
+     * @throws CliException
+     */
+    public function getTarget()
+    {
+        $targetArg = (string) $this->getInput()->getArgument(MigrateMessage::ARG_TARGET);
+        $target = $this->getTimeline()->getVersions()->get($targetArg);
+        if (!$target) {
+            throw new CliException(sprintf(
+                'Migration target with id "%s" could not be found.',
+                $targetArg
+            ));
+        }
+        return $target;
     }
 }

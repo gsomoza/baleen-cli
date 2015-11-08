@@ -42,7 +42,7 @@ Baleen\\Cli\\CommandBus\\Config\\StatusHandler
         :param $to:
         :returns: string
 
-    .. php:method:: printDiff($versions, $message, $style = self::STYLE_INFO)
+    .. php:method:: printCollection($versions, $message, $style = self::STYLE_INFO)
 
         Prints an array (group) of Versions all with the given style. If the array
         is empty then it prints nothing.

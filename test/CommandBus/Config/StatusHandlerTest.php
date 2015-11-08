@@ -26,10 +26,10 @@ use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Version as V;
-use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
-use Baleen\Migrations\Version\Collection\MigratedVersions;
+use Baleen\Migrations\Version\Collection\Linked;
+use Baleen\Migrations\Version\Collection\Migrated;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
+use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
@@ -131,7 +131,7 @@ class StatusHandlerTest extends HandlerTestCase
             $this->output->shouldNotReceive('writeln');
         }
         $this->setPropVal('output', $this->output, $this->instance);
-        $this->invokeMethod('printDiff', $this->instance, [$versions, $message, $style]);
+        $this->invokeMethod('printCollection', $this->instance, [$versions, $message, $style]);
     }
 
     /**
@@ -184,13 +184,13 @@ class StatusHandlerTest extends HandlerTestCase
     /**
      * testHandle
      *
-     * @param LinkedVersions $available
-     * @param MigratedVersions $migrated
+     * @param Linked $available
+     * @param Migrated $migrated
      * @param $pendingCount
      *
      * @dataProvider handleProvider
      */
-    public function testHandle(LinkedVersions $available, MigratedVersions $migrated, $pendingCount)
+    public function testHandle(Linked $available, Migrated $migrated, $pendingCount)
     {
         $this->repository->shouldReceive('fetchAll')->once()->andReturn($available);
         $this->storage->shouldReceive('fetchAll')->once()->andReturn($migrated);
@@ -206,7 +206,7 @@ class StatusHandlerTest extends HandlerTestCase
                     && is_string($messages[1])
                     && $messages[2] === '';
             }))->once();
-            $this->instance->shouldReceive('printDiff')->with(
+            $this->instance->shouldReceive('printCollection')->with(
                 m::type('array'),
                 m::on(function($messages) {
                     return preg_match('/still pending.*?:$/', $messages[0])
@@ -214,7 +214,7 @@ class StatusHandlerTest extends HandlerTestCase
                 }),
                 StatusHandler::STYLE_COMMENT
             )->once();
-            $this->instance->shouldReceive('printDiff')->with(
+            $this->instance->shouldReceive('printCollection')->with(
                 m::type('array'),
                 m::on(function($messages) {
                     return (bool) preg_match('/[Nn]ew migrations:$/', $messages[0]);
@@ -238,21 +238,21 @@ class StatusHandlerTest extends HandlerTestCase
         // the number of pending migrations with the foreach loop below (see comment below).
         $repVersions = [
             [],
-            Version::fromArray(range(1,10)),
+            V::fromArray(range(1,10)),
         ];
         $repositories = [];
         foreach ($repVersions as $versions) {
             $this->linkVersions($versions);
-            $repositories[] = new LinkedVersions($versions);
+            $repositories[] = new Linked($versions);
         }
         $storageVersions = [
             [],
-            Version::fromArray(range(1,3)),
+            V::fromArray(range(1,3)),
         ];
         $storages = [];
         foreach ($storageVersions as $versions) {
             $this->linkVersions($versions, true);
-            $storages[] = new MigratedVersions($versions);
+            $storages[] = new Migrated($versions);
         }
 
         $combinations = $this->combinations([$repositories, $storages]);
@@ -271,8 +271,8 @@ class StatusHandlerTest extends HandlerTestCase
         $storageVersions23 = [new V(1), new V(2)];
         $this->linkVersions($storageVersions23, true);
         $combinations[] = [
-            new LinkedVersions($repositoryVersions23),
-            new MigratedVersions($storageVersions23),
+            new Linked($repositoryVersions23),
+            new Migrated($storageVersions23),
             1 // one migration pending: v3
         ];
 
@@ -287,7 +287,7 @@ class StatusHandlerTest extends HandlerTestCase
     protected function linkVersions(&$versions, $migrated = false)
     {
         foreach ($versions as $v) {
-            /** @var Version $v */
+            /** @var VersionInterface $v */
             /** @var MigrationInterface|m\Mock $migration */
             $migration = m::mock(MigrationInterface::class);
             $v->setMigration($migration);

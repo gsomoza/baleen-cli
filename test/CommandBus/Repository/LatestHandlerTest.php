@@ -24,7 +24,7 @@ use Baleen\Cli\CommandBus\Repository\LatestHandler;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version as V;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
+use Baleen\Migrations\Version\Collection\Linked;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
@@ -55,7 +55,7 @@ class LatestHandlerTest extends HandlerTestCase
         /** @var m\Mock|MigrationInterface $migration */
         $migration = m::mock(MigrationInterface::class);
         $version->setMigration($migration);
-        $versions = new LinkedVersions([$version]); // only thing that matters is count > 0
+        $versions = new Linked([$version]); // only thing that matters is count > 0
 
         $this->command
             ->shouldReceive('getRepository->fetchAll')

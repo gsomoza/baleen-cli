@@ -37,27 +37,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class MigrateHandler
 {
-    /** @var ProgressBar */
-    protected $progress;
-
-    /** @var bool */
-    protected $saveChanges = true;
-
-    /** @var array */
-    protected $strategies = [
-        Options::DIRECTION_UP => 'upTowards',
-        Options::DIRECTION_DOWN => 'downTowards',
-        'both' => 'goTowards',
-    ];
-
-    /** @var bool */
-    protected $trackProgress = true;
-
-    /** @var OutputInterface */
-    protected $output;
-
     /** @var MigrateMessage */
-    protected $command;
+    private $command;
 
     /**
      * handle.
@@ -68,34 +49,33 @@ class MigrateHandler
      */
     public function handle(MigrateMessage $command)
     {
-        $input = $command->getInput();
-        $output = $command->getOutput();
         $this->command = $command;
 
-        $targetArg = (string) $input->getArgument(MigrateMessage::ARG_TARGET);
-        $strategy = (string) $this->getStrategyOption($input);
+        $options = new Options(
+            Options::DIRECTION_UP,  // this value will get replaced by timeline later
+            false,
+            $command->isDryRun(),
+            false
+        );
 
-        $options = new Options(Options::DIRECTION_UP); // this value will get replaced by timeline later
-        $options->setDryRun($input->getOption(MigrateMessage::OPT_DRY_RUN));
-        $options->setExceptionOnSkip(false);
+        $command->getTimeline()->getEventDispatcher()->addSubscriber(
+            new MigrateSubscriber($command)
+        );
 
-        $this->saveChanges = !$input->getOption(MigrateMessage::OPT_NO_STORAGE) && !$options->isDryRun();
+        $strategy = $command->getStrategy();
 
-        $this->trackProgress = ($output->getVerbosity() !== OutputInterface::VERBOSITY_QUIET)
-            && !$input->getOption(MigrateMessage::OPT_NOPROGRESS);
-
-        $this->attachEvents($output, $command->getTimeline()->getEventDispatcher());
-
-        /* @var \Baleen\Migrations\Version\Collection\LinkedVersions $results */
-        $command->getTimeline()->$strategy($targetArg, $options);
+        $command->getTimeline()->$strategy(
+            $command->getTarget(),
+            $options
+        );
     }
 
     /**
      * @inheritDoc
      */
-    protected function attachEvents(OutputInterface $output, EventDispatcherInterface $dispatcher)
+    protected function attachEvents(EventDispatcherInterface $dispatcher)
     {
-        $this->output = $output;
+        $output = $this->command->getOutput();
 
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
             $dispatcher->addListener(EventInterface::COLLECTION_BEFORE, [$this, 'onCollectionBefore']);
@@ -104,101 +84,8 @@ class MigrateHandler
             $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'onMigrationAfter']);
         }
 
-        if ($this->saveChanges) {
+        if ($this->command->shouldSaveChanges()) {
             $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'saveVersionListener']);
         }
-    }
-
-    /**
-     * saveVersionListener.
-     *
-     * @param MigrationEvent $event
-     */
-    public function saveVersionListener(MigrationEvent $event)
-    {
-        $version = $event->getVersion();
-        $this->command->getStorage()->update($version);
-    }
-
-    /**
-     * @param MigrationEvent $event
-     */
-    public function onMigrationBefore(MigrationEvent $event)
-    {
-        if (!$this->progress) {
-            $version = $event->getVersion();
-            $this->output->writeln(sprintf(
-                '<info>[%s]</info> <comment>%s</comment>',
-                $version->getId(),
-                strtoupper($event->getOptions()->getDirection())
-            ));
-        }
-    }
-
-    /**
-     * onMigrationAfter.
-     *
-     * @param MigrationEvent $event
-     */
-    public function onMigrationAfter(MigrationEvent $event)
-    {
-        if ($this->progress) {
-            $runProgress = $event->getProgress();
-            $this->progress->setProgress($runProgress->getCurrent());
-        }
-    }
-
-    /**
-     * onCollectionBefore.
-     *
-     * @param CollectionEvent $event
-     */
-    public function onCollectionBefore(CollectionEvent $event)
-    {
-        $target = $event->getTarget();
-
-        $this->output->writeln(sprintf(
-            '<info>[START]</info> Migrating %s to <comment>%s</comment>:',
-            $event->getOptions()->isDirectionUp() ? 'up' : 'down',
-            $target->getId()
-        ));
-        if ($this->trackProgress) {
-            $this->progress = new ProgressBar($this->output, $event->getProgress()->getTotal());
-            $this->progress->setFormat('verbose');
-            $this->progress->setProgress(0);
-        }
-    }
-
-    /**
-     * onCollectionAfter.
-     */
-    public function onCollectionAfter()
-    {
-        if ($this->progress) {
-            $this->progress->finish();
-            $this->output->writeln(''); // new line after progress bar
-        }
-        $this->output->writeln('<info>[END]</info>');
-    }
-
-    /**
-     * @param InputInterface $input
-     *
-     * @return string
-     *
-     * @throws CliException
-     */
-    protected function getStrategyOption(InputInterface $input)
-    {
-        $strategy = strtolower($input->getOption(MigrateMessage::OPT_STRATEGY));
-        if (!isset($this->strategies[$strategy])) {
-            throw new CliException(sprintf(
-                'Unknown strategy "%s". Must be one of: %s',
-                $strategy,
-                implode(', ', array_keys($this->strategies))
-            ));
-        }
-
-        return $this->strategies[$strategy];
     }
 }

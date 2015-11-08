@@ -24,7 +24,7 @@ use Baleen\Cli\CommandBus\Repository\ListHandler;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\LinkedVersions;
+use Baleen\Migrations\Version\Collection\Linked;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
@@ -48,10 +48,10 @@ class ListHandlerTest extends HandlerTestCase
 
     /**
      * testOutputVersions
-     * @param LinkedVersions $versions
+     * @param Linked $versions
      * @dataProvider versionsProvider
      */
-    public function testOutputVersions(LinkedVersions $versions)
+    public function testOutputVersions(Linked $versions)
     {
         foreach ($versions as $version) {
             $id = $version->getId();
@@ -62,11 +62,11 @@ class ListHandlerTest extends HandlerTestCase
 
     /**
      * testHandle
-     * @param LinkedVersions $versions
+     * @param Linked $versions
      * @param $newestFirst
      * @dataProvider versionsProvider
      */
-    public function testHandle(LinkedVersions $versions, $newestFirst)
+    public function testHandle(Linked $versions, $newestFirst)
     {
         $this->input->shouldReceive('getOption')->with('newest-first')->once()->andReturn($newestFirst);
         $this->command->shouldReceive('getRepository->fetchAll')->once()->andReturn($versions);
@@ -76,7 +76,7 @@ class ListHandlerTest extends HandlerTestCase
             $this->instance
                 ->shouldReceive('outputVersions')
                 ->with(m::on(function($versions) use ($firstVersion) {
-                    if (!$versions instanceof LinkedVersions) {
+                    if (!$versions instanceof Linked) {
                         return false;
                     }
                     $versions->rewind();
@@ -110,7 +110,7 @@ class ListHandlerTest extends HandlerTestCase
                 $migration = m::mock(MigrationInterface::class);
                 $version->setMigration($migration);
             }
-            $collections[] = new LinkedVersions($collection);
+            $collections[] = new Linked($collection);
         }
         return $this->combinations([$collections, $trueFalse]);;
     }

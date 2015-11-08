@@ -23,7 +23,7 @@ use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Storage\LatestMessage;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\MigratedVersions;
+use Baleen\Migrations\Version\Collection\Migrated;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 use Mockery\Matcher\MatcherAbstract;
@@ -100,7 +100,7 @@ class HandlerTestCase extends BaseTestCase
 
     /**
      * @param $versions
-     * @return MigratedVersions
+     * @return Migrated
      */
     protected function getMigratedCollection(array $versions)
     {
@@ -111,7 +111,7 @@ class HandlerTestCase extends BaseTestCase
             /** @var Version $version */
             $version->setMigrated(true);
         }
-        return new MigratedVersions($versions);
+        return new Migrated($versions);
     }
 
     /**

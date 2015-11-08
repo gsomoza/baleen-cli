@@ -21,9 +21,10 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Storage\FileStorage;
+use Baleen\Storage\FlyStorage;
 use League\Container\ServiceProvider;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 
 /**
  * Class StorageProvider.
@@ -43,17 +44,10 @@ class StorageProvider extends ServiceProvider
     {
         $container = $this->getContainer();
         $container->singleton(Services::STORAGE, function (Config $config) {
-            $storageFile = $config->getStorageFilePath();
-            $result = touch($storageFile);
-            if (!$result) {
-                throw new CliException(sprintf(
-                    'Could not write storage file "%s".',
-                    $config->getStorageFile()
-                ));
-            }
-
-            return new FileStorage($storageFile);
-        })
-            ->withArgument(Services::CONFIG);
+            $adapter = new Local(getcwd());
+            $filesystem = new Filesystem($adapter);
+            $fileName = $config->getStorageFile();
+            return new FlyStorage($filesystem, $fileName);
+        })->withArgument(Services::CONFIG);
     }
 }

@@ -20,7 +20,7 @@
 
 namespace Baleen\Cli\CommandBus\Repository;
 
-use Baleen\Migrations\Version\Collection\LinkedVersions;
+use Baleen\Migrations\Version\Collection\Linked;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -54,10 +54,10 @@ class ListHandler extends AbstractRepositoryListHandler
     }
 
     /**
-     * @param LinkedVersions  $versions
+     * @param Linked  $versions
      * @param OutputInterface $output
      */
-    protected function outputVersions(LinkedVersions $versions, OutputInterface $output)
+    protected function outputVersions(Linked $versions, OutputInterface $output)
     {
         foreach ($versions as $version) {
             $output->writeln($version->getId());

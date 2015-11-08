@@ -15,17 +15,21 @@
             "Baleen\\Cli\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "BaleenTest\\Cli\\": "test/"
+        }
+    },
     "bin": [
         "bin/baleen"
     ],
     "require": {
+        "baleen/storage-flysystem": "^0.1",
         "symfony/console": "^2.7",
         "psr/log": "^1.0",
-        "baleen/migrations": "^0.7",
         "symfony/yaml": "^2.7",
         "symfony/config": "^2.7",
-        "league/container": "^1.3",
-        "league/flysystem": "^1.0"
+        "league/container": "^1.3"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

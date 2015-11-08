@@ -22,7 +22,7 @@ use Baleen\Cli\CommandBus\Storage\LatestMessage;
 use Baleen\Cli\CommandBus\Storage\LatestHandler;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\MigratedVersions;
+use Baleen\Migrations\Version\Collection\Migrated;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
@@ -53,7 +53,7 @@ class LatestHandlerTest extends HandlerTestCase
      */
     public function testHandle($count)
     {
-        $migrated = m::mock(MigratedVersions::class);
+        $migrated = m::mock(Migrated::class);
         $migrated->shouldReceive('count')->once()->andReturn($count);
         if ($count > 0) {
             $last = 'v123';
