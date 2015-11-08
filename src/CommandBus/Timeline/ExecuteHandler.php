@@ -74,7 +74,7 @@ class ExecuteHandler
             if ($result && !$options->isDryRun()) {
                 $command->getStorage()->update($result);
             }
-            $output->writeln('Version <info>$versionKey</info> migrated <info>$direction</info> successfully.');
+            $output->writeln("Version <info>{$version->getId()}</info> migrated <info>$direction</info> successfully.");
         }
     }
 }

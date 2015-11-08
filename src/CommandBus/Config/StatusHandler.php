@@ -20,8 +20,8 @@
 namespace Baleen\Cli\CommandBus\Config;
 
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Baleen\Migrations\Version\VersionInterface;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,6 +33,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class StatusHandler
 {
+    use CalculatesRelativePathsTrait;
+
     const STYLE_INFO = 'info';
     const STYLE_COMMENT = 'comment';
 
@@ -129,47 +131,6 @@ class StatusHandler
         $absolutePath = $reflectionClass->getFileName();
         $fileName = $absolutePath ? $this->getRelativePath(getcwd(), $absolutePath) : '';
         $this->output->writeln("\t<$style>$fileName</$style>");
-    }
-
-    /**
-     * Returns the relative path between two known paths.
-     *
-     * @param $from
-     * @param $to
-     *
-     * @return string
-     *
-     * @link http://stackoverflow.com/questions/2637945/getting-relative-path-from-absolute-path-in-php
-     */
-    protected function getRelativePath($from, $to)
-    {
-        // some compatibility fixes for Windows paths
-        $from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
-        $to = is_dir($to) ? rtrim($to, '\/') . '/' : $to;
-        $from = str_replace('\\', '/', $from);
-        $to = str_replace('\\', '/', $to);
-
-        $from = explode('/', $from);
-        $to = explode('/', $to);
-        $relPath = $to;
-
-        foreach ($from as $depth => $dir) {
-            // find first non-matching dir
-            if (isset($to[$depth]) && $dir === $to[$depth]) {
-                // ignore this directory
-                array_shift($relPath);
-            } else {
-                // get number of remaining dirs to $from
-                $remaining = count($from) - $depth;
-                if ($remaining > 1) {
-                    // add traversals up to first matching dir
-                    $padLength = (count($relPath) + $remaining - 1) * -1;
-                    $relPath = array_pad($relPath, $padLength, '..');
-                    break;
-                }
-            }
-        }
-        return implode('/', $relPath);
     }
 
     /**

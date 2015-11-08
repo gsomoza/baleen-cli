@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\CommandBus\Repository;
 
+use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 use Baleen\Migrations\Version\Collection\Linked;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -30,6 +31,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ListHandler extends AbstractRepositoryListHandler
 {
+    use CalculatesRelativePathsTrait;
+
     /**
      * handle.
      *
@@ -59,8 +62,13 @@ class ListHandler extends AbstractRepositoryListHandler
      */
     protected function outputVersions(Linked $versions, OutputInterface $output)
     {
+        $lines = [];
         foreach ($versions as $version) {
-            $output->writeln($version->getId());
+            $class = new \ReflectionClass($version->getMigration());
+            $fullPath = $class->getFileName();
+            $file = $this->getRelativePath(getcwd(), $fullPath);
+            $lines[] = "<comment>{$version->getId()}</comment> $file";
         }
+        $output->writeln($lines);
     }
 }
