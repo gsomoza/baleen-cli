@@ -22,12 +22,16 @@ namespace BaleenTest\Baleen\CommandBus\Config;
 use Baleen\Cli\CommandBus\Config\StatusHandler;
 use Baleen\Cli\CommandBus\Config\StatusMessage;
 use Baleen\Cli\Config\ConfigStorage;
+use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Version as V;
+use Baleen\Migrations\Version\Collection;
 use Baleen\Migrations\Version\Collection\Linked;
 use Baleen\Migrations\Version\Collection\Migrated;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
@@ -50,7 +54,7 @@ class StatusHandlerTest extends HandlerTestCase
     /** @var m\Mock|StorageInterface */
     protected $storage;
 
-    /** @var m\Mock|callable */
+    /** @var m\Mock|ComparatorInterface */
     protected $comparator;
 
     /** @var m\Mock */
@@ -77,111 +81,6 @@ class StatusHandlerTest extends HandlerTestCase
     }
 
     /**
-     * testPrintPendingVersions
-     * @param $id
-     * @param $migrationClass
-     * @param $style
-     * @dataProvider printPendingVersionProvider
-     */
-    public function testPrintPendingVersion($id, $migrationClass, $style)
-    {
-        $version = m::mock(V::class);
-        $version->shouldReceive([
-            'getId' => $id,
-            'getMigration' => $migrationClass,
-        ])->once();
-        if ($migrationClass === '__INVALID__') {
-            $this->setExpectedException(\ReflectionException::class);
-        } else {
-            $this->setPropVal('output', $this->output, $this->instance);
-            $this->output->shouldReceive('writeln')->once()->with("/^.*?\\<$style\\>.*?$id.*?\\<\\/$style\\>.*?$/");
-        }
-        $this->invokeMethod('printPendingVersion', $this->instance, [$version, $style]);
-    }
-
-    /**
-     * printPendingVersionsProvider
-     * @return array
-     */
-    public function printPendingVersionProvider()
-    {
-        $ids = [123];
-        $migrationClasses = ['stdClass', '__INVALID__'];
-        $styles = [StatusHandler::STYLE_COMMENT, StatusHandler::STYLE_INFO];
-        return $this->combinations([$ids, $migrationClasses, $styles]);
-    }
-
-    /**
-     * testPrintDiff
-     * @param $versions
-     * @param $message
-     * @param $style
-     * @dataProvider printDiffProvider
-     */
-    public function testPrintDiff(array $versions, $message, $style)
-    {
-        if (count($versions)) {
-            $this->instance
-                ->shouldReceive('printPendingVersion')
-                ->times(count($versions))
-                ->with(m::type(V::class), $style);
-            $this->output->shouldReceive('writeln')->once()->with($message);
-            $this->output->shouldReceive('writeln')->twice()->with('');
-        } else {
-            $this->output->shouldNotReceive('writeln');
-        }
-        $this->setPropVal('output', $this->output, $this->instance);
-        $this->invokeMethod('printCollection', $this->instance, [$versions, $message, $style]);
-    }
-
-    /**
-     * printDiffProvider
-     * @return array
-     */
-    public function printDiffProvider()
-    {
-        $versions = [[], [m::mock(V::class), m::mock(V::class)]];
-        $messages = ['Single Message', ['Multiple', 'Messages']];
-        $styles = [StatusHandler::STYLE_INFO, StatusHandler::STYLE_COMMENT];
-        return $this->combinations([$versions, $messages, $styles]);
-    }
-
-    /**
-     * testSplitDiff
-     * @param V[] $diff
-     * @param callable $comparator
-     * @param V $head
-     * @dataProvider splitDiffProvider
-     */
-    public function testSplitDiff(array $diff, callable $comparator, V $head)
-    {
-        list($beforeHead, $afterHead) = $this->invokeMethod('splitDiff', $this->instance, [$diff, $comparator, $head]);
-        if (empty($diff)) {
-            $this->assertEmpty($beforeHead);
-            $this->assertEmpty($afterHead);
-        }
-        foreach ($beforeHead as $v) {
-            $this->assertLessThan(0, $comparator($v, $head));
-        }
-        foreach ($afterHead as $v) {
-            $this->assertGreaterThan(0, $comparator($v, $head));
-        }
-    }
-
-    /**
-     * splitDiffProvider
-     * @return array
-     */
-    public function splitDiffProvider()
-    {
-        $defaultComparator = new DefaultComparator();
-        $diffs = [[], V::fromArray(range(2, 10))];
-        $comparators = [$defaultComparator];
-        $heads = V::fromArray(1, 2, 5, 10, 11);
-        return $this->combinations([$diffs, $comparators, $heads]);
-    }
-
-    /**
      * testHandle
      *
      * @param Linked $available
@@ -196,27 +95,37 @@ class StatusHandlerTest extends HandlerTestCase
         $this->storage->shouldReceive('fetchAll')->once()->andReturn($migrated);
         $this->command->setRepository($this->repository);
         $this->command->setStorage($this->storage);
+        /** @var VersionFormatter|m\Mock $formatter */
+        $formatter = m::mock(VersionFormatterInterface::class);
+        $this->command
+            ->shouldReceive('getCliCommand->getHelper')
+            ->with('versionFormatter')
+            ->once()
+            ->andReturn($formatter);
+
         $currentMsg = $migrated->last() === false ?
             '/[Nn]othing has been migrated/' :
             '/[Cc]urrent version.*?' . $migrated->last()->getId() . '.*?$/';
         $this->output->shouldReceive('writeln')->once()->with($currentMsg);
         if ($pendingCount > 0) {
-            $this->output->shouldReceive('writeln')->with(m::on(function($messages) use ($pendingCount) {
+            $this->output->shouldReceive('writeln')->with(m::on(function ($messages) use ($pendingCount) {
                 return preg_match("/out\\-of\\-date.*?by $pendingCount versions/", $messages[0])
                     && is_string($messages[1])
                     && $messages[2] === '';
             }))->once();
             $this->instance->shouldReceive('printCollection')->with(
-                m::type('array'),
-                m::on(function($messages) {
+                $formatter,
+                m::type(Collection::class),
+                m::on(function ($messages) {
                     return preg_match('/still pending.*?:$/', $messages[0])
                         && preg_match('/use.*?migrate.*?to migrate them/', $messages[1]);
                 }),
                 StatusHandler::STYLE_COMMENT
             )->once();
             $this->instance->shouldReceive('printCollection')->with(
-                m::type('array'),
-                m::on(function($messages) {
+                $formatter,
+                m::type(Collection::class),
+                m::on(function ($messages) {
                     return (bool) preg_match('/[Nn]ew migrations:$/', $messages[0]);
                 }),
                 StatusHandler::STYLE_INFO

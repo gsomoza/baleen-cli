@@ -32,6 +32,7 @@ use Mockery as m;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class MigrateHandlerTest
@@ -63,40 +64,18 @@ class MigrateHandlerTest extends HandlerTestCase
         // values don't matter here
         $strategy = 'both';
         $target = 'someTarget';
-        $dryRun = 'no!'; // again: this really doesn't matter for the test
-        $shouldTrackProgress = $verbosity !== OutputInterface::VERBOSITY_QUIET;
+        $dryRun = true;
 
-        $dispatcher = m::mock(EventDispatcher::class);
-        $this->command->shouldReceive('getTimeline->getEventDispatcher')->once()->andReturn($dispatcher);
+        $this->command->shouldReceive('getTimeline->getEventDispatcher->addSubscriber')
+            ->with(m::type(EventSubscriberInterface::class))
+            ->once();
 
-        $this->output->shouldReceive('getVerbosity')->once()->andReturn($verbosity);
-        if ($shouldTrackProgress) {
-            $this->input->shouldReceive('getOption')
-                ->once()
-                ->with(MigrateMessage::OPT_NOPROGRESS)
-                ->andReturn($noProgress);
-            $shouldTrackProgress = !$noProgress;
-        }
-
-        $this->input->shouldReceive('getArgument')->with(MigrateMessage::ARG_TARGET)->once()->andReturn($target);
-        $this->input->shouldReceive('getOption')->with(MigrateMessage::OPT_DRY_RUN)->once()->andReturn($dryRun);
-        $this->input->shouldReceive('getOption')->with(MigrateMessage::OPT_NO_STORAGE)->once()->andReturn($noStorage);
-        $this->instance->shouldReceive('getStrategy')->with($this->input)->andReturn($strategy);
-        $this->instance->shouldReceive('attachEvents')->once()->with($this->output, $dispatcher);
+        $this->command->shouldReceive('isDryRun')->once()->andReturn($dryRun);
+        $this->command->shouldReceive('getStrategy')->once()->andReturn($strategy);
+        $this->command->shouldReceive('getTarget')->once()->andReturn($target);
         $this->command->shouldReceive('getTimeline->' . $strategy)->once()->with($target, m::type(Options::class));
 
         $this->handle();
-
-        $this->assertEquals(
-            $shouldTrackProgress,
-            $this->getPropVal('trackProgress', $this->instance),
-            'Should track progress.'
-        );
-        $this->assertEquals(
-            !$noStorage && !$dryRun,
-            $this->getPropVal('saveChanges', $this->instance),
-            'Should NOT save changes if --no-storage or --dry-run specified.'
-        );
     }
 
     /**
@@ -114,197 +93,5 @@ class MigrateHandlerTest extends HandlerTestCase
         ];
         $trueFalse = [true, false];
         return $this->combinations([$verbosities, $trueFalse, $trueFalse]);
-    }
-
-    /**
-     * testGetStrategyOption
-     * @dataProvider getStrategyOptionProvider
-     */
-    public function testGetStrategyOption($strategy, $throwException = false)
-    {
-        $this->input->shouldReceive('getOption')->once()->with(MigrateMessage::OPT_STRATEGY)->andReturn($strategy);
-
-        if ($throwException) {
-            $this->setExpectedException(CliException::class, 'Unknown');
-        }
-
-        $this->invokeMethod('getStrategy', $this->instance, [$this->input]);
-    }
-
-    /**
-     * getStrategyOptionProvider
-     * @return array
-     */
-    public function getStrategyOptionProvider()
-    {
-        return [
-            ['both'],
-            ['up'],
-            ['down'],
-            ['oops!', true],
-        ];
-    }
-
-    /**
-     * testOnCollectionAfter
-     * @param $withProgress
-     * @dataProvider trueFalseProvider
-     */
-    public function testOnCollectionAfter($withProgress)
-    {
-        $this->output->shouldReceive('writeln')->with('/END/')->once();
-        if ($withProgress) {
-            $progress = m::mock();
-            $progress->shouldReceive('finish')->once();
-            $this->setPropVal('progress', $progress, $this->instance);
-            $this->output->shouldReceive('writeln')->once();
-        }
-        $this->setPropVal('output', $this->output, $this->instance);
-        $this->invokeMethod('onCollectionAfter', $this->instance);
-    }
-
-    /**
-     * testOnMigrationAfter
-     * @param $withProgress
-     * @dataProvider trueFalseProvider
-     */
-    public function testOnMigrationAfter($withProgress)
-    {
-        $currentProgress = 50;
-        $event = m::mock(MigrationEvent::class);
-        if ($withProgress) {
-            $progress = m::mock();
-            $progress->shouldReceive('setProgress')->once()->with($currentProgress);
-            $this->setPropVal('progress', $progress, $this->instance);
-
-            $event->shouldReceive('getProgress->getCurrent')->andReturn($currentProgress);
-        } else {
-            $event->shouldNotReceive('getProgress');
-        }
-        $this->invokeMethod('onMigrationAfter', $this->instance, [$event]);
-    }
-
-    /**
-     * testSaveVersionListener
-     */
-    public function testSaveVersionListener()
-    {
-        $version = new Version(1); // value doesn't really matter
-        $event = m::mock(MigrationEvent::class);
-        $event->shouldReceive('getVersion')->once()->andReturn($version);
-
-        $command = m::mock(Command::class);
-        $command->shouldReceive('getStorage->update')->once()->with($version);
-        $this->setPropVal('command', $command, $this->instance);
-
-        $this->invokeMethod('saveVersionListener', $this->instance, [$event]);
-    }
-
-    /**
-     * testOnCollectionBefore
-     * @param bool $trackProgress
-     * @param bool $isDirectionUp
-     * @dataProvider onCollectionBeforeProvider
-     */
-    public function testOnCollectionBefore($trackProgress = true, $isDirectionUp = true)
-    {
-        $target = new Version('v10');
-        /** @var m\Mock|CollectionEvent $event */
-        $event = m::mock(CollectionEvent::class);
-        $event->shouldReceive([
-            'getTarget' => $target,
-            'getOptions->isDirectionUp' => $isDirectionUp,
-        ])->once();
-        $this->output->shouldReceive('writeln')->with('/' . $target->getId() . '/')->once();
-        $this->setPropVal('output', $this->output, $this->instance);
-
-        $this->setPropVal('trackProgress', $trackProgress, $this->instance);
-        if ($trackProgress) {
-            $event->shouldReceive('getProgress->getTotal')->atLeast(1)->andReturn(10);
-            $this->output->shouldReceive('isDecorated')->zeroOrMoreTimes()->andReturn(true);
-            $this->output
-                ->shouldReceive('getVerbosity')
-                ->zeroOrMoreTimes()
-                ->andReturn(OutputInterface::VERBOSITY_NORMAL);
-        } else {
-            $event->shouldNotReceive('getProgress');
-        }
-
-        $this->invokeMethod('onCollectionBefore', $this->instance, [$event]);
-    }
-
-    /**
-     * onCollectionBeforeProvider
-     * @return array
-     */
-    public function onCollectionBeforeProvider()
-    {
-        $trueFalse = [true, false];
-        return $this->combinations([$trueFalse, $trueFalse]);
-    }
-
-    /**
-     * testOnMigrationBefore
-     */
-    public function testOnMigrationBefore()
-    {
-        $version = new Version('v10');
-        $event = m::mock(MigrationEvent::class);
-        $event->shouldReceive([
-            'getVersion' => $version,
-            'getOptions' => new Options(Options::DIRECTION_UP),
-        ])->once();
-        $this->output->shouldReceive('writeln')->with('/' . $version->getId() . '/')->once();
-        $this->setPropVal('output', $this->output, $this->instance);
-        $this->invokeMethod('onMigrationBefore', $this->instance, [$event]);
-    }
-
-    /**
-     * testAttachEvents
-     * @param int $verbosity
-     * @param $saveChanges
-     * @dataProvider attachEventsProvider
-     */
-    public function testAttachEvents($verbosity, $saveChanges)
-    {
-        $dispatcher = m::mock(EventDispatcher::class);
-        $this->setPropVal('saveChanges', $saveChanges, $this->instance);
-        $this->output->shouldReceive('getVerbosity')->andReturn($verbosity);
-        $counts = [
-            EventInterface::MIGRATION_BEFORE => 0,
-            EventInterface::MIGRATION_AFTER => 0,
-            EventInterface::COLLECTION_BEFORE => 0,
-            EventInterface::COLLECTION_AFTER => 0,
-        ];
-        if ($verbosity >= OutputInterface::VERBOSITY_NORMAL) {
-            $counts = [
-                EventInterface::MIGRATION_BEFORE => 1,
-                EventInterface::MIGRATION_AFTER => 1,
-                EventInterface::COLLECTION_BEFORE => 1,
-                EventInterface::COLLECTION_AFTER => 1,
-            ];
-        }
-        if ($saveChanges) {
-            $counts[EventInterface::MIGRATION_AFTER] += 1;
-        }
-        foreach ($counts as $event => $count) {
-            $dispatcher->shouldReceive('addListener')->times($count)->with($event, m::any());
-        }
-        $this->invokeMethod('attachEvents', $this->instance, [$this->output, $dispatcher]);
-    }
-
-    /**
-     * attachEventsProvider
-     * @return array
-     */
-    public function attachEventsProvider()
-    {
-        $trueFalse = [true, false];
-        $verbosities = [
-            OutputInterface::VERBOSITY_QUIET,
-            OutputInterface::OUTPUT_NORMAL,
-            OutputInterface::VERBOSITY_VERY_VERBOSE,
-        ];
-        return $this->combinations([$verbosities, $trueFalse]);
     }
 }

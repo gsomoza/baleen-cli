@@ -21,6 +21,8 @@ namespace BaleenTest\Cli\CommandBus\Storage;
 use Baleen\Cli\CommandBus\Storage\LatestMessage;
 use Baleen\Cli\CommandBus\Storage\LatestHandler;
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Migrated;
 use Baleen\Migrations\Version\Comparator\DefaultComparator;
@@ -53,16 +55,27 @@ class LatestHandlerTest extends HandlerTestCase
      */
     public function testHandle($count)
     {
+        /** @var Migrated|m\Mock $migrated */
         $migrated = m::mock(Migrated::class);
         $migrated->shouldReceive('count')->once()->andReturn($count);
-        if ($count > 0) {
-            $last = 'v123';
-            $migrated->shouldReceive('last->getId')->andReturn($last);
-            $this->output->shouldReceive('writeln')->with($last)->once();
-        } else {
-            $this->output->shouldReceive('writeln')->with(m::type('string'))->once();
-        }
         $this->command->shouldReceive('getStorage->fetchAll')->once()->andReturn($migrated);
+
+        $line = m::type('string');
+        if ($count > 0) {
+            $last = new Version('v123', true);
+            $migrated->shouldReceive('last')->andReturn($last);
+            /** @var VersionFormatterInterface|m\Mock $formatter */
+            $formatter = m::mock(VersionFormatterInterface::class);
+            $formatter->shouldReceive('formatVersion')->once()->with($last)->andReturn('v123');
+            $this->command
+                ->shouldReceive('getCliCommand->getHelper')
+                ->once()
+                ->with('versionFormatter')
+                ->andReturn($formatter);
+            $line = '/v123/';
+        }
+        $this->output->shouldReceive('writeln')->with($line)->once();
+
         $this->handle();
     }
 

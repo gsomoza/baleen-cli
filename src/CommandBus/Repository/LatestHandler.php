@@ -20,12 +20,14 @@
 
 namespace Baleen\Cli\CommandBus\Repository;
 
+use Baleen\Cli\Helper\VersionFormatter;
+
 /**
  * Class LatestHandler.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestHandler extends AbstractRepositoryListHandler
+class LatestHandler
 {
     /**
      * handle.
@@ -38,9 +40,12 @@ class LatestHandler extends AbstractRepositoryListHandler
         $versions = $command->getRepository()->fetchAll();
 
         if (count($versions) > 0) {
-            $this->outputVersions($versions, $output);
+            /** @var VersionFormatter $helper */
+            $helper = $command->getCliCommand()->getHelper('versionFormatter');
+            $message = $helper->formatVersion($versions->last());
         } else {
-            $output->writeln('No available migrations were found. Please check your settings.');
+            $message = 'No available migrations were found. Please check your settings.';
         }
+        $output->writeln($message);
     }
 }

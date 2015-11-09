@@ -19,6 +19,7 @@
 
 namespace Baleen\Cli\CommandBus\Timeline;
 
+use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Migrations\Event\EventInterface;
 use Baleen\Migrations\Event\Timeline\CollectionEvent;
 use Baleen\Migrations\Event\Timeline\MigrationEvent;
@@ -42,10 +43,12 @@ final class MigrateSubscriber implements EventSubscriberInterface
      * MigrateSubscriber constructor.
      *
      * @param MigrateMessage $command
+     * @param ProgressBar $progress
      */
-    public function __construct(MigrateMessage $command)
+    public function __construct(MigrateMessage $command, ProgressBar $progress = null)
     {
         $this->command = $command;
+        $this->progress = $progress;
     }
 
     /**
@@ -83,11 +86,11 @@ final class MigrateSubscriber implements EventSubscriberInterface
     {
         if (!$this->progress) {
             $version = $event->getVersion();
-            $this->command->getOutput()->writeln(sprintf(
-                '<info>[%s]</info> <comment>%s</comment>',
-                $version->getId(),
-                strtoupper($event->getOptions()->getDirection())
-            ));
+            $direction = strtoupper($event->getOptions()->getDirection());
+            /** @var VersionFormatter $versionFormatter */
+            $versionFormatter = $this->command->getCliCommand()->getHelper('versionFormatter');
+            $message = "<info>[$direction]</info> " . $versionFormatter->formatVersion($version);
+            $this->command->getOutput()->writeln($message);
         }
     }
 

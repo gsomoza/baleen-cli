@@ -43,7 +43,7 @@ class HandlerTestCase extends BaseTestCase
     /** @var m\Mock|OutputInterface */
     protected $output;
 
-    /** @var m\Mock|LatestMessage */
+    /** @var m\Mock */
     protected $instance;
 
     /** @var m\Mock|StorageInterface */
@@ -86,8 +86,7 @@ class HandlerTestCase extends BaseTestCase
      */
     protected function assertCommandIsNamedProperly(Command $command)
     {
-        $this->assertNotEmpty(LatestMessage::COMMAND_NAME);
-        $this->assertContains(LatestMessage::COMMAND_NAME, $command->getName());
+        $this->assertNotEmpty($command->getName());
     }
 
     /**
@@ -153,6 +152,7 @@ class HandlerTestCase extends BaseTestCase
      */
     protected function assertQuestionAsked($result = null, MatcherAbstract $validator = null)
     {
+        /** @var m\Mock $helper */
         $helper = m::mock();
         $helper->shouldReceive('ask')->with($this->input, $this->output, m::on(function($param) use ($validator) {
             return null !== $validator ? $validator->match($param) : true;

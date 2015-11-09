@@ -19,11 +19,12 @@
 
 namespace Baleen\Cli\CommandBus\Config;
 
-use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 use Baleen\Migrations\Version;
+use Baleen\Migrations\Version\Collection;
 use Baleen\Migrations\Version\VersionInterface;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -56,12 +57,15 @@ class StatusHandler
         $this->output = $message->getOutput();
         $output = $this->output;
 
+        /** @var VersionFormatter $versionFormatter */
+        $versionFormatter = $message->getCliCommand()->getHelper('versionFormatter');
+
         $repository = $message->getRepository();
         $storage = $message->getStorage();
 
         $available = $repository->fetchAll();
         $migrated = $storage->fetchAll();
-        $pending = $available->filter(function(VersionInterface $v) use ($migrated) {
+        $pending = $available->filter(function (VersionInterface $v) use ($migrated) {
             return $migrated->get($v) === null;
         });
 
@@ -94,67 +98,51 @@ class StatusHandler
                 /** @var Collection $afterHead */
                 $afterHead->removeElement($head);
             } else {
-                $beforeHead = new Version\Collection();
+                $beforeHead = new Collection();
                 $afterHead = $pending;
             }
+
             $this->printCollection(
+                $versionFormatter,
                 $beforeHead,
                 [
                     'Old migrations still pending:',
-                    sprintf("  (use \"<comment>{$executable}migrate HEAD</comment>\" to migrate them)", $executable),
+                    sprintf("  (use \"<comment>{$executable} HEAD</comment>\" to migrate them)", $executable),
                 ],
                 self::STYLE_COMMENT
             );
-            $this->printCollection($afterHead, ['New migrations:'], self::STYLE_INFO);
+            $this->printCollection($versionFormatter, $afterHead, ['New migrations:'], self::STYLE_INFO);
         } else {
             $output->writeln('Your database is up-to-date.');
         }
     }
 
     /**
-     * Formats and prints a pending version with the given style.
-     *
-     * @param VersionInterface $version The Version to print.
-     * @param string $style One of the STYLE_* constants.
-     *
-     * @throws CliException
-     */
-    protected function printPendingVersion(VersionInterface $version, $style)
-    {
-        if (!$version->getMigration()) {
-            throw new CliException(sprintf(
-                'Expected version "%s" to be associated with a migration class.',
-                $version->getId()
-            ));
-        }
-        $reflectionClass = new \ReflectionClass($version->getMigration());
-        $absolutePath = $reflectionClass->getFileName();
-        $fileName = $absolutePath ? $this->getRelativePath(getcwd(), $absolutePath) : '';
-        $this->output->writeln("\t<$style>$fileName</$style>");
-    }
-
-    /**
      * Prints an array (group) of Versions all with the given style. If the array is empty then it prints nothing.
      *
+     * @param VersionFormatterInterface $formatter
      * @param Collection $collection
      * @param string|string[] $message Message(s) to print before the group of versions.
      * @param string $style One of the STYLE_* constants.
-     *
-     * @throws CliException
      */
-    private function printCollection(Collection $collection, $message, $style = self::STYLE_INFO)
-    {
+    protected function printCollection(
+        VersionFormatterInterface $formatter,
+        Collection $collection,
+        $message,
+        $style = self::STYLE_INFO
+    ) {
         if ($collection->isEmpty()) {
             return;
         }
         $this->output->writeln($message);
         $this->output->writeln('');
 
-        foreach ($collection as $version) {
-            $this->printPendingVersion($version, $style);
+        $lines = $formatter->formatCollection($collection, $style);
+        foreach ($lines as &$line) {
+            $line = "\t" . $line;
         }
+        $lines[] = '';
 
-        // if there was at least one version in the array
-        $this->output->writeln('');
+        $this->output->writeln($lines);
     }
 }

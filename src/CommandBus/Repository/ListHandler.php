@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\CommandBus\Repository;
 
+use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 use Baleen\Migrations\Version\Collection\Linked;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ListHandler extends AbstractRepositoryListHandler
+class ListHandler
 {
     use CalculatesRelativePathsTrait;
 
@@ -50,25 +51,12 @@ class ListHandler extends AbstractRepositoryListHandler
             if ($reverse) {
                 $versions = $versions->getReverse();
             }
-            $this->outputVersions($versions, $output);
+            /** @var VersionFormatter $helper */
+            $helper = $command->getCliCommand()->getHelper('versionFormatter');
+            $message = $helper->formatCollection($versions);
         } else {
-            $output->writeln('No available migrations were found. Please check your settings.');
+            $message = 'No available migrations were found. Please check your settings.';
         }
-    }
-
-    /**
-     * @param Linked  $versions
-     * @param OutputInterface $output
-     */
-    protected function outputVersions(Linked $versions, OutputInterface $output)
-    {
-        $lines = [];
-        foreach ($versions as $version) {
-            $class = new \ReflectionClass($version->getMigration());
-            $fullPath = $class->getFileName();
-            $file = $this->getRelativePath(getcwd(), $fullPath);
-            $lines[] = "<comment>{$version->getId()}</comment> $file";
-        }
-        $output->writeln($lines);
+        $output->writeln($message);
     }
 }

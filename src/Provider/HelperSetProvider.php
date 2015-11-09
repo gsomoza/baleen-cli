@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\Provider;
 
+use Baleen\Cli\Helper\VersionFormatter;
 use League\Container\ServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -45,11 +46,12 @@ class HelperSetProvider extends ServiceProvider
         $container->singleton(Services::HELPERSET, function () use ($container) {
             $helperSet = new HelperSet();
             $helperSet->set($container->get(Services::HELPERSET_QUESTION), 'question');
+            $helperSet->set($container->get(VersionFormatter::class));
 
             return $helperSet;
-        })
-            ->withArgument(Services::CONFIG);
+        })->withArgument(Services::CONFIG);
 
         $container->add(Services::HELPERSET_QUESTION, QuestionHelper::class);
+        $container->add(VersionFormatter::class);
     }
 }

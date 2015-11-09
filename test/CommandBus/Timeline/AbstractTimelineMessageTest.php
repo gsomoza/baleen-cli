@@ -25,6 +25,7 @@ use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
+use Baleen\Migrations\Timeline\TimelineInterface;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 
@@ -70,7 +71,8 @@ class AbstractTimelineMessageTest extends BaseTestCase
      */
     public function testGetSetTimeline()
     {
-        $timeline = m::mock(Timeline::class);
+        /** @var TimelineInterface|m\Mock $timeline */
+        $timeline = m::mock(TimelineInterface::class);
         $this->instance->setTimeline($timeline);
         $this->assertSame($timeline, $this->instance->getTimeline());
     }

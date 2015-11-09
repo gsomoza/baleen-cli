@@ -21,6 +21,8 @@ namespace BaleenTest\Cli\CommandBus\Repository;
 
 use Baleen\Cli\CommandBus\Repository\ListMessage;
 use Baleen\Cli\CommandBus\Repository\ListHandler;
+use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
@@ -47,20 +49,6 @@ class ListHandlerTest extends HandlerTestCase
     }
 
     /**
-     * testOutputVersions
-     * @param Linked $versions
-     * @dataProvider versionsProvider
-     */
-    public function testOutputVersions(Linked $versions)
-    {
-        foreach ($versions as $version) {
-            $id = $version->getId();
-            $this->output->shouldReceive('writeln')->with("/$id/")->once();
-        }
-        $this->instance->outputVersions($versions, $this->output);
-    }
-
-    /**
      * testHandle
      * @param Linked $versions
      * @param $newestFirst
@@ -71,21 +59,29 @@ class ListHandlerTest extends HandlerTestCase
         $this->input->shouldReceive('getOption')->with('newest-first')->once()->andReturn($newestFirst);
         $this->command->shouldReceive('getRepository->fetchAll')->once()->andReturn($versions);
 
+        $output = m::type('string');
         if (count($versions)) {
+            $output = 'v1'; // the formatted output (can be anything)
             $firstVersion = $newestFirst ? $versions->getReverse()->current() : $versions->current();
-            $this->instance
-                ->shouldReceive('outputVersions')
-                ->with(m::on(function($versions) use ($firstVersion) {
-                    if (!$versions instanceof Linked) {
-                        return false;
+            $formatter = m::mock(VersionFormatterInterface::class);
+            $this->command
+                ->shouldReceive('getCliCommand->getHelper')
+                ->once()
+                ->with('versionFormatter')
+                ->andReturn($formatter);
+            $formatter->shouldReceive('formatCollection')
+                ->once()
+                ->with(m::on(
+                    function($versions) use ($firstVersion) {
+                        if (!$versions instanceof Linked) {
+                            return false;
+                        }
+                        return $firstVersion === $versions->first();
                     }
-                    $versions->rewind();
-                    return $firstVersion === $versions->current();
-                }), $this->output)
-                ->once();
-        } else {
-            $this->output->shouldReceive('writeln')->once();
+                ))
+                ->andReturn($output);
         }
+        $this->output->shouldReceive('writeln')->once()->with($output);
 
         $this->handle();
     }

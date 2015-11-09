@@ -106,7 +106,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
             'string'
         );
 
-        $repository = m::mock(DirectoryRepository::class);
+        $repository = new DirectoryRepository(__DIR__);
         $repositoryFactory = m::mock('overload:'.RepositoryFactory::class)->makePartial();
         $repositoryFactory->shouldReceive('create')->once()->andReturn($repository);
 

@@ -38,7 +38,7 @@ class MigrateMessage extends AbstractTimelineCommand
 {
     const ARG_TARGET = 'target';
     const OPT_STRATEGY = 'strategy';
-    const OPT_NOPROGRESS = 'no-progress';
+    const OPT_PROGRESS = 'progress';
 
     /** @var array */
     private $strategies = [
@@ -60,10 +60,10 @@ class MigrateMessage extends AbstractTimelineCommand
             ->setDescription('Migrates all versions up (or down) to and including the specified target.')
             ->addArgument(self::ARG_TARGET, InputArgument::OPTIONAL, 'The target version to migrate to.', 'latest')
             ->addOption(
-                self::OPT_NOPROGRESS,
+                self::OPT_PROGRESS,
                 null,
                 InputOption::VALUE_NONE,
-                'Show a more detailed log instead of a progress bar.'
+                'Show a progress bar.'
             )->addOption(
                 self::OPT_STRATEGY,
                 's',
@@ -92,13 +92,13 @@ class MigrateMessage extends AbstractTimelineCommand
     }
 
     /**
-     * isNoProgress
+     * showProgress
      *
      * @return bool
      */
-    public function isNoProgress()
+    public function showProgress()
     {
-        return (bool) $this->getInput()->getOption(MigrateMessage::OPT_NOPROGRESS);
+        return (bool) $this->getInput()->getOption(MigrateMessage::OPT_PROGRESS);
     }
 
     /**
@@ -118,7 +118,7 @@ class MigrateMessage extends AbstractTimelineCommand
      */
     public function shouldTrackProgress()
     {
-        return ($this->getOutput()->getVerbosity() !== OutputInterface::VERBOSITY_QUIET) && !$this->isNoProgress();
+        return ($this->getOutput()->getVerbosity() !== OutputInterface::VERBOSITY_QUIET) && $this->showProgress();
     }
 
     /**

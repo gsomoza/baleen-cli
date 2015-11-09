@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,15 +19,15 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Migrations\Timeline;
+use Baleen\Migrations\Timeline\TimelineInterface;
 
 trait TimelineAwareTrait
 {
-    /** @var Timeline */
+    /** @var TimelineInterface */
     protected $timeline;
 
     /**
-     * @return Timeline
+     * @return TimelineInterface
      */
     public function getTimeline()
     {
@@ -36,9 +35,9 @@ trait TimelineAwareTrait
     }
 
     /**
-     * @param Timeline $timeline
+     * @param TimelineInterface $timeline
      */
-    public function setTimeline(Timeline $timeline)
+    public function setTimeline(TimelineInterface $timeline)
     {
         $this->timeline = $timeline;
     }

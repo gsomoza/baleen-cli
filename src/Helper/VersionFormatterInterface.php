@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -17,26 +16,34 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+namespace Baleen\Cli\Helper;
 
-namespace Baleen\Cli\CommandBus\Repository;
-
-use Baleen\Migrations\Repository\RepositoryInterface;
-use Baleen\Migrations\Version\Collection\Linked;
-use Symfony\Component\Console\Output\OutputInterface;
+use Baleen\Migrations\Version\Collection;
+use Baleen\Migrations\Version\VersionInterface;
+use Symfony\Component\Console\Helper\HelperInterface;
 
 /**
- * Class AbstractRepositoryListHandler.
+ * Class VersionFormatter
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class AbstractRepositoryListHandler
+interface VersionFormatterInterface extends HelperInterface
 {
     /**
-     * @param Linked  $versions
-     * @param OutputInterface $output
+     * Formats a single version.
+     *
+     * @param VersionInterface $version
+     * @param $style
+     *
+     * @return string
      */
-    protected function outputVersions(Linked $versions, OutputInterface $output)
-    {
-        $output->writeln($versions->last()->getId());
-    }
+    public function formatVersion(VersionInterface $version, $style = 'comment');
+
+    /**
+     * @param Collection $versions
+     * @param string $style
+     *
+     * @return array
+     */
+    public function formatCollection(Collection $versions, $style = 'comment');
 }

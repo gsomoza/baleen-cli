@@ -69,23 +69,4 @@ class MigrateHandler
             $options
         );
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function attachEvents(EventDispatcherInterface $dispatcher)
-    {
-        $output = $this->command->getOutput();
-
-        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-            $dispatcher->addListener(EventInterface::COLLECTION_BEFORE, [$this, 'onCollectionBefore']);
-            $dispatcher->addListener(EventInterface::COLLECTION_AFTER, [$this, 'onCollectionAfter']);
-            $dispatcher->addListener(EventInterface::MIGRATION_BEFORE, [$this, 'onMigrationBefore']);
-            $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'onMigrationAfter']);
-        }
-
-        if ($this->command->shouldSaveChanges()) {
-            $dispatcher->addListener(EventInterface::MIGRATION_AFTER, [$this, 'saveVersionListener']);
-        }
-    }
 }

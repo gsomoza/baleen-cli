@@ -21,6 +21,7 @@
 namespace Baleen\Cli\CommandBus\Storage;
 
 use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\Helper\VersionFormatter;
 
 /**
  * Class LatestHandler.
@@ -44,9 +45,10 @@ class LatestHandler
         if ($migrated->count() === 0) {
             $message = 'No migrated versions found in storage.';
         } else {
-            $message = $migrated->last()->getId();
+            /** @var VersionFormatter $versionFormatter */
+            $versionFormatter = $command->getCliCommand()->getHelper('versionFormatter');
+            $message = $versionFormatter->formatVersion($migrated->last());
         }
         $output->writeln($message);
-
     }
 }

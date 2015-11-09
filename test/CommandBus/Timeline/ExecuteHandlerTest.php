@@ -23,6 +23,7 @@ use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
 use Baleen\Cli\CommandBus\Timeline\ExecuteHandler;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
+use Baleen\Migrations\Timeline\TimelineInterface;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
@@ -55,12 +56,16 @@ class ExecuteHandlerTest extends HandlerTestCase
      */
     public function testHandle($isInteractive, $isUp, $isDryRun, $askResult, $executeResult)
     {
-        /** @var m\Mock|Timeline $timeline */
-        $timeline = m::mock(Timeline::class);
+        $versionId = '123';
         $this->input->shouldReceive('isInteractive')->once()->andReturn($isInteractive);
-        $this->input->shouldReceive('getArgument')->with(ExecuteMessage::ARG_VERSION)->once()->andReturn('123');
+        $this->input->shouldReceive('getArgument')->with(ExecuteMessage::ARG_VERSION)->once()->andReturn($versionId);
         $this->input->shouldReceive('getArgument')->with(ExecuteMessage::ARG_DIRECTION)->once()->andReturn(!$isUp);
         $this->input->shouldReceive('getOption')->with(ExecuteMessage::OPT_DRY_RUN)->once()->andReturn($isDryRun);
+
+        /** @var m\Mock|TimelineInterface $timeline */
+        $timeline = m::mock(TimelineInterface::class);
+        $timeline->shouldReceive('getVersions->get')->once()->with($versionId)->andReturn(new Version($versionId));
+        $this->command->shouldReceive('getTimeline')->once()->andReturn($timeline);
 
         if ($isInteractive) {
             $this->output->shouldReceive('writeln')->once()->with('/WARNING/');
@@ -81,7 +86,6 @@ class ExecuteHandlerTest extends HandlerTestCase
                 $this->command->shouldReceive('getStorage->update')->with($executeResult)->once();
             }
             $this->output->shouldReceive('writeln')->once()->with('/successfully/');
-            $this->command->shouldReceive('getTimeline')->once()->andReturn($timeline);
         }
 
         $this->handle();

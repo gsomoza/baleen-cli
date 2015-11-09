@@ -17,23 +17,6 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Provider;
-
-use BaleenTest\Cli\Provider\StorageProviderTest;
-
-/**
- * Override PHP's native "touch" function under the target namespace.
- * @return mixed
- */
-function touch() {
-    $result = StorageProviderTest::$touchResult;
-    if (null === $result) {
-        $result = call_user_func_array('touch', func_get_args());
-    }
-    StorageProviderTest::$touchCalled = true;
-    return $result;
-}
-
 namespace BaleenTest\Cli\Provider;
 
 use Baleen\Cli\Exception\CliException;
@@ -48,52 +31,28 @@ use Mockery as m;
  */
 class StorageProviderTest extends ServiceProviderTestCase
 {
-    public static $touchResult;
-    public static $touchCalled = false;
-
-    protected $testFile;
-
+    /**
+     * setUp
+     */
     public function setUp()
     {
         parent::setUp();
         $this->setInstance(m::mock(StorageProvider::class)->makePartial());
+    }
 
-        $this->testFile = __DIR__ . DIRECTORY_SEPARATOR . 'test.txt';
-
+    /**
+     * testRegister
+     */
+    public function testRegister()
+    {
         $this->config
-            ->shouldReceive('getStorageFilePath')
+            ->shouldReceive('getStorageFile')
             ->once()
-            ->andReturn($this->testFile);
-
+            ->andReturn('/some/file/path'); // path not important for this test
         $this->assertSingletonProvided(
             Services::STORAGE,
             $this->assertCallbackInstanceOf(StorageInterface::class, [$this->config])
         )->shouldReceive('withArgument')->with(Services::CONFIG);
-
-        self::$touchCalled = false;
-        self::$touchResult = null;
-    }
-
-    public function testRegister()
-    {
-        self::$touchResult = true;
-        $this->getInstance()->register();
-        $this->assertTrue(self::$touchCalled, 'expected to touch the file before writing');
-    }
-
-    /**
-     * @depends testRegister
-     */
-    public function testRegisterFileNotWritable()
-    {
-        self::$touchResult = false;
-        $this->config
-            ->shouldReceive('getStorageFile')
-            ->once()
-            ->andReturn($this->testFile);
-
-        $this->setExpectedException(CliException::class, 'write');
-
         $this->getInstance()->register();
     }
 }

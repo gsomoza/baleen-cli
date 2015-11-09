@@ -21,9 +21,12 @@ namespace BaleenTest\Cli\CommandBus\Repository;
 
 use Baleen\Cli\CommandBus\Repository\LatestMessage;
 use Baleen\Cli\CommandBus\Repository\LatestHandler;
+use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version as V;
+use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Linked;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
@@ -57,11 +60,17 @@ class LatestHandlerTest extends HandlerTestCase
         $version->setMigration($migration);
         $versions = new Linked([$version]); // only thing that matters is count > 0
 
+        $line = 'v1'; // could be anything
+        /** @var VersionFormatterInterface|m\Mock $formatter */
+        $formatter = m::mock(VersionFormatterInterface::class);
+        $formatter->shouldReceive('formatVersion')->once()->with($version)->andReturn($line);
+
         $this->command
             ->shouldReceive('getRepository->fetchAll')
             ->once()
             ->andReturn($versions);
-        $this->instance->shouldReceive('outputVersions')->once()->with($versions, $this->output);
+        $this->command->shouldReceive('getCliCommand->getHelper')->with('versionFormatter')->andReturn($formatter);
+        $this->output->shouldReceive('writeln')->with($line)->once();
 
         $this->handle();
     }

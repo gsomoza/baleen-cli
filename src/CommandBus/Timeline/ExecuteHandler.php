@@ -43,8 +43,10 @@ class ExecuteHandler
     {
         $input = $command->getInput();
         $output = $command->getOutput();
+        $timeline = $command->getTimeline();
+
         $versionKey = (string) $input->getArgument(ExecuteMessage::ARG_VERSION);
-        $version = $command->getTimeline()->getVersions()->get($versionKey);
+        $version = $timeline->getVersions()->get($versionKey);
         if (null === $version) {
             throw new TimelineException(sprintf(
                 'Could not find a version with key "%s".',
@@ -70,7 +72,7 @@ class ExecuteHandler
                 ->ask($input, $output, new ConfirmationQuestion($question));
         }
         if ($canExecute) {
-            $result = $command->getTimeline()->runSingle($version, $options);
+            $result = $timeline->runSingle($version, $options);
             if ($result && !$options->isDryRun()) {
                 $command->getStorage()->update($result);
             }
