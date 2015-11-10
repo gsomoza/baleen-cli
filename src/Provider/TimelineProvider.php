@@ -20,13 +20,11 @@
 
 namespace Baleen\Cli\Provider;
 
-use Baleen\Migrations\Repository\RepositoryInterface;
-use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Cli\Config\Config;
 use Baleen\Migrations\Timeline\TimelineFactory;
 use Baleen\Migrations\Version\Collection\Resolver\DefaultResolverStackFactory;
-use Baleen\Migrations\Version\Collection\Resolver\ResolverInterface;
-use Baleen\Migrations\Version\Comparator\ComparatorInterface;
-use Baleen\Migrations\Version\Comparator\DefaultComparator;
+use Baleen\Migrations\Version\Comparator\MigrationComparator;
+use Baleen\Migrations\Version\Comparator\NamespacesAwareComparator;
 use League\Container\ServiceProvider;
 
 /**
@@ -40,7 +38,7 @@ class TimelineProvider extends ServiceProvider
      * @inheritdoc
      */
     protected $provides = [
-        Services::TIMELINE,
+        Services::TIMELINE_FACTORY,
         Services::RESOLVER,
         Services::COMPARATOR,
     ];
@@ -53,7 +51,17 @@ class TimelineProvider extends ServiceProvider
         $container = $this->getContainer();
 
         if (!$container->isRegistered(Services::COMPARATOR)) {
-            $container->singleton(Services::COMPARATOR, DefaultComparator::class);
+            $container->singleton(Services::COMPARATOR, function(Config $config) {
+                $repositories = [];
+                foreach ($config->getMigrationsConfig() as $repoConfig) {
+                    $repositories[] = $repoConfig['namespace'];
+                }
+                return new NamespacesAwareComparator(
+                    NamespacesAwareComparator::ORDER_NORMAL,
+                    new MigrationComparator(),
+                    $repositories
+                );
+            })->withArgument(Services::CONFIG);
         }
 
         if (!$container->isRegistered(Services::RESOLVER)) {
@@ -63,25 +71,9 @@ class TimelineProvider extends ServiceProvider
             });
         }
 
-        $container->singleton(
-            Services::TIMELINE,
-            function (
-                RepositoryInterface $repository,
-                StorageInterface $storage,
-                ComparatorInterface $comparator,
-                ResolverInterface $resolver
-            ) {
-                $available = $repository->fetchAll();
-                $migrated = $storage->fetchAll();
-                $factory = new TimelineFactory($resolver, $comparator);
-
-                return $factory->create($available, $migrated);
-            }
-        )->withArguments([
-            Services::REPOSITORY,
-            Services::STORAGE,
-            DefaultComparator::class,
+        $container->singleton(Services::TIMELINE_FACTORY, TimelineFactory::class)->withArguments([
             Services::RESOLVER,
+            Services::COMPARATOR,
         ]);
     }
 }

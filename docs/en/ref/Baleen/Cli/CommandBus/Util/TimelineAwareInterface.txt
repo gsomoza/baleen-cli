@@ -1,18 +1,18 @@
 -----------------------------------------------------
-Baleen\\Cli\\CommandBus\\Util\\TimelineAwareInterface
+Baleen\\Cli\\CommandBus\\Util\\TimelineFactoryAwareInterface
 -----------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Util
 
-.. php:interface:: TimelineAwareInterface
+.. php:interface:: TimelineFactoryAwareInterface
 
-    Class AbstractTimelineCommand.
+    Class AbstractTimelineFactoryCommand.
 
-    .. php:method:: getTimeline()
+    .. php:method:: getTimelineFactory()
 
         :returns: Timeline
 
-    .. php:method:: setTimeline(Timeline $timeline)
+    .. php:method:: setTimelineFactory(Timeline $timeline)
 
         :type $timeline: Timeline
         :param $timeline:

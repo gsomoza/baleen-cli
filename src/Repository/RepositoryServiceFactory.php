@@ -21,17 +21,16 @@ namespace Baleen\Cli\Repository;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
 use Baleen\Migrations\Repository\DirectoryRepository;
-use Baleen\Migrations\Repository\RepositoryStack;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Composer\Autoload\ClassLoader;
 use League\Flysystem\FilesystemInterface;
 
 /**
- * Class RepositoryFactory
+ * Class RepositoryServiceFactory
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class RepositoryFactory
+class RepositoryServiceFactory
 {
     /**
      * @var ClassLoader
@@ -55,7 +54,7 @@ class RepositoryFactory
     private $comparator;
 
     /**
-     * RepositoryFactory constructor.
+     * RepositoryServiceFactory constructor.
      *
      * @param string[] $migrationsConfig
      * @param FactoryInterface $migrationFactory
@@ -70,7 +69,7 @@ class RepositoryFactory
         ComparatorInterface $comparator,
         ClassLoader $autoloader
     ) {
-        $this->migrationsConfig = array_reverse($migrationsConfig);
+        $this->migrationsConfig = $migrationsConfig;
         $this->migrationFactory = $migrationFactory;
         $this->filesystem = $filesystem;
         $this->comparator = $comparator;
@@ -78,10 +77,14 @@ class RepositoryFactory
     }
 
     /**
-     * create
+     * Create
+     *
+     * @return RepositoryCollection
+     *
+     * @throws CliException
      */
     public function create() {
-        $repositoryStack = new RepositoryStack();
+        $repositories = new RepositoryCollection($this->comparator);
         foreach ($this->migrationsConfig as $priority => $config) {
             $dir = $config['directory'];
 
@@ -89,9 +92,10 @@ class RepositoryFactory
             $this->configureAutoloader($config['namespace'], $dir);
 
             $repo = new DirectoryRepository($dir, null, $this->migrationFactory, $this->comparator);
-            $repositoryStack->addRepository($repo);
+            $alias = isset($config['alias']) ? $config['alias'] : $dir;
+            $repositories->set($alias, $repo);
         }
-        return $repositoryStack;
+        return $repositories;
     }
 
     /**

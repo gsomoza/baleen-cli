@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,23 +19,30 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+
+/**
+ * Class ComparatorAwareTrait
+ *
+ * @author Gabriel Somoza <gabriel@strategery.io>
+ */
 trait ComparatorAwareTrait
 {
-    /** @var callable */
-    protected $comparator;
+    /** @var ComparatorInterface */
+    private $comparator;
 
     /**
-     * @return callable
+     * @inheritdoc
      */
-    public function getComparator()
+    final public function getComparator()
     {
         return $this->comparator;
     }
 
     /**
-     * @param callable $comparator
+     * @inheritdoc
      */
-    public function setComparator(callable $comparator)
+    final public function setComparator(ComparatorInterface $comparator)
     {
         $this->comparator = $comparator;
     }

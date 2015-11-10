@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -30,12 +29,12 @@ use League\Flysystem\Filesystem;
 trait FilesystemAwareTrait
 {
     /** @var Filesystem */
-    protected $filesystem;
+    private $filesystem;
 
     /**
      * @return Filesystem
      */
-    public function getFilesystem()
+    final public function getFilesystem()
     {
         return $this->filesystem;
     }
@@ -43,7 +42,7 @@ trait FilesystemAwareTrait
     /**
      * @param Filesystem $filesystem
      */
-    public function setFilesystem(Filesystem $filesystem)
+    final public function setFilesystem(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }

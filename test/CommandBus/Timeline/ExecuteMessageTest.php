@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
 use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
-use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
+use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version;

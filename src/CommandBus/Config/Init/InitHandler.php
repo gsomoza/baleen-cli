@@ -18,7 +18,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Config;
+namespace Baleen\Cli\CommandBus\Config\Init;
 
 /**
  * Handles the config:init command.

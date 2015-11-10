@@ -77,6 +77,7 @@ class Definition implements ConfigurationInterface
                     ->scalarNode('directory')
                         ->defaultValue('migrations')
                     ->end()
+                    ->scalarNode('alias')->end()
                 ->end()
             ->end();
 

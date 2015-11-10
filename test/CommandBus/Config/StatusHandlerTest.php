@@ -19,11 +19,12 @@
 
 namespace BaleenTest\Baleen\CommandBus\Config;
 
-use Baleen\Cli\CommandBus\Config\StatusHandler;
-use Baleen\Cli\CommandBus\Config\StatusMessage;
+use Baleen\Cli\CommandBus\Config\Status\StatusHandler;
+use Baleen\Cli\CommandBus\Config\Status\StatusMessage;
 use Baleen\Cli\Config\ConfigStorage;
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Cli\Helper\VersionFormatterInterface;
+use Baleen\Cli\Repository\RepositoryCollectionInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Storage\StorageInterface;
@@ -32,24 +33,25 @@ use Baleen\Migrations\Version\Collection;
 use Baleen\Migrations\Version\Collection\Linked;
 use Baleen\Migrations\Version\Collection\Migrated;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
-use Baleen\Migrations\Version\Comparator\DefaultComparator;
+use Baleen\Migrations\Version\Comparator\MigrationComparator;
 use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
 /**
  * Class StatusHandlerTest
- * @author Gabriel Somoza <gabriel@strategery.io>
  *
- * @property StatusMessage|m\Mock command
+*@author Gabriel Somoza <gabriel@strategery.io>
+ *
+ * @property \Baleen\Cli\CommandBus\Config\Status\StatusMessage|m\Mock command
  */
 class StatusHandlerTest extends HandlerTestCase
 {
     /** @var m\Mock|ConfigStorage */
     protected $configStorage;
 
-    /** @var m\Mock|RepositoryInterface */
-    protected $repository;
+    /** @var m\Mock|RepositoryCollectionInterface */
+    protected $repositories;
 
     /** @var m\Mock|StorageInterface */
     protected $storage;
@@ -71,11 +73,11 @@ class StatusHandlerTest extends HandlerTestCase
         $this->command = m::mock(StatusMessage::class)->makePartial();
         $this->configStorage = m::mock(ConfigStorage::class);
         $this->command->setConfigStorage($this->configStorage);
-        $this->repository = m::mock(RepositoryInterface::class);
-        $this->command->setRepository($this->repository);
+        $this->repositories = m::mock(RepositoryCollectionInterface::class);
+        $this->command->setRepositories($this->repositories);
         $this->storage = m::mock(StorageInterface::class);
         $this->command->setStorage($this->storage);
-        $this->command->setComparator(new DefaultComparator());
+        $this->command->setComparator(new MigrationComparator());
 
         parent::setUp();
     }
@@ -91,9 +93,9 @@ class StatusHandlerTest extends HandlerTestCase
      */
     public function testHandle(Linked $available, Migrated $migrated, $pendingCount)
     {
-        $this->repository->shouldReceive('fetchAll')->once()->andReturn($available);
+        $this->repositories->shouldReceive('fetchAll')->once()->andReturn($available);
         $this->storage->shouldReceive('fetchAll')->once()->andReturn($migrated);
-        $this->command->setRepository($this->repository);
+        $this->command->setRepositories($this->repositories);
         $this->command->setStorage($this->storage);
         /** @var VersionFormatter|m\Mock $formatter */
         $formatter = m::mock(VersionFormatterInterface::class);

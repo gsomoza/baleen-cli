@@ -1,5 +1,5 @@
 ----------------------------------------------
-Baleen\\Cli\\CommandBus\\Config\\StatusMessage
+Baleen\\Cli\\CommandBus\\Config\\Status\\StatusMessage
 ----------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Config
@@ -51,11 +51,11 @@ Baleen\\Cli\\CommandBus\\Config\\StatusMessage
         :type $command: Command
         :param $command:
 
-    .. php:method:: getRepository()
+    .. php:method:: getRepositories()
 
         :returns: RepositoryInterface
 
-    .. php:method:: setRepository(RepositoryInterface $repository)
+    .. php:method:: setRepositories(RepositoryInterface $repository)
 
         :type $repository: RepositoryInterface
         :param $repository:

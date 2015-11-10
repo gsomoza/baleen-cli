@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,9 +17,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Storage;
+namespace Baleen\Cli\CommandBus\Repository\Latest;
 
-use Baleen\Cli\Exception\CliException;
+use Baleen\Cli\CommandBus\Repository\Latest\LatestMessage;
 use Baleen\Cli\Helper\VersionFormatter;
 
 /**
@@ -34,20 +33,18 @@ class LatestHandler
      * handle.
      *
      * @param LatestMessage $command
-     *
-     * @throws CliException
      */
     public function handle(LatestMessage $command)
     {
         $output = $command->getOutput();
-        $migrated = $command->getStorage()->fetchAll();
+        $versions = $command->getRepositories()->fetchAll();
 
-        if ($migrated->count() === 0) {
-            $message = 'No migrated versions found in storage.';
+        if (count($versions) > 0) {
+            /** @var VersionFormatter $formatter */
+            $formatter = $command->getCliCommand()->getHelper('versionFormatter');
+            $message = $formatter->formatVersion($versions->last());
         } else {
-            /** @var VersionFormatter $versionFormatter */
-            $versionFormatter = $command->getCliCommand()->getHelper('versionFormatter');
-            $message = $versionFormatter->formatVersion($migrated->last());
+            $message = 'No available migrations were found. Please check your settings.';
         }
         $output->writeln($message);
     }

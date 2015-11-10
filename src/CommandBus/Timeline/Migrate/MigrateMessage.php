@@ -18,8 +18,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline;
+namespace Baleen\Cli\CommandBus\Timeline\Migrate;
 
+use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
@@ -39,6 +40,7 @@ class MigrateMessage extends AbstractTimelineCommand
     const ARG_TARGET = 'target';
     const OPT_STRATEGY = 'strategy';
     const OPT_PROGRESS = 'progress';
+    const OPT_REPOSITORY = 'repository';
 
     /** @var array */
     private $strategies = [
@@ -70,6 +72,11 @@ class MigrateMessage extends AbstractTimelineCommand
                 InputOption::VALUE_REQUIRED,
                 'Strategy to migrate with (up/down/both).',
                 Options::DIRECTION_UP // 'up'
+            )->addOption(
+                self::OPT_REPOSITORY,
+                'r',
+                InputOption::VALUE_OPTIONAL,
+                'If present, executes action only on the specified repository.'
             );
     }
 
@@ -150,7 +157,9 @@ class MigrateMessage extends AbstractTimelineCommand
     public function getTarget()
     {
         $targetArg = (string) $this->getInput()->getArgument(MigrateMessage::ARG_TARGET);
-        $target = $this->getTimeline()->getVersions()->get($targetArg);
+        $available = $this->getRepositories()->fetchAll();
+        $migrated = $this->getStorage()->fetchAll();
+        $target = $available->hydrate($migrated)->get($targetArg);
         if (!$target) {
             throw new CliException(sprintf(
                 'Migration target with id "%s" could not be found.',
@@ -158,5 +167,20 @@ class MigrateMessage extends AbstractTimelineCommand
             ));
         }
         return $target;
+    }
+
+    /**
+     * getTimeline
+     * @return Timeline
+     */
+    public function getTimeline()
+    {
+        $repositoryOption = $this->getInput()->getOption(self::OPT_REPOSITORY);
+        $factory = $this->getTimelineFactory();
+
+        $available = $this->getRepositories()->fetchAll($repositoryOption);
+        $migrated = $this->getStorage()->fetchAll();
+
+        return $factory->create($available, $migrated);
     }
 }

@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Cli\CommandBus\Config;
 
-use Baleen\Cli\CommandBus\Config\InitMessage;
-use Baleen\Cli\CommandBus\Config\InitHandler;
+use Baleen\Cli\CommandBus\Config\Init\InitHandler;
+use Baleen\Cli\CommandBus\Config\Init\InitMessage;
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Config\ConfigStorage;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
@@ -41,8 +41,8 @@ class InitHandlerTest extends HandlerTestCase
      */
     public function setUp()
     {
-        $this->instance = m::mock(InitHandler::class)->makePartial();
-        $this->command = m::mock(InitMessage::class)->makePartial();
+        $this->instance = m::mock(\Baleen\Cli\CommandBus\Config\Init\InitHandler::class)->makePartial();
+        $this->command = m::mock(\Baleen\Cli\CommandBus\Config\Init\InitMessage::class)->makePartial();
         $this->configStorage = m::mock(ConfigStorage::class);
         $this->command->shouldReceive('getConfigStorage')->zeroOrMoreTimes()->andReturn($this->configStorage);
         parent::setUp();

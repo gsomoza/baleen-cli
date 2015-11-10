@@ -1,5 +1,5 @@
 -------------------------------------------------
-Baleen\\Cli\\CommandBus\\Timeline\\ExecuteHandler
+Baleen\\Cli\\CommandBus\\Timeline\\Execute\\ExecuteHandler
 -------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Timeline

@@ -24,9 +24,9 @@ use Baleen\Cli\Application;
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
 use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
+use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
 use League\Container\ServiceProvider;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -65,17 +65,14 @@ class ApplicationProvider extends ServiceProvider
         }
 
         // register inflectors for the different types of commands
-        $container->inflector(RepositoryAwareInterface::class)
-            ->invokeMethods([
-                'setRepository' => [Services::REPOSITORY],
-                'setFilesystem' => [Services::REPOSITORY_FILESYSTEM],
-            ]);
+        $container->inflector(RepositoriesAwareInterface::class)
+            ->invokeMethod('setRepositories', [Services::REPOSITORY]);
 
         $container->inflector(StorageAwareInterface::class)
             ->invokeMethod('setStorage', [Services::STORAGE]);
 
-        $container->inflector(TimelineAwareInterface::class)
-            ->invokeMethod('setTimeline', [Services::TIMELINE]);
+        $container->inflector(TimelineFactoryAwareInterface::class)
+            ->invokeMethod('setTimelineFactory', [Services::TIMELINE_FACTORY]);
 
         $container->inflector(ComparatorAwareInterface::class)
             ->invokeMethod('setComparator', [Services::COMPARATOR]);

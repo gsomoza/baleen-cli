@@ -1,5 +1,5 @@
 -----------------------------------------------
-Baleen\\Cli\\CommandBus\\Storage\\LatestMessage
+Baleen\\Cli\\CommandBus\\Storage\\Latest\\LatestMessage
 -----------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Storage

@@ -1,16 +1,16 @@
 -------------------------------------------------------
-Baleen\\Cli\\CommandBus\\Util\\RepositoryAwareInterface
+Baleen\\Cli\\CommandBus\\Util\\RepositoriesAwareInterface
 -------------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Util
 
-.. php:interface:: RepositoryAwareInterface
+.. php:interface:: RepositoriesAwareInterface
 
-    .. php:method:: getRepository()
+    .. php:method:: getRepositories()
 
         :returns: RepositoryInterface
 
-    .. php:method:: setRepository(RepositoryInterface $repository)
+    .. php:method:: setRepositories(RepositoryInterface $repository)
 
         :type $repository: RepositoryInterface
         :param $repository:

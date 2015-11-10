@@ -19,12 +19,10 @@
 
 namespace BaleenTest\Cli\CommandBus\Repository;
 
-use Baleen\Cli\CommandBus\Repository\ListMessage;
 use Baleen\Cli\CommandBus\Repository\ListHandler;
-use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\CommandBus\Repository\ListMessage;
 use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
-use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Linked;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
@@ -57,7 +55,7 @@ class ListHandlerTest extends HandlerTestCase
     public function testHandle(Linked $versions, $newestFirst)
     {
         $this->input->shouldReceive('getOption')->with('newest-first')->once()->andReturn($newestFirst);
-        $this->command->shouldReceive('getRepository->fetchAll')->once()->andReturn($versions);
+        $this->command->shouldReceive('getRepositories->fetchAll')->once()->andReturn($versions);
 
         $output = m::type('string');
         if (count($versions)) {

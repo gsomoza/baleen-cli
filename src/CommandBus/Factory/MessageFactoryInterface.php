@@ -21,9 +21,13 @@ namespace Baleen\Cli\CommandBus\Factory;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
 
+/**
+ * Creates a message (used by CommandsProvider)
+ *
+ * @author Gabriel Somoza <gabriel@strategery.io>
+ */
 interface MessageFactoryInterface
 {
-
     /**
      * create
      * @param $class

@@ -1,5 +1,5 @@
 --------------------------------------------------
-Baleen\\Cli\\CommandBus\\Repository\\LatestMessage
+Baleen\\Cli\\CommandBus\\Repository\\Latest\\LatestMessage
 --------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Repository
@@ -43,11 +43,11 @@ Baleen\\Cli\\CommandBus\\Repository\\LatestMessage
         :type $command: Command
         :param $command:
 
-    .. php:method:: getRepository()
+    .. php:method:: getRepositories()
 
         :returns: RepositoryInterface
 
-    .. php:method:: setRepository(RepositoryInterface $repository)
+    .. php:method:: setRepositories(RepositoryInterface $repository)
 
         :type $repository: RepositoryInterface
         :param $repository:

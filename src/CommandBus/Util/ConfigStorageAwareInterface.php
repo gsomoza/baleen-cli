@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -30,7 +29,7 @@ interface ConfigStorageAwareInterface
     /**
      * getConfigStorage.
      *
-     * @return mixed
+     * @return ConfigStorage
      */
     public function getConfigStorage();
 
@@ -39,7 +38,7 @@ interface ConfigStorageAwareInterface
      *
      * @param ConfigStorage $configStorage
      *
-     * @return mixed
+     * @return void
      */
     public function setConfigStorage(ConfigStorage $configStorage);
 }

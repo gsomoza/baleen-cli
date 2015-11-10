@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,8 +17,10 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline;
+namespace Baleen\Cli\CommandBus\Timeline\Execute;
 
+use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
+use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Migrations\Exception\TimelineException;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
@@ -35,24 +36,31 @@ class ExecuteHandler
     /**
      * {@inheritdoc}
      *
-     * @param ExecuteMessage $command
+     * @param ExecuteMessage $message
      *
      * @throws \Baleen\Migrations\Exception\TimelineException
      */
-    public function handle(ExecuteMessage $command)
+    public function handle(ExecuteMessage $message)
     {
-        $input = $command->getInput();
-        $output = $command->getOutput();
-        $timeline = $command->getTimeline();
+        $helper = new ExecuteHelper($message);
+        $input = $message->getInput();
+        $output = $message->getOutput();
 
-        $versionKey = (string) $input->getArgument(ExecuteMessage::ARG_VERSION);
-        $version = $timeline->getVersions()->get($versionKey);
-        if (null === $version) {
+        $factory = $message->getTimelineFactory();
+        $available = $message->getRepositories()->fetchAll();
+        $migrated = $message->getStorage()->fetchAll();
+        $timeline = $factory->create($available, $migrated);
+
+        $targetKey = (string) $input->getArgument(ExecuteMessage::ARG_VERSION);
+        $target = $timeline->getVersions()->get($targetKey);
+        if (null === $target) {
             throw new TimelineException(sprintf(
-                'Could not find a version with key "%s".',
-                $versionKey
+                'Could not find a target with key "%s".',
+                $targetKey
             ));
         }
+
+        $output->writeln('Target: ' . $helper->formatVersion($target));
 
         $direction = $input->getArgument(ExecuteMessage::ARG_DIRECTION) == Options::DIRECTION_DOWN ?
             Options::DIRECTION_DOWN :
@@ -64,19 +72,25 @@ class ExecuteHandler
 
         $canExecute = true;
         if ($input->isInteractive()) {
-            $output->writeln('<error>WARNING!</error> You are about to manually execute a database migration that '.
-                'could result in schema changes and data loss.');
-            $question = sprintf('Are you sure you wish to migrate "%s" (y/n)? ', $direction);
-            $canExecute = $command->getCliCommand()
+            $output->writeln([
+                '',
+                '<error>'.str_repeat(' ', strlen('  WARNING!  ')) . '</error>',
+                "<error>  WARNING!  </error> You're about to execute a database migration manually, which could result " .
+                "in schema changes and data lost.",
+                '<error>'.str_repeat(' ', strlen('  WARNING!  ')) . '</error>',
+                '',
+            ]);
+            $question = sprintf('<info>Are you sure you wish to migrate "%s" (y/n)?</info> ', $direction);
+            $canExecute = $message->getCliCommand()
                 ->getHelper('question')
                 ->ask($input, $output, new ConfirmationQuestion($question));
         }
         if ($canExecute) {
-            $result = $timeline->runSingle($version, $options);
+            $result = $timeline->runSingle($target, $options);
             if ($result && !$options->isDryRun()) {
-                $command->getStorage()->update($result);
+                $message->getStorage()->update($result);
             }
-            $output->writeln("Version <info>{$version->getId()}</info> migrated <info>$direction</info> successfully.");
+            $output->writeln("Version <comment>{$target->getId()}</comment> migrated <info>$direction</info> successfully.");
         }
     }
 }

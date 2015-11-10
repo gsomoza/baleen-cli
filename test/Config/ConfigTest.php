@@ -20,12 +20,6 @@
 namespace BaleenTest\Cli\Config;
 
 use Baleen\Cli\Config\Config;
-use Baleen\Cli\Provider\ApplicationProvider;
-use Baleen\Cli\Provider\CommandsProvider;
-use Baleen\Cli\Provider\HelperSetProvider;
-use Baleen\Cli\Provider\RepositoryProvider;
-use Baleen\Cli\Provider\StorageProvider;
-use Baleen\Cli\Provider\TimelineProvider;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;

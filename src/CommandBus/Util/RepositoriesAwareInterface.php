@@ -19,22 +19,22 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Migrations\Timeline\TimelineInterface;
+use Baleen\Cli\Repository\RepositoryCollectionInterface;
 
 /**
- * Class AbstractTimelineCommand.
+ * Interface RepositoriesAwareInterface
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-interface TimelineAwareInterface
+interface RepositoriesAwareInterface
 {
     /**
-     * @return TimelineInterface
+     * @return RepositoryCollectionInterface
      */
-    public function getTimeline();
+    public function getRepositories();
 
     /**
-     * @param TimelineInterface $timeline
+     * @param RepositoryCollectionInterface $repositories
      */
-    public function setTimeline(TimelineInterface $timeline);
+    public function setRepositories(RepositoryCollectionInterface $repositories);
 }

@@ -19,12 +19,10 @@
 
 namespace BaleenTest\Cli\CommandBus\Repository;
 
-use Baleen\Cli\CommandBus\Repository\LatestMessage;
-use Baleen\Cli\CommandBus\Repository\LatestHandler;
-use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\CommandBus\Repository\Latest\LatestHandler;
+use Baleen\Cli\CommandBus\Repository\Latest\LatestMessage;
 use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
-use Baleen\Migrations\Repository\RepositoryInterface;
 use Baleen\Migrations\Version as V;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Linked;
@@ -42,7 +40,7 @@ class LatestHandlerTest extends HandlerTestCase
      */
     public function setUp()
     {
-        $this->instance = m::mock(LatestHandler::class)
+        $this->instance = m::mock(\Baleen\Cli\CommandBus\Repository\Latest\LatestHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $this->command = m::mock(LatestMessage::class);
@@ -66,7 +64,7 @@ class LatestHandlerTest extends HandlerTestCase
         $formatter->shouldReceive('formatVersion')->once()->with($version)->andReturn($line);
 
         $this->command
-            ->shouldReceive('getRepository->fetchAll')
+            ->shouldReceive('getRepositories->fetchAll')
             ->once()
             ->andReturn($versions);
         $this->command->shouldReceive('getCliCommand->getHelper')->with('versionFormatter')->andReturn($formatter);
@@ -81,7 +79,7 @@ class LatestHandlerTest extends HandlerTestCase
     public function testHandleNoVersions()
     {
         // only thing that matters is that its empty
-        $this->command->shouldReceive('getRepository->fetchAll')->once()->andReturn([]);
+        $this->command->shouldReceive('getRepositories->fetchAll')->once()->andReturn([]);
         $this->instance->shouldNotReceive('outputVersions');
         $this->output->shouldReceive('writeln')->once(); // some error message
         $this->handle();

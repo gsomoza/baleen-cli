@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,37 +14,32 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <http://www.doctrine-project.org>.
+ * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository;
+namespace Baleen\Cli\CommandBus\Repository\Create;
 
-use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class LatestHandler.
+ * Class CreateMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestHandler
+class CreateMessage extends AbstractConfigMessage
 {
-    /**
-     * handle.
-     *
-     * @param LatestMessage $command
-     */
-    public function handle(LatestMessage $command)
-    {
-        $output = $command->getOutput();
-        $versions = $command->getRepository()->fetchAll();
+    const COMMAND_NAME = 'create';
 
-        if (count($versions) > 0) {
-            /** @var VersionFormatter $helper */
-            $helper = $command->getCliCommand()->getHelper('versionFormatter');
-            $message = $helper->formatVersion($versions->last());
-        } else {
-            $message = 'No available migrations were found. Please check your settings.';
-        }
-        $output->writeln($message);
+    public static function configure(Command $command)
+    {
+        $command
+            ->setName('migrations:create')
+            ->setAliases(['create'])
+            ->setDescription('Creates a new migration file.')
+            ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
+            ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
+            ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.');
     }
 }

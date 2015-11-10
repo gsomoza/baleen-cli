@@ -16,5 +16,5 @@ refer to the order in which the versions should be executed.
 
 The Comparator is used at different points in the domain logic so its useful to have it as a service.
 
-The default Comparator used by Baleen CLI is an instance of :php:class:`DefaultComparator`. The service is registered by
+The default Comparator used by Baleen CLI is an instance of :php:class:`MigrationComparator`. The service is registered by
 default in the :php:class:`TimelineProvider`.

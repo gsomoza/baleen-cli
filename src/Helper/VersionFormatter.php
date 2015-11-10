@@ -20,10 +20,8 @@ namespace Baleen\Cli\Helper;
 
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 use Baleen\Migrations\Version\Collection;
-use Baleen\Migrations\Version\Collection\Linked;
 use Baleen\Migrations\Version\VersionInterface;
 use Symfony\Component\Console\Helper\Helper;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class VersionFormatter

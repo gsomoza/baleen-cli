@@ -21,8 +21,6 @@
 namespace Baleen\Cli\CommandBus\Storage;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareTrait;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
 

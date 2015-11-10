@@ -1,12 +1,12 @@
 ---------------------------------------------------
-Baleen\\Cli\\CommandBus\\Util\\RepositoryAwareTrait
+Baleen\\Cli\\CommandBus\\Util\\RepositoriesAwareTrait
 ---------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Util
 
-.. php:trait:: RepositoryAwareTrait
+.. php:trait:: RepositoriesAwareTrait
 
-    Class RepositoryAwareTrait.
+    Class RepositoriesAwareTrait.
 
     .. php:attr:: repository
 
@@ -16,11 +16,11 @@ Baleen\\Cli\\CommandBus\\Util\\RepositoryAwareTrait
 
         protected Filesystem
 
-    .. php:method:: getRepository()
+    .. php:method:: getRepositories()
 
         :returns: RepositoryInterface
 
-    .. php:method:: setRepository(RepositoryInterface $repository)
+    .. php:method:: setRepositories(RepositoryInterface $repository)
 
         :type $repository: RepositoryInterface
         :param $repository:

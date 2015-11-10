@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Config;
 
 use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
-use Baleen\Cli\CommandBus\Config\InitMessage;
+use Baleen\Cli\CommandBus\Config\Init\InitMessage;
 use Baleen\Cli\Config\ConfigStorage;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
@@ -36,7 +36,7 @@ class InitMessageTest extends MessageTestCase
      */
     public function testConstructor()
     {
-        $instance = new InitMessage();
+        $instance = new \Baleen\Cli\CommandBus\Config\Init\InitMessage();
         $this->assertInstanceOf(AbstractConfigMessage::class, $instance);
     }
 
@@ -74,6 +74,6 @@ class InitMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return InitMessage::class;
+        return \Baleen\Cli\CommandBus\Config\Init\InitMessage::class;
     }
 }

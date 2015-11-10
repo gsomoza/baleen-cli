@@ -37,10 +37,9 @@ function mkdir()
 
 namespace BaleenTest\Cli\Provider;
 
-use Baleen\Cli\Exception\CliException;
 use Baleen\Cli\Provider\RepositoryProvider;
 use Baleen\Cli\Provider\Services;
-use Baleen\Cli\Repository\RepositoryFactory;
+use Baleen\Cli\Repository\RepositoryServiceFactory;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
@@ -107,7 +106,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         );
 
         $repository = new DirectoryRepository(__DIR__);
-        $repositoryFactory = m::mock('overload:'.RepositoryFactory::class)->makePartial();
+        $repositoryFactory = m::mock('overload:' . RepositoryServiceFactory::class)->makePartial();
         $repositoryFactory->shouldReceive('create')->once()->andReturn($repository);
 
         $this->assertSingletonProvided(

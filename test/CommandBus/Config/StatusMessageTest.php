@@ -20,9 +20,9 @@
 namespace BaleenTest\Baleen\CommandBus\Config;
 
 use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
-use Baleen\Cli\CommandBus\Config\StatusMessage;
+use Baleen\Cli\CommandBus\Config\Status\StatusMessage;
 use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
@@ -42,7 +42,7 @@ class StatusMessageTest extends MessageTestCase
         $instance = new StatusMessage();
         $list = [
             AbstractConfigMessage::class,
-            RepositoryAwareInterface::class,
+            RepositoriesAwareInterface::class,
             StorageAwareInterface::class,
             ComparatorAwareInterface::class,
         ];

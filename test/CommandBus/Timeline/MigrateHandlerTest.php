@@ -19,19 +19,13 @@
 
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
-use Baleen\Cli\CommandBus\Timeline\MigrateMessage;
-use Baleen\Cli\CommandBus\Timeline\MigrateHandler;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Event\EventInterface;
-use Baleen\Migrations\Event\Timeline\CollectionEvent;
-use Baleen\Migrations\Event\Timeline\MigrationEvent;
+use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateHandler;
+use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -48,7 +42,7 @@ class MigrateHandlerTest extends HandlerTestCase
         $this->instance = m::mock(MigrateHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-        $this->command = m::mock(MigrateMessage::class)->makePartial();
+        $this->command = m::mock(\Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::class)->makePartial();
         parent::setUp();
     }
 
@@ -66,14 +60,14 @@ class MigrateHandlerTest extends HandlerTestCase
         $target = 'someTarget';
         $dryRun = true;
 
-        $this->command->shouldReceive('getTimeline->getEventDispatcher->addSubscriber')
+        $this->command->shouldReceive('getTimelineFactory->getEventDispatcher->addSubscriber')
             ->with(m::type(EventSubscriberInterface::class))
             ->once();
 
         $this->command->shouldReceive('isDryRun')->once()->andReturn($dryRun);
         $this->command->shouldReceive('getStrategy')->once()->andReturn($strategy);
         $this->command->shouldReceive('getTarget')->once()->andReturn($target);
-        $this->command->shouldReceive('getTimeline->' . $strategy)->once()->with($target, m::type(Options::class));
+        $this->command->shouldReceive('getTimelineFactory->' . $strategy)->once()->with($target, m::type(Options::class));
 
         $this->handle();
     }

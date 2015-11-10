@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,17 +19,31 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Migrations\Repository\RepositoryInterface;
+use Baleen\Cli\Repository\RepositoryCollectionInterface;
 
-interface RepositoryAwareInterface extends FilesystemAwareInterface
+/**
+ * Class RepositoriesAwareTrait.
+ *
+ * @author Gabriel Somoza <gabriel@strategery.io>
+ */
+trait RepositoriesAwareTrait
 {
-    /**
-     * @return RepositoryInterface
-     */
-    public function getRepository();
+    /** @var RepositoryCollectionInterface */
+    private $repositories;
 
     /**
-     * @param RepositoryInterface $repository
+     * @return RepositoryCollectionInterface
      */
-    public function setRepository(RepositoryInterface $repository);
+    final public function getRepositories()
+    {
+        return $this->repositories;
+    }
+
+    /**
+     * @param RepositoryCollectionInterface $repositories
+     */
+    final public function setRepositories(RepositoryCollectionInterface $repositories)
+    {
+        $this->repositories = $repositories;
+    }
 }

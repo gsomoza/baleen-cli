@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\Provider;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Config\InitMessage;
+use Baleen\Cli\CommandBus\Config\Init\InitMessage;
 use Baleen\Cli\Provider\Services;
 use League\Container\Container;
 use League\Tactician\CommandBus;

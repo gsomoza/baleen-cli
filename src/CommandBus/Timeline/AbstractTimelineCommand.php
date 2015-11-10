@@ -21,10 +21,12 @@
 namespace Baleen\Cli\CommandBus\Timeline;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
-use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
-use Baleen\Cli\CommandBus\Util\TimelineAwareTrait;
+use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -33,10 +35,14 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractTimelineCommand extends AbstractMessage implements StorageAwareInterface, TimelineAwareInterface
+abstract class AbstractTimelineCommand extends AbstractMessage implements
+    StorageAwareInterface,
+    RepositoriesAwareInterface,
+    TimelineFactoryAwareInterface
 {
     use StorageAwareTrait;
-    use TimelineAwareTrait;
+    use RepositoriesAwareTrait;
+    use TimelineFactoryAwareTrait;
 
     const OPT_DRY_RUN = 'dry-run';
     const OPT_NO_STORAGE = 'no-storage';

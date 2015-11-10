@@ -20,6 +20,7 @@
 
 namespace Baleen\Cli\Provider;
 
+use Baleen\Migrations\Timeline\TimelineFactory;
 use Baleen\Migrations\Version\Collection\Resolver\ResolverInterface;
 
 /**
@@ -91,6 +92,7 @@ interface Services
     // TimelineProvider
     /** Reference to the Timeline service */
     const TIMELINE = 'timeline';
+    const TIMELINE_FACTORY = TimelineFactory::class;
     /** Reference to the Comparator service */
     const COMPARATOR = 'comparator';
     /** Reference to a collection resolver service */

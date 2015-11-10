@@ -19,7 +19,7 @@
 
 namespace BaleenTest\Cli\CommandBus\Repository;
 
-use Baleen\Cli\CommandBus\Repository\AbstractRepositoryMessage;
+use Baleen\Cli\CommandBus\Repository\AbstractRepositoriesMessage;
 use Baleen\Cli\CommandBus\Repository\ListMessage;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
@@ -38,7 +38,7 @@ class ListMessageTest extends MessageTestCase
     public function testConstructor()
     {
         $instance = new ListMessage();
-        $this->assertInstanceOf(AbstractRepositoryMessage::class, $instance);
+        $this->assertInstanceOf(AbstractRepositoriesMessage::class, $instance);
     }
 
     /**

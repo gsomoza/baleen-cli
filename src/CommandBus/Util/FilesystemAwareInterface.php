@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,6 +21,11 @@ namespace Baleen\Cli\CommandBus\Util;
 
 use League\Flysystem\Filesystem;
 
+/**
+ * Interface FilesystemAwareInterface
+ *
+ * @author Gabriel Somoza <gabriel@strategery.io>
+ */
 interface FilesystemAwareInterface
 {
     /**

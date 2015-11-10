@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,26 +14,44 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Storage;
+namespace Baleen\Cli\Repository;
 
-use Symfony\Component\Console\Command\Command;
+use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Version\Collection\Linked;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 
 /**
- * Class ListMessage.
+ * Interface RepositoryCollection
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestMessage extends AbstractStorageMessage
+interface RepositoryCollectionInterface
 {
     /**
-     * @inheritdoc
+     * Fetch all versions for the specified repository, or for all repositories at once if $key is null.
+     *
+     * @param null|int|string $key
+     *
+     * @return Linked
+     *
+     * @throws CliException
      */
-    public static function configure(Command $command)
-    {
-        $command->setName('storage:latest')
-            ->setDescription('Outputs the ID of the latest migrated version.');
-    }
+    public function fetchAll($key = null);
+
+    /**
+     * clearCache
+     *
+     * @param null|int|string $forRepo Clear for a specific repo only
+     */
+    public function clearCache($forRepo = null);
+
+    /**
+     * Constructor
+     *
+     * @param ComparatorInterface $comparator
+     */
+    public function __construct(ComparatorInterface $comparator);
 }

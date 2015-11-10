@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline;
+namespace Baleen\Cli\CommandBus\Timeline\Migrate;
 
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Migrations\Event\EventInterface;
@@ -118,8 +118,13 @@ final class MigrateSubscriber implements EventSubscriberInterface
      */
     public function onCollectionBefore(CollectionEvent $event)
     {
-        $target = $event->getTarget();
         $output = $this->command->getOutput();
+        if ($event->getCollection()->isEmpty()) {
+            $output->writeln('Already up-to-date.');
+            return;
+        }
+
+        $target = $event->getTarget();
 
         $output->writeln(sprintf(
             '<info>[START]</info> Migrating %s to <comment>%s</comment>:',
@@ -135,9 +140,14 @@ final class MigrateSubscriber implements EventSubscriberInterface
 
     /**
      * onCollectionAfter.
+     *
+     * @param CollectionEvent $event
      */
-    public function onCollectionAfter()
+    public function onCollectionAfter(CollectionEvent $event)
     {
+        if ($event->getCollection()->isEmpty()) {
+            return;
+        }
         $output = $this->command->getOutput();
         if ($this->progress) {
             $this->progress->finish();

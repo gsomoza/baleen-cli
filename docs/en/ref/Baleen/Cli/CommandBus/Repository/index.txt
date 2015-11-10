@@ -7,7 +7,7 @@ Baleen\\Cli\\CommandBus\\Repository
 .. toctree::
 
    AbstractRepositoryListHandler
-   AbstractRepositoryMessage
+   AbstractRepositoriesMessage
    CreateHandler
    CreateMessage
    LatestHandler

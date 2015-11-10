@@ -1,5 +1,5 @@
 --------------------------------------------
-Baleen\\Cli\\CommandBus\\Config\\InitHandler
+Baleen\\Cli\\CommandBus\\Config\\Init\\InitHandler
 --------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Config

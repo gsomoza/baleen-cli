@@ -15,28 +15,51 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository;
+namespace Baleen\Cli\CommandBus\Timeline\Migrate;
 
-use Symfony\Component\Console\Command\Command;
+use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Migration\Options;
 
 /**
- * Class ListMessage.
+ * Class MigrateHandler.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestMessage extends AbstractRepositoryMessage
+class MigrateHandler
 {
+    /** @var MigrateMessage */
+    private $command;
+
     /**
-     * configure.
+     * handle.
      *
-     * @param Command $command
+     * @param MigrateMessage $message
+     *
+     * @throws CliException
      */
-    public static function configure(Command $command)
+    public function handle(MigrateMessage $message)
     {
-        $command->setName('migrations:latest')
-            ->setDescription('Prints the version ID of the latest available migration.');
+        $this->command = $message;
+
+        $options = new Options(
+            Options::DIRECTION_UP,  // this value will get replaced by timeline later
+            false,
+            $message->isDryRun(),
+            false
+        );
+
+        $timeline = $message->getTimeline();
+
+        $timeline->getEventDispatcher()->addSubscriber(
+            new MigrateSubscriber($message)
+        );
+
+        $strategy = $message->getStrategy();
+        $target = $message->getTarget();
+
+        $timeline->$strategy($target, $options);
     }
 }

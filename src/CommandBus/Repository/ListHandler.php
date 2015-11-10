@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,8 +21,6 @@ namespace Baleen\Cli\CommandBus\Repository;
 
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
-use Baleen\Migrations\Version\Collection\Linked;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ListHandler.
@@ -45,15 +42,15 @@ class ListHandler
         $output = $command->getOutput();
 
         $reverse = $input->getOption('newest-first');
-        $versions = $command->getRepository()->fetchAll();
+        $versions = $command->getRepositories()->fetchAll();
 
         if (count($versions)) {
             if ($reverse) {
                 $versions = $versions->getReverse();
             }
-            /** @var VersionFormatter $helper */
-            $helper = $command->getCliCommand()->getHelper('versionFormatter');
-            $message = $helper->formatCollection($versions);
+            /** @var VersionFormatter $formatter */
+            $formatter = $command->getCliCommand()->getHelper('versionFormatter');
+            $message = $formatter->formatCollection($versions);
         } else {
             $message = 'No available migrations were found. Please check your settings.';
         }

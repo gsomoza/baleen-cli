@@ -20,7 +20,6 @@
 namespace BaleenTest\Cli\CommandBus;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Storage\LatestMessage;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Migrated;

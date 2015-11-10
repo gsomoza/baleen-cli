@@ -21,7 +21,6 @@ namespace BaleenTest\Cli\CommandBus\Storage;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Storage\AbstractStorageMessage;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use BaleenTest\Cli\BaseTestCase;

@@ -12,9 +12,9 @@ Baleen\\Cli\\CommandBus\\Util
    ConfigStorageAwareTrait
    FilesystemAwareInterface
    FilesystemAwareTrait
-   RepositoryAwareInterface
-   RepositoryAwareTrait
+   RepositoriesAwareInterface
+   RepositoriesAwareTrait
    StorageAwareInterface
    StorageAwareTrait
-   TimelineAwareInterface
-   TimelineAwareTrait
+   TimelineFactoryAwareInterface
+   TimelineFactoryAwareTrait

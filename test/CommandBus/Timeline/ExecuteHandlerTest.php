@@ -19,12 +19,16 @@
 
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
-use Baleen\Cli\CommandBus\Timeline\ExecuteMessage;
-use Baleen\Cli\CommandBus\Timeline\ExecuteHandler;
+use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler;
+use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Timeline;
+use Baleen\Migrations\Timeline\TimelineFactory;
 use Baleen\Migrations\Timeline\TimelineInterface;
 use Baleen\Migrations\Version;
+use Baleen\Migrations\Version\Collection\Linked;
+use Baleen\Migrations\Version\Collection\Migrated;
+use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
@@ -39,7 +43,7 @@ class ExecuteHandlerTest extends HandlerTestCase
      */
     public function setUp()
     {
-        $this->instance = m::mock(ExecuteHandler::class)
+        $this->instance = m::mock(\Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $this->command = m::mock(ExecuteMessage::class)->makePartial();
@@ -48,10 +52,13 @@ class ExecuteHandlerTest extends HandlerTestCase
 
     /**
      * testHandle
+     *
      * @param $isInteractive
      * @param $isUp
      * @param $isDryRun
      * @param $askResult
+     * @param $executeResult
+     *
      * @dataProvider executeProvider
      */
     public function testHandle($isInteractive, $isUp, $isDryRun, $askResult, $executeResult)
@@ -65,10 +72,31 @@ class ExecuteHandlerTest extends HandlerTestCase
         /** @var m\Mock|TimelineInterface $timeline */
         $timeline = m::mock(TimelineInterface::class);
         $timeline->shouldReceive('getVersions->get')->once()->with($versionId)->andReturn(new Version($versionId));
-        $this->command->shouldReceive('getTimeline')->once()->andReturn($timeline);
+
+        $available = m::mock(Linked::class);
+        $this->command->shouldReceive('getRepositories->fetchAll')->once()->andReturn($available);
+        $migrated = m::mock(Migrated::class);
+        $this->command->shouldReceive('getStorage->fetchAll')->once()->andReturn($migrated);
+
+        $factory = m::mock(new TimelineFactory())->shouldAllowMockingProtectedMethods();
+        $factory->shouldReceive('create')->with($available, $migrated)->once()->andReturn($timeline);
+        $this->command->shouldReceive('getTimelineFactory')->once()->andReturn($factory);
+
+        $this->command->shouldReceive('formatVersion')->with(m::type(VersionInterface::class));
 
         if ($isInteractive) {
-            $this->output->shouldReceive('writeln')->once()->with('/WARNING/');
+            $this->output->shouldReceive('writeln')->once()->with(m::on(function ($value) {
+                if (!is_array($value)) {
+                    return (bool) preg_match('/WARNING/', $value);
+                }
+                $warning = false;
+                foreach ($value as $line) {
+                    if ($warning = preg_match('/WARNING/', $line)) {
+                        break;
+                    }
+                }
+                return $warning;
+            }));
             $this->assertQuestionAsked($askResult, m::type('Symfony\Component\Console\Question\ConfirmationQuestion'));
         }
 

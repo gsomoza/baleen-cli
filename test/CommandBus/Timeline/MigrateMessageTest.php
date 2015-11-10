@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
 use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
-use Baleen\Cli\CommandBus\Timeline\MigrateMessage;
+use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
@@ -39,7 +39,7 @@ class MigrateMessageTest extends MessageTestCase
      */
     public function testConstructor()
     {
-        $instance = new MigrateMessage();
+        $instance = new \Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage();
         $this->assertInstanceOf(AbstractTimelineCommand::class, $instance);
     }
 
@@ -49,7 +49,7 @@ class MigrateMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return MigrateMessage::class;
+        return \Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::class;
     }
 
     /**
@@ -68,7 +68,7 @@ class MigrateMessageTest extends MessageTestCase
     {
         return [
             [   'name' => 'setName',
-                'with' => 'timeline:migrate',
+                'with' => 'timelineFactory:migrate',
             ],
             [   'name' => 'setAliases',
                 'with' => [['migrate']],
@@ -76,20 +76,20 @@ class MigrateMessageTest extends MessageTestCase
             [   'name' => 'setDescription',
                 'with' => m::type('string'),
             ],
-            [   'name' => 'addArgument',
-                'with' => [MigrateMessage::ARG_TARGET, InputArgument::OPTIONAL, m::type('string'), 'latest'],
+            ['name' => 'addArgument',
+             'with' => [\Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::ARG_TARGET, InputArgument::OPTIONAL, m::type('string'), 'latest'],
             ],
             ['name' => 'addOption',
-             'with' => [MigrateMessage::OPT_PROGRESS, m::any(), InputOption::VALUE_NONE, m::type('string')],
+             'with' => [\Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::OPT_PROGRESS, m::any(), InputOption::VALUE_NONE, m::type('string')],
             ],
             [   'name' => 'addOption',
                 'with' => [MigrateMessage::OPT_STRATEGY, 's', InputOption::VALUE_REQUIRED, m::type('string'), 'up'],
             ],
-            [   'name' => 'addOption',
-                'with' => [MigrateMessage::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, m::type('string')],
+            ['name' => 'addOption',
+             'with' => [\Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::OPT_DRY_RUN, 'd', InputOption::VALUE_NONE, m::type('string')],
             ],
-            [   'name' => 'addOption',
-                'with' => [MigrateMessage::OPT_NO_STORAGE, m::any(), InputOption::VALUE_NONE, m::type('string')],
+            ['name' => 'addOption',
+             'with' => [\Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::OPT_NO_STORAGE, m::any(), InputOption::VALUE_NONE, m::type('string')],
             ],
         ];
     }

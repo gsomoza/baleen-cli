@@ -18,14 +18,11 @@
  */
 namespace BaleenTest\Cli\CommandBus\Storage;
 
-use Baleen\Cli\CommandBus\Storage\LatestMessage;
-use Baleen\Cli\CommandBus\Storage\LatestHandler;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\CommandBus\Storage\Latest\LatestHandler;
+use Baleen\Cli\CommandBus\Storage\Latest\LatestMessage;
 use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Migrated;
-use Baleen\Migrations\Version\Comparator\DefaultComparator;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
@@ -40,7 +37,7 @@ class LatestHandlerTest extends HandlerTestCase
      */
     public function setUp()
     {
-        $this->instance = m::mock(LatestHandler::class)
+        $this->instance = m::mock(\Baleen\Cli\CommandBus\Storage\Latest\LatestHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $this->command = m::mock(LatestMessage::class);

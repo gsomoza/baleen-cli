@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,35 +17,26 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Util;
+namespace Baleen\Cli\CommandBus\Config\Status;
 
-use Baleen\Migrations\Repository\RepositoryInterface;
+use Baleen\Cli\CommandBus\MessageInterface;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\FilesystemAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
+use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 
 /**
- * Class RepositoryAwareTrait.
+ * Message class for the config:status command.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoryAwareTrait
+interface StatusMessageInterface extends
+    MessageInterface,
+    ComparatorAwareInterface,
+    ConfigStorageAwareInterface,
+    StorageAwareInterface,
+    RepositoriesAwareInterface
 {
-    use FilesystemAwareTrait;
 
-    /** @var RepositoryInterface */
-    protected $repository;
-
-    /**
-     * @return RepositoryInterface
-     */
-    public function getRepository()
-    {
-        return $this->repository;
-    }
-
-    /**
-     * @param RepositoryInterface $repository
-     */
-    public function setRepository(RepositoryInterface $repository)
-    {
-        $this->repository = $repository;
-    }
 }

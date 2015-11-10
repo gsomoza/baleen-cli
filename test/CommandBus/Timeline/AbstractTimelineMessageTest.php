@@ -22,9 +22,10 @@ namespace BaleenTest\Cli\CommandBus\Timeline;
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
+use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
+use Baleen\Migrations\Timeline\TimelineFactory;
 use Baleen\Migrations\Timeline\TimelineInterface;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
@@ -53,7 +54,7 @@ class AbstractTimelineMessageTest extends BaseTestCase
     {
         $this->assertInstanceOf(AbstractMessage::class, $this->instance);
         $this->assertInstanceOf(StorageAwareInterface::class, $this->instance);
-        $this->assertInstanceOf(TimelineAwareInterface::class, $this->instance);
+        $this->assertInstanceOf(TimelineFactoryAwareInterface::class, $this->instance);
     }
 
     /**
@@ -67,13 +68,12 @@ class AbstractTimelineMessageTest extends BaseTestCase
     }
 
     /**
-     * testGetSetTimeline
+     * testGetSetTimelineFactory
      */
-    public function testGetSetTimeline()
+    public function testGetSetTimelineFactory()
     {
-        /** @var TimelineInterface|m\Mock $timeline */
-        $timeline = m::mock(TimelineInterface::class);
-        $this->instance->setTimeline($timeline);
-        $this->assertSame($timeline, $this->instance->getTimeline());
+        $factory = new TimelineFactory();
+        $this->instance->setTimelineFactory($factory);
+        $this->assertSame($factory, $this->instance->getTimelineFactory());
     }
 }

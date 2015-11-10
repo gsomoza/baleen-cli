@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,55 +17,37 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline;
+namespace Baleen\Cli\CommandBus\Storage\Latest;
 
 use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Event\EventInterface;
-use Baleen\Migrations\Event\Timeline\CollectionEvent;
-use Baleen\Migrations\Event\Timeline\MigrationEvent;
-use Baleen\Migrations\Migration\Options;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Baleen\Cli\Helper\VersionFormatter;
 
 /**
- * Class MigrateHandler.
+ * Class LatestHandler.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class MigrateHandler
+class LatestHandler
 {
-    /** @var MigrateMessage */
-    private $command;
-
     /**
      * handle.
      *
-     * @param MigrateMessage $command
+     * @param LatestMessage $command
      *
      * @throws CliException
      */
-    public function handle(MigrateMessage $command)
+    public function handle(LatestMessage $command)
     {
-        $this->command = $command;
+        $output = $command->getOutput();
+        $migrated = $command->getStorage()->fetchAll();
 
-        $options = new Options(
-            Options::DIRECTION_UP,  // this value will get replaced by timeline later
-            false,
-            $command->isDryRun(),
-            false
-        );
-
-        $command->getTimeline()->getEventDispatcher()->addSubscriber(
-            new MigrateSubscriber($command)
-        );
-
-        $strategy = $command->getStrategy();
-
-        $command->getTimeline()->$strategy(
-            $command->getTarget(),
-            $options
-        );
+        if ($migrated->count() === 0) {
+            $message = 'No migrated versions found in storage.';
+        } else {
+            /** @var VersionFormatter $formatter */
+            $formatter = $command->getCliCommand()->getHelper('versionFormatter');
+            $message = $formatter->formatVersion($migrated->last());
+        }
+        $output->writeln($message);
     }
 }

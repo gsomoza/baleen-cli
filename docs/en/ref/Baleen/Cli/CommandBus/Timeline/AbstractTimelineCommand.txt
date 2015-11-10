@@ -46,11 +46,11 @@ Baleen\\Cli\\CommandBus\\Timeline\\AbstractTimelineCommand
         :type $storage: StorageInterface
         :param $storage:
 
-    .. php:method:: getTimeline()
+    .. php:method:: getTimelineFactory()
 
         :returns: Timeline
 
-    .. php:method:: setTimeline(Timeline $timeline)
+    .. php:method:: setTimelineFactory(Timeline $timeline)
 
         :type $timeline: Timeline
         :param $timeline:

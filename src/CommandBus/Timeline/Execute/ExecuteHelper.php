@@ -17,28 +17,15 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Util;
+namespace Baleen\Cli\CommandBus\Timeline\Execute;
 
-use Baleen\Migrations\Timeline\TimelineInterface;
+use Baleen\Cli\CommandBus\AbstractHelper;
 
-trait TimelineAwareTrait
+/**
+ * Class ExecuteHelper
+ *
+ * @author Gabriel Somoza <gabriel@strategery.io>
+ */
+class ExecuteHelper extends AbstractHelper
 {
-    /** @var TimelineInterface */
-    protected $timeline;
-
-    /**
-     * @return TimelineInterface
-     */
-    public function getTimeline()
-    {
-        return $this->timeline;
-    }
-
-    /**
-     * @param TimelineInterface $timeline
-     */
-    public function setTimeline(TimelineInterface $timeline)
-    {
-        $this->timeline = $timeline;
-    }
 }

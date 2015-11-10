@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,28 +17,24 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository;
+namespace Baleen\Cli\CommandBus\Storage\Latest;
 
+use Baleen\Cli\CommandBus\Storage\AbstractStorageMessage;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class CreateMessage.
+ * Class ListMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class CreateMessage extends AbstractRepositoryMessage
+class LatestMessage extends AbstractStorageMessage
 {
-    const COMMAND_NAME = 'create';
-
+    /**
+     * @inheritdoc
+     */
     public static function configure(Command $command)
     {
-        $command
-            ->setName('migrations:create')
-            ->setAliases(['create'])
-            ->setDescription('Creates a new migration file.')
-            ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
-            ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
-            ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.');
+        $command->setName('storage:latest')
+            ->setDescription('Outputs the ID of the latest migrated version.');
     }
 }

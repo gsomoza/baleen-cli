@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,8 +17,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline;
+namespace Baleen\Cli\CommandBus\Timeline\Execute;
 
+use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Command\Command;

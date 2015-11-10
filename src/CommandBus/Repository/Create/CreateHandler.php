@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,11 +17,11 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository;
+namespace Baleen\Cli\CommandBus\Repository\Create;
 
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Migration\SimpleMigration;
+use Baleen\Migrations\Migration\AbstractMigration;
 use League\Flysystem\Filesystem;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use Zend\Code\Generator\ClassGenerator;
@@ -124,11 +123,13 @@ class CreateHandler
      */
     protected function generate($className, $namespace = null)
     {
+        $abstractMigration = AbstractMigration::class;
+        $abstractMigrationName = substr($abstractMigration, strrpos($abstractMigration, "\\") + 1);
         $class = new ClassGenerator(
             $className,
             $namespace,
             null,
-            'SimpleMigration',
+            $abstractMigrationName,
             [],
             [],
             [
@@ -149,7 +150,7 @@ class CreateHandler
             ],
             new DocBlockGenerator($className . ' class', null, [new GenericTag('link', 'http://baleen.org')])
         );
-        $class->addUse(SimpleMigration::class);
+        $class->addUse($abstractMigration);
 
         return $class;
     }

@@ -1,20 +1,20 @@
 -------------------------------------------------
-Baleen\\Cli\\CommandBus\\Util\\TimelineAwareTrait
+Baleen\\Cli\\CommandBus\\Util\\TimelineFactoryAwareTrait
 -------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Util
 
-.. php:trait:: TimelineAwareTrait
+.. php:trait:: TimelineFactoryAwareTrait
 
     .. php:attr:: timeline
 
         protected Timeline
 
-    .. php:method:: getTimeline()
+    .. php:method:: getTimelineFactory()
 
         :returns: Timeline
 
-    .. php:method:: setTimeline(Timeline $timeline)
+    .. php:method:: setTimelineFactory(Timeline $timeline)
 
         :type $timeline: Timeline
         :param $timeline:

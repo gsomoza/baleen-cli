@@ -21,17 +21,15 @@
 namespace Baleen\Cli\CommandBus\Repository;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareTrait;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareTrait;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
 
 /**
- * Class AbstractRepositoryMessage.
+ * Class AbstractRepositoriesMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractRepositoryMessage extends AbstractMessage implements RepositoryAwareInterface
+abstract class AbstractRepositoryMessage extends AbstractMessage implements RepositoriesAwareInterface
 {
-    use RepositoryAwareTrait;
+    use RepositoriesAwareTrait;
 }

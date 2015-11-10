@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -23,7 +22,9 @@ namespace Baleen\Cli\CommandBus\Util;
 use Baleen\Migrations\Storage\StorageInterface;
 
 /**
- * Interface StorageAwareInterface.
+ * Interface StorageAwareInterface
+ *
+ * @author Gabriel Somoza <gabriel@strategery.io>
  */
 interface StorageAwareInterface
 {

@@ -20,10 +20,9 @@
 namespace BaleenTest\Cli\CommandBus\Repository;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Repository\AbstractRepositoryMessage;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
-use Baleen\Migrations\Repository\RepositoryInterface;
+use Baleen\Cli\CommandBus\Repository\AbstractRepositoriesMessage;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
+use Baleen\Cli\Repository\RepositoryCollectionInterface;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\BaseTestCase;
 use League\Flysystem\Filesystem;
@@ -35,7 +34,7 @@ use Mockery as m;
  */
 class AbstractRepositoryMessageTest extends BaseTestCase
 {
-    /** @var m\Mock|AbstractRepositoryMessage */
+    /** @var m\Mock|AbstractRepositoriesMessage */
     protected $instance;
 
     /**
@@ -44,7 +43,7 @@ class AbstractRepositoryMessageTest extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->instance = m::mock(AbstractRepositoryMessage::class)
+        $this->instance = m::mock(AbstractRepositoriesMessage::class)
             ->makePartial();
     }
 
@@ -54,7 +53,7 @@ class AbstractRepositoryMessageTest extends BaseTestCase
     public function testConstructor()
     {
         $this->assertInstanceOf(AbstractMessage::class, $this->instance);
-        $this->assertInstanceOf(RepositoryAwareInterface::class, $this->instance);
+        $this->assertInstanceOf(RepositoriesAwareInterface::class, $this->instance);
     }
 
     /**
@@ -62,10 +61,10 @@ class AbstractRepositoryMessageTest extends BaseTestCase
      */
     public function testGetSetRepository()
     {
-        /** @var m\Mock|RepositoryInterface $repository */
-        $repository = m::mock(RepositoryInterface::class);
-        $this->instance->setRepository($repository);
-        $this->assertSame($repository, $this->instance->getRepository());
+        /** @var m\Mock|RepositoryCollectionInterface $repository */
+        $repository = m::mock(RepositoryCollectionInterface::class);
+        $this->instance->setRepositories($repository);
+        $this->assertSame($repository, $this->instance->getRepositories());
     }
 
     /**

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -25,12 +24,12 @@ use Baleen\Migrations\Storage\StorageInterface;
 trait StorageAwareTrait
 {
     /** @var StorageInterface */
-    protected $storage;
+    private $storage;
 
     /**
      * @return StorageInterface
      */
-    public function getStorage()
+    final public function getStorage()
     {
         return $this->storage;
     }
@@ -38,7 +37,7 @@ trait StorageAwareTrait
     /**
      * @param StorageInterface $storage
      */
-    public function setStorage(StorageInterface $storage = null)
+    final public function setStorage(StorageInterface $storage = null)
     {
         $this->storage = $storage;
     }

@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Storage;
 
 use Baleen\Cli\CommandBus\Storage\AbstractStorageMessage;
-use Baleen\Cli\CommandBus\Storage\LatestMessage;
+use Baleen\Cli\CommandBus\Storage\Latest\LatestMessage;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
 

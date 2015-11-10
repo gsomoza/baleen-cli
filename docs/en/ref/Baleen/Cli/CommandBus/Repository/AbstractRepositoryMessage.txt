@@ -1,12 +1,12 @@
 --------------------------------------------------------------
-Baleen\\Cli\\CommandBus\\Repository\\AbstractRepositoryMessage
+Baleen\\Cli\\CommandBus\\Repository\\AbstractRepositoriesMessage
 --------------------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Repository
 
-.. php:class:: AbstractRepositoryMessage
+.. php:class:: AbstractRepositoriesMessage
 
-    Class AbstractRepositoryMessage.
+    Class AbstractRepositoriesMessage.
 
     .. php:attr:: repository
 
@@ -36,11 +36,11 @@ Baleen\\Cli\\CommandBus\\Repository\\AbstractRepositoryMessage
 
         protected Command
 
-    .. php:method:: getRepository()
+    .. php:method:: getRepositories()
 
         :returns: RepositoryInterface
 
-    .. php:method:: setRepository(RepositoryInterface $repository)
+    .. php:method:: setRepositories(RepositoryInterface $repository)
 
         :type $repository: RepositoryInterface
         :param $repository:

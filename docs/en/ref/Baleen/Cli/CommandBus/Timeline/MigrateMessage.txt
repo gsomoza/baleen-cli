@@ -1,5 +1,5 @@
 -------------------------------------------------
-Baleen\\Cli\\CommandBus\\Timeline\\MigrateMessage
+Baleen\\Cli\\CommandBus\\Timeline\\Migrate\\MigrateMessage
 -------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Timeline
@@ -46,11 +46,11 @@ Baleen\\Cli\\CommandBus\\Timeline\\MigrateMessage
         :type $storage: StorageInterface
         :param $storage:
 
-    .. php:method:: getTimeline()
+    .. php:method:: getTimelineFactory()
 
         :returns: Timeline
 
-    .. php:method:: setTimeline(Timeline $timeline)
+    .. php:method:: setTimelineFactory(Timeline $timeline)
 
         :type $timeline: Timeline
         :param $timeline:

@@ -30,20 +30,20 @@ use Baleen\Cli\Config\ConfigStorage;
 trait ConfigStorageAwareTrait
 {
     /** @var ConfigStorage */
-    protected $configStorage;
+    private $configStorage;
 
     /**
-     * @return ConfigStorage
+     * @inheritdoc
      */
-    public function getConfigStorage()
+    final public function getConfigStorage()
     {
         return $this->configStorage;
     }
 
     /**
-     * @param ConfigStorage $configStorage
+     * @inheritdoc
      */
-    public function setConfigStorage(ConfigStorage $configStorage)
+    final public function setConfigStorage(ConfigStorage $configStorage)
     {
         $this->configStorage = $configStorage;
     }

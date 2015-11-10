@@ -1,5 +1,5 @@
 --------------------------------------------------
-Baleen\\Cli\\CommandBus\\Repository\\LatestHandler
+Baleen\\Cli\\CommandBus\\Repository\\Latest\\LatestHandler
 --------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Repository

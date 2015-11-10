@@ -19,7 +19,6 @@
 
 namespace BaleenTest\Cli\Provider;
 
-use Baleen\Cli\Exception\CliException;
 use Baleen\Cli\Provider\Services;
 use Baleen\Cli\Provider\StorageProvider;
 use Baleen\Migrations\Storage\StorageInterface;

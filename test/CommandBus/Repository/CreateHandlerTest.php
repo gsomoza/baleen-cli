@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Cli\CommandBus\Repository;
 
-use Baleen\Cli\CommandBus\Repository\CreateMessage;
-use Baleen\Cli\CommandBus\Repository\CreateHandler;
+use Baleen\Cli\CommandBus\Repository\Create\CreateHandler;
+use Baleen\Cli\CommandBus\Repository\Create\CreateMessage;
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\SimpleMigration;

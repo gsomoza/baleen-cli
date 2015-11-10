@@ -21,12 +21,9 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
-use Baleen\Cli\Exception\CliException;
-use Baleen\Cli\Repository\RepositoryFactory;
+use Baleen\Cli\Repository\RepositoryServiceFactory;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
-use Baleen\Migrations\Repository\DirectoryRepository;
-use Baleen\Migrations\Repository\RepositoryStack;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ServiceProvider;
@@ -72,7 +69,7 @@ class RepositoryProvider extends ServiceProvider
                 ClassLoader $autoloader
             ) {
                 // a factory class is cleaner easier to test
-                return (new RepositoryFactory(
+                return (new RepositoryServiceFactory(
                         $config->getMigrationsConfig(),
                         $migrationFactory,
                         $filesystem,

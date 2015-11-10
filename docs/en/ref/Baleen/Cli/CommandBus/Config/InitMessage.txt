@@ -1,5 +1,5 @@
 --------------------------------------------
-Baleen\\Cli\\CommandBus\\Config\\InitMessage
+Baleen\\Cli\\CommandBus\\Config\\Init\\InitMessage
 --------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Config

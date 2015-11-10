@@ -14,42 +14,29 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <http://www.doctrine-project.org>.
+ * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Config;
+namespace Baleen\Cli\CommandBus\Repository\Latest;
 
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareTrait;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareTrait;
-use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
+use Baleen\Cli\CommandBus\Repository\AbstractRepositoryMessage;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * Message class for the config:status command.
+ * Class ListMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class StatusMessage extends AbstractConfigMessage implements
-    RepositoryAwareInterface,
-    StorageAwareInterface,
-    ComparatorAwareInterface
+class LatestMessage extends AbstractRepositoryMessage
 {
-    use RepositoryAwareTrait;
-    use StorageAwareTrait;
-    use ComparatorAwareTrait;
-
     /**
-     * Configures a console command by setting name, description, arguments, etc.
+     * configure.
      *
      * @param Command $command
      */
     public static function configure(Command $command)
     {
-        $command->setName('config:status');
-        $command->setAliases(['status']);
-        $command->setDescription('Shows the current migration status.');
+        $command->setName('migrations:latest')
+            ->setDescription('Prints the version ID of the latest available migration.');
     }
 }

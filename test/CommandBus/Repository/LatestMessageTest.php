@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Cli\CommandBus\Repository;
 
-use Baleen\Cli\CommandBus\Repository\AbstractRepositoryMessage;
-use Baleen\Cli\CommandBus\Repository\LatestMessage;
+use Baleen\Cli\CommandBus\Repository\AbstractRepositoriesMessage;
+use Baleen\Cli\CommandBus\Repository\Latest\LatestMessage;
 use Baleen\Migrations\Version as V;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
@@ -38,7 +38,7 @@ class LatestMessageTest extends MessageTestCase
     public function testConstructor()
     {
         $instance = new LatestMessage();
-        $this->assertInstanceOf(AbstractRepositoryMessage::class, $instance);
+        $this->assertInstanceOf(AbstractRepositoriesMessage::class, $instance);
     }
 
     /**
@@ -47,7 +47,7 @@ class LatestMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return LatestMessage::class;
+        return \Baleen\Cli\CommandBus\Repository\Latest\LatestMessage::class;
     }
 
     /**

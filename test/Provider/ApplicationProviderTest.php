@@ -23,9 +23,10 @@ use Baleen\Cli\Application;
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
 use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoryAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\TimelineAwareInterface;
+use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
+use Baleen\Cli\Provider\ApplicationProvider;
 use Baleen\Cli\Provider\Services;
 use Mockery as m;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -43,7 +44,7 @@ class ApplicationProviderTest extends ServiceProviderTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->setInstance(m::mock(\Baleen\Cli\Provider\ApplicationProvider::class)->makePartial());
+        $this->setInstance(m::mock(ApplicationProvider::class)->makePartial());
     }
 
     /**
@@ -54,15 +55,15 @@ class ApplicationProviderTest extends ServiceProviderTestCase
     public function testRegister($isAppRegistered)
     {
         $inflectors = [
-            RepositoryAwareInterface::class => [
-                'setRepository' => [Services::REPOSITORY],
+            RepositoriesAwareInterface::class => [
+                'setRepositories' => [Services::REPOSITORY],
                 'setFilesystem' => [Services::REPOSITORY_FILESYSTEM],
             ],
             StorageAwareInterface::class => [
                 'setStorage' => [Services::STORAGE],
             ],
-            TimelineAwareInterface::class => [
-                'setTimeline' => [Services::TIMELINE],
+            TimelineFactoryAwareInterface::class => [
+                'setTimelineFactory' => [Services::TIMELINE_FACTORY],
             ],
             ComparatorAwareInterface::class => [
                 'setComparator' => [Services::COMPARATOR],

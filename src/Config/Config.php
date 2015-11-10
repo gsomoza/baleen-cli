@@ -20,13 +20,6 @@
 
 namespace Baleen\Cli\Config;
 
-use Baleen\Cli\Exception\CliException;
-use Baleen\Cli\Provider\ApplicationProvider;
-use Baleen\Cli\Provider\CommandsProvider;
-use Baleen\Cli\Provider\HelperSetProvider;
-use Baleen\Cli\Provider\RepositoryProvider;
-use Baleen\Cli\Provider\StorageProvider;
-use Baleen\Cli\Provider\TimelineProvider;
 use Symfony\Component\Config\Definition\Processor;
 
 /**
