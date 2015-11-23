@@ -17,12 +17,14 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository\Create;
+namespace Baleen\Cli\CommandBus\Migration\Create;
 
+use Baleen\Cli\CommandBus\Migration\Create\CreateMessage;
 use Baleen\Cli\Config\Config;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\AbstractMigration;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlock\Tag\GenericTag;
@@ -40,19 +42,19 @@ class CreateHandler
     /**
      * handle.
      *
-     * @param CreateMessage $command
+     * @param CreateMessage $message
      *
      * @return false|string
      *
      * @throws CliException
      */
-    public function handle(CreateMessage $command)
+    public function handle(CreateMessage $message)
     {
-        $input = $command->getInput();
-        $output = $command->getOutput();
+        $input = $message->getInput();
+        $output = $message->getOutput();
 
         /** @var Config $config */
-        $config = $command->getConfig();
+        $config = $message->getConfig();
 
         $directories = $config->getMigrationsConfig();
         if (empty($directories)) {
@@ -61,9 +63,9 @@ class CreateHandler
                 'one element is required to be present.'
             ));
         }
-        $directory = reset($directories);
+        $directory = reset($directories)['directory'];
 
-        $filesystem = $command->getFilesystem();
+        $filesystem = $message->getFilesystem();
         if (!$filesystem->has($directory)) {
             throw new CliException(sprintf(
                 'Migrations directory "%s" does not exist.',
@@ -75,18 +77,18 @@ class CreateHandler
         $editorCmd = $input->getOption('editor-cmd');
 
         if (null === $namespace) {
-            $namespace = $config->getMigrationsNamespace();
+            $namespace = reset($directories)['namespace'];
         }
         if (!empty($namespace)) {
             $namespace = rtrim($namespace, '\\');
-            $namespace = preg_replace('/[^A-Za-z\d_\\\\]+/', '', $namespace);
+            $namespace = preg_replace('{[^A-Za-z\d_\\\\]+}', '', $namespace);
         }
 
         $timestamp = date('YmdHis');
         $className = ['v'.$timestamp];
         $title = $input->getArgument('title');
         if (!empty($title)) {
-            $title = preg_replace('/[^A-Za-z\d_]+/', '', $title);
+            $title = preg_replace('{[^A-Za-z\d_]+}', '', $title);
             $className[] = $title;
         }
 
@@ -101,8 +103,8 @@ class CreateHandler
             if ($editorCmd) {
                 $pipes = [];
                 $baseDir = dirname($config->getDefaultMigrationsDirectoryPath());
-                $command = $editorCmd . ' ' . escapeshellarg($baseDir . DIRECTORY_SEPARATOR . $result);
-                proc_open($command, array(), $pipes);
+                $message = $editorCmd . ' ' . escapeshellarg($baseDir . DIRECTORY_SEPARATOR . $result);
+                proc_open($message, array(), $pipes);
             }
         } else {
             $output->writeln(
@@ -159,14 +161,14 @@ class CreateHandler
      * Function writeClass.
      *
      * @param ClassGenerator $class
-     * @param Filesystem     $filesystem
+     * @param FilesystemInterface $filesystem
      * @param $destinationDir
      *
      * @return string|false
      *
      * @throws CliException
      */
-    protected function writeClass(ClassGenerator $class, Filesystem $filesystem, $destinationDir)
+    protected function writeClass(ClassGenerator $class, FilesystemInterface $filesystem, $destinationDir)
     {
         $className = $class->getName();
         $file = new FileGenerator([

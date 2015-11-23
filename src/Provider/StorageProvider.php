@@ -21,8 +21,11 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
+use Baleen\Migrations\Version\Repository\VersionRepository;
 use Baleen\Storage\FlyStorage;
+use Baleen\Storage\FlyVersionMapper;
 use League\Container\ServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
@@ -31,10 +34,10 @@ use League\Flysystem\Filesystem;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class StorageProvider extends ServiceProvider
+class StorageProvider extends AbstractServiceProvider
 {
     protected $provides = [
-        Services::STORAGE,
+        Services::VERSION_REPOSITORY,
     ];
 
     /**
@@ -43,11 +46,12 @@ class StorageProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(Services::STORAGE, function (Config $config) {
+        $container->share(Services::VERSION_REPOSITORY, function (Config $config) {
             $adapter = new Local(getcwd());
             $filesystem = new Filesystem($adapter);
             $fileName = $config->getStorageFile();
-            return new FlyStorage($filesystem, $fileName);
+            $mapper = new FlyVersionMapper($filesystem, $fileName);
+            return new VersionRepository($mapper);
         })->withArgument(Services::CONFIG);
     }
 }

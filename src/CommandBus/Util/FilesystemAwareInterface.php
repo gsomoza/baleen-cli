@@ -32,9 +32,4 @@ interface FilesystemAwareInterface
      * @return Filesystem
      */
     public function getFilesystem();
-
-    /**
-     * @param Filesystem $filesystem
-     */
-    public function setFilesystem(Filesystem $filesystem);
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -15,21 +14,47 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <https://github.com/baleen/migrations>.
+ * <http://www.doctrine-project.org>.
  */
+namespace Baleen\Cli\Helper;
 
-namespace Baleen\Cli\CommandBus\Repository;
-
-use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
+use Interop\Container\ContainerInterface;
+use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\HelperInterface;
+use Symfony\Component\Console\Helper\HelperSet;
 
 /**
- * Class AbstractRepositoriesMessage.
+ * Class ContainerHelper
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractRepositoryMessage extends AbstractMessage implements RepositoriesAwareInterface
+final class ContainerHelper extends Helper
 {
-    use RepositoriesAwareTrait;
+    /** @var ContainerInterface */
+    private $container;
+
+    /**
+     * ContainerHelper constructor.
+     *
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Returns the canonical name of this helper.
+     *
+     * @return string The canonical name
+     */
+    public function getName()
+    {
+        return 'container';
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }

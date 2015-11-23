@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Repository;
 
 use Baleen\Cli\CommandBus\Repository\AbstractRepositoriesMessage;
-use Baleen\Cli\CommandBus\Repository\Latest\LatestMessage;
+use Baleen\Cli\CommandBus\Migration\Latest\LatestMessage;
 use Baleen\Migrations\Version as V;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
@@ -47,7 +47,7 @@ class LatestMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return \Baleen\Cli\CommandBus\Repository\Latest\LatestMessage::class;
+        return \Baleen\Cli\CommandBus\Migration\Latest\LatestMessage::class;
     }
 
     /**

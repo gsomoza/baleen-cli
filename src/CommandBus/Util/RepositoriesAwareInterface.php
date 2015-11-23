@@ -32,9 +32,4 @@ interface RepositoriesAwareInterface
      * @return RepositoryCollectionInterface
      */
     public function getRepositories();
-
-    /**
-     * @param RepositoryCollectionInterface $repositories
-     */
-    public function setRepositories(RepositoryCollectionInterface $repositories);
 }

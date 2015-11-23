@@ -21,8 +21,7 @@ return [
     'providers' => [
         'application' => \Baleen\Cli\Provider\ApplicationProvider::class,
         'storage' => \Baleen\Cli\Provider\StorageProvider::class,
-        'repository' => \Baleen\Cli\Provider\RepositoryProvider::class,
-        'timeline' => \Baleen\Cli\Provider\TimelineProvider::class,
+        'repository' => \Baleen\Cli\Provider\MigrationRepositoryProvider::class,
         'helperSet' => \Baleen\Cli\Provider\HelperSetProvider::class,
         'commands' => \Baleen\Cli\Provider\CommandsProvider::class,
     ],

@@ -49,7 +49,7 @@ class StorageProviderTest extends ServiceProviderTestCase
             ->once()
             ->andReturn('/some/file/path'); // path not important for this test
         $this->assertSingletonProvided(
-            Services::STORAGE,
+            Services::VERSION_REPOSITORY,
             $this->assertCallbackInstanceOf(StorageInterface::class, [$this->config])
         )->shouldReceive('withArgument')->with(Services::CONFIG);
         $this->getInstance()->register();

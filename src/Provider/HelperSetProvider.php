@@ -20,8 +20,10 @@
 
 namespace Baleen\Cli\Provider;
 
+use Baleen\Cli\Helper\ContainerHelper;
 use Baleen\Cli\Helper\VersionFormatter;
 use League\Container\ServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -31,7 +33,7 @@ use Symfony\Component\Console\Helper\QuestionHelper;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class HelperSetProvider extends ServiceProvider
+class HelperSetProvider extends AbstractServiceProvider
 {
     protected $provides = [
         Services::HELPERSET,
@@ -44,10 +46,11 @@ class HelperSetProvider extends ServiceProvider
     public function register()
     {
         $container = $this->getContainer();
-        $container->singleton(Services::HELPERSET, function () use ($container) {
+        $container->share(Services::HELPERSET, function () use ($container) {
             $helperSet = new HelperSet();
             $helperSet->set($container->get(Services::HELPERSET_QUESTION), 'question');
             $helperSet->set($container->get(VersionFormatter::class));
+            $helperSet->set($container->get(ContainerHelper::class));
             $helperSet->set(new FormatterHelper());
 
             return $helperSet;

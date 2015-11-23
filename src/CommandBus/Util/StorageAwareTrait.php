@@ -20,14 +20,15 @@
 namespace Baleen\Cli\CommandBus\Util;
 
 use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 
 trait StorageAwareTrait
 {
-    /** @var StorageInterface */
+    /** @var VersionRepositoryInterface */
     private $storage;
 
     /**
-     * @return StorageInterface
+     * @return VersionRepositoryInterface
      */
     final public function getStorage()
     {
@@ -35,9 +36,9 @@ trait StorageAwareTrait
     }
 
     /**
-     * @param StorageInterface $storage
+     * @param VersionRepositoryInterface $storage
      */
-    final public function setStorage(StorageInterface $storage = null)
+    final public function setStorage(VersionRepositoryInterface $storage = null)
     {
         $this->storage = $storage;
     }

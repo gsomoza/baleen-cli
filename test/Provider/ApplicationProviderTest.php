@@ -56,14 +56,11 @@ class ApplicationProviderTest extends ServiceProviderTestCase
     {
         $inflectors = [
             RepositoriesAwareInterface::class => [
-                'setRepositories' => [Services::REPOSITORY],
-                'setFilesystem' => [Services::REPOSITORY_FILESYSTEM],
+                'setRepositories' => [Services::MIGRATION_REPOSITORY],
+                'setFilesystem' => [Services::MIGRATION_REPOSITORY_FILESYSTEM],
             ],
             StorageAwareInterface::class => [
-                'setStorage' => [Services::STORAGE],
-            ],
-            TimelineFactoryAwareInterface::class => [
-                'setTimelineFactory' => [Services::TIMELINE_FACTORY],
+                'setStorage' => [Services::VERSION_REPOSITORY],
             ],
             ComparatorAwareInterface::class => [
                 'setComparator' => [Services::COMPARATOR],

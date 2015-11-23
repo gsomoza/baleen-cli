@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -27,7 +26,15 @@ use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
+use Baleen\Cli\Config\Config;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Migrations\Migration\Options\Direction;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Baleen\Migrations\Version\Comparator\MigrationComparator;
+use Baleen\Migrations\Version\Comparator\NamespacesAwareComparator;
+use League\Container\Argument\RawArgument;
 use League\Container\ServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -36,11 +43,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  * @author Gabriel Somoza <gabriel@strategery.io>
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ApplicationProvider extends ServiceProvider
+class ApplicationProvider extends AbstractServiceProvider
 {
     protected $provides = [
         Services::APPLICATION,
         Services::APPLICATION_DISPATCHER,
+        Services::COMPARATOR,
     ];
 
     /**
@@ -52,35 +60,24 @@ class ApplicationProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->singleton(Services::APPLICATION_DISPATCHER, EventDispatcher::class);
+        $container->share(Services::APPLICATION_DISPATCHER, EventDispatcher::class);
 
-        if (!$container->isRegistered(Services::APPLICATION)) {
-            $args = [
+        $container->share(Services::APPLICATION, Application::class)
+            ->withArguments([
                 Services::COMMANDS,
                 Services::HELPERSET,
-                Services::APPLICATION_DISPATCHER,
-            ];
-            $container->singleton(Services::APPLICATION, Application::class)
-                ->withArguments($args);
-        }
+                Services::APPLICATION_DISPATCHER
+            ]);
 
-        // register inflectors for the different types of commands
-        $container->inflector(RepositoriesAwareInterface::class)
-            ->invokeMethod('setRepositories', [Services::REPOSITORY]);
-
-        $container->inflector(StorageAwareInterface::class)
-            ->invokeMethod('setStorage', [Services::STORAGE]);
-
-        $container->inflector(TimelineFactoryAwareInterface::class)
-            ->invokeMethod('setTimelineFactory', [Services::TIMELINE_FACTORY]);
-
-        $container->inflector(ComparatorAwareInterface::class)
-            ->invokeMethod('setComparator', [Services::COMPARATOR]);
-
-        $container->inflector(ConfigStorageAwareInterface::class)
-            ->invokeMethod('setConfigStorage', [Services::CONFIG_STORAGE]);
-
-        $container->inflector(AbstractMessage::class)
-            ->invokeMethod('setConfig', [Services::CONFIG]);
+        $container->share(Services::COMPARATOR, function (Config $config) {
+            $repositories = [];
+            foreach ($config->getMigrationsConfig() as $repoConfig) {
+                $repositories[] = $repoConfig['namespace'];
+            }
+            return new NamespacesAwareComparator(
+                new MigrationComparator(),
+                $repositories
+            );
+        })->withArguments([Services::CONFIG]);
     }
 }

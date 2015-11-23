@@ -21,6 +21,7 @@ namespace Baleen\Cli\CommandBus\Timeline\Execute;
 
 use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
 use Baleen\Migrations\Migration\Options;
+use Baleen\Migrations\Migration\Options\Direction;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -52,7 +53,7 @@ class ExecuteMessage extends AbstractTimelineCommand
                 self::ARG_DIRECTION,
                 InputArgument::OPTIONAL,
                 'Direction in which to execute the migration.',
-                Options::DIRECTION_UP
+                Direction::UP
             );
     }
 }

@@ -20,8 +20,19 @@
 
 namespace Baleen\Cli\Provider;
 
-use Baleen\Migrations\Timeline\TimelineFactory;
+use Baleen\Cli\Application;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Cli\Config\ConfigStorage;
+use Baleen\Cli\Repository\RepositoryCollectionInterface;
+use Baleen\Migrations\Migration\Factory\FactoryInterface;
+use Baleen\Migrations\Migration\Repository\MigrationRepositoryInterface;
 use Baleen\Migrations\Version\Collection\Resolver\ResolverInterface;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
+use Composer\Autoload\ClassLoader;
+use League\Flysystem\FilesystemInterface;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * This interface contains constants for the names of services in the Service Container. Its useful in order to:
@@ -33,9 +44,9 @@ interface Services
 {
     // ConfigProvider
     /** Reference to the Config service */
-    const CONFIG = 'config';
+    const CONFIG = ConfigInterface::class;
     /** Reference to the ConfigStorage service */
-    const CONFIG_STORAGE = 'config-storage';
+    const CONFIG_STORAGE = ConfigStorage::class;
     /** Reference to Baleen CLI's base directory */
     const BALEEN_BASE_DIR = 'baleen.base_dir';
 
@@ -63,38 +74,34 @@ interface Services
 
     // ApplicationProvider
     /** Reference to the Symfony Console Application instance */
-    const APPLICATION = 'application';
+    const APPLICATION = Application::class;
     /** Reference to a Symfony Event Dispatcher to be attached to the application */
-    const APPLICATION_DISPATCHER = 'application.dispatcher';
+    const APPLICATION_DISPATCHER = EventDispatcherInterface::class;
     /** Reference to the Composer autoloader */
-    const AUTOLOADER = 'autoloader';
+    const AUTOLOADER = ClassLoader::class;
 
     // HelperSetProvider
     /** Reference to the Symfony Console HelperSet to be used for the Application */
-    const HELPERSET = 'helperset';
+    const HELPERSET = HelperSet::class;
     /** Reference to the Question console helper */
     const HELPERSET_QUESTION = 'helperset.question';
     /** Reference to the Config console helper */
     const HELPERSET_CONFIG = 'helperset.config';
 
-    // RepositoryProvider
+    // MigrationRepositoryProvider
     /** Reference to the Repository service */
-    const REPOSITORY = 'repository';
+    const MIGRATION_REPOSITORY = RepositoryCollectionInterface::class;
     /** Reference to the Filesystem to be used for the Repository service */
-    const REPOSITORY_FILESYSTEM = 'repository.filesystem';
+    const MIGRATION_REPOSITORY_FILESYSTEM = FilesystemInterface::class;
     /** Reference to the factory to be used to instantiate Migrations */
-    const MIGRATION_FACTORY = 'repository.migration.factory';
+    const MIGRATION_FACTORY = FactoryInterface::class;
 
     // Storage Provider
     /** Reference to the Storage service */
-    const STORAGE = 'storage';
+    const VERSION_REPOSITORY = VersionRepositoryInterface::class;
 
-    // TimelineProvider
-    /** Reference to the Timeline service */
-    const TIMELINE = 'timeline';
-    const TIMELINE_FACTORY = TimelineFactory::class;
     /** Reference to the Comparator service */
-    const COMPARATOR = 'comparator';
+    const COMPARATOR = ComparatorInterface::class;
     /** Reference to a collection resolver service */
     const RESOLVER = ResolverInterface::class;
 }

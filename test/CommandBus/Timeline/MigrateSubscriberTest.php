@@ -16,14 +16,18 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace BaleenTest\Baleen\CommandBus\Timeline;
 
 use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage;
 use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateSubscriber;
-use Baleen\Migrations\Event\EventInterface;
-use Baleen\Migrations\Event\Timeline\CollectionEvent;
-use Baleen\Migrations\Event\Timeline\MigrationEvent;
-use Baleen\Migrations\Version;
+use Baleen\Migrations\Migration\MigrationInterface;
+use Baleen\Migrations\Service\Runner\Event\Collection\CollectionAfterEvent;
+use Baleen\Migrations\Service\Runner\Event\Collection\CollectionBeforeEvent;
+use Baleen\Migrations\Service\Runner\Event\Collection\CollectionEvent;
+use Baleen\Migrations\Service\Runner\Event\Migration\MigrateAfterEvent;
+use Baleen\Migrations\Service\Runner\Event\Migration\MigrateBeforeEvent;
+use Baleen\Migrations\Version\Version;
 use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
@@ -62,7 +66,7 @@ class MigrateSubscriberTest extends BaseTestCase
     {
         /** @var ProgressBar|m\Mock $progress */
         $progress = $withProgress ? m::mock(ProgressBar::class) : null;
-        $instance = new \Baleen\Cli\CommandBus\Timeline\Migrate\MigrateSubscriber($this->command, $progress);
+        $instance = new MigrateSubscriber($this->command, $progress);
 
         // now for the actual tests
         if ($withProgress) {
@@ -90,7 +94,7 @@ class MigrateSubscriberTest extends BaseTestCase
 
         /** @var ProgressBar|m\Mock|null $progress */
         $progress = $withProgress ? m::mock(ProgressBar::class) : null;
-        $instance = new \Baleen\Cli\CommandBus\Timeline\Migrate\MigrateSubscriber($this->command, $progress);
+        $instance = new MigrateSubscriber($this->command, $progress);
         $currentProgress = 50;
         /** @var MigrationEvent|m\Mock $event */
         $event = m::mock(MigrationEvent::class);
@@ -129,7 +133,10 @@ class MigrateSubscriberTest extends BaseTestCase
      */
     public function testOnCollectionBefore($trackProgress = true, $isDirectionUp = true)
     {
-        $target = new Version('v10');
+        /** @var MigrationInterface|m\Mock $migration */
+        $migration = m::mock(MigrationInterface::class);
+        $target = new Version($migration, false, 'v10');
+
         /** @var CollectionEvent|m\Mock $event */
         $event = m::mock(CollectionEvent::class);
         $event->shouldReceive([
@@ -151,7 +158,7 @@ class MigrateSubscriberTest extends BaseTestCase
             $event->shouldNotReceive('getProgress');
         }
 
-        $instance = new \Baleen\Cli\CommandBus\Timeline\Migrate\MigrateSubscriber($this->command);
+        $instance = new MigrateSubscriber($this->command);
         $instance->onCollectionBefore($event);
     }
 
@@ -205,12 +212,12 @@ class MigrateSubscriberTest extends BaseTestCase
     public function testGetSubscribedEvents()
     {
         $keys = [
-            EventInterface::COLLECTION_BEFORE,
-            EventInterface::COLLECTION_AFTER,
-            EventInterface::MIGRATION_BEFORE,
-            EventInterface::MIGRATION_AFTER,
+            CollectionBeforeEvent::class,
+            CollectionAfterEvent::class,
+            MigrateBeforeEvent::class,
+            MigrateAfterEvent::class,
         ];
-        $result = (new \Baleen\Cli\CommandBus\Timeline\Migrate\MigrateSubscriber($this->command))->getSubscribedEvents();
+        $result = (new MigrateSubscriber($this->command))->getSubscribedEvents();
         foreach ($keys as $key) {
             $this->assertArrayHasKey($key, $result);
         }

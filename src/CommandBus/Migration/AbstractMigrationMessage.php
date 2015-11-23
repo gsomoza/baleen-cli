@@ -17,29 +17,32 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository\Create;
+namespace Baleen\Cli\CommandBus\Migration;
 
-use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
+use Baleen\Cli\CommandBus\AbstractMessage;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Cli\Repository\RepositoryCollectionInterface;
 
 /**
- * Class CreateMessage.
+ * Class AbstractRepositoriesMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class CreateMessage extends AbstractConfigMessage
+abstract class AbstractMigrationMessage extends AbstractMessage implements RepositoriesAwareInterface
 {
-    const COMMAND_NAME = 'create';
+    use RepositoriesAwareTrait;
 
-    public static function configure(Command $command)
+    /**
+     * AbstractMigrationMessage constructor.
+     *
+     * @param ConfigInterface $config
+     * @param RepositoryCollectionInterface $repositoryCollection
+     */
+    public function __construct(ConfigInterface $config, RepositoryCollectionInterface $repositoryCollection)
     {
-        $command
-            ->setName('migrations:create')
-            ->setAliases(['create'])
-            ->setDescription('Creates a new migration file.')
-            ->addArgument('title', null, 'Adds a descriptive title for the migration file and class name', null)
-            ->addOption('namespace', null, InputOption::VALUE_OPTIONAL, 'Overrides the configured namespace', null)
-            ->addOption('editor-cmd', null, InputOption::VALUE_OPTIONAL, 'Open file with this command upon creation.');
+        $this->setRepositories($repositoryCollection);
+        parent::__construct($config);
     }
 }

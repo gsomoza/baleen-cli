@@ -20,10 +20,10 @@
 namespace Baleen\Cli\Repository;
 
 use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Repository\RepositoryInterface;
-use Baleen\Migrations\Version\Collection\Linked;
+use Baleen\Migrations\Migration\Repository\MigrationRepositoryInterface;
+use Baleen\Migrations\Shared\Collection\CollectionInterface;
+use Baleen\Migrations\Version\Collection\Collection;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
-use Baleen\Migrations\Version\Comparator\ReversibleComparatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -31,15 +31,15 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  *
- * @method RepositoryInterface first()
- * @method RepositoryInterface last()
- * @method RepositoryInterface next()
- * @method RepositoryInterface current()
- * @method RepositoryInterface offsetGet($offset)
- * @method RepositoryInterface offsetUnset($offset)
- * @method RepositoryInterface[] toArray()
- * @method RepositoryInterface[] getValues()
- * @property RepositoryInterface[] elements
+ * @method MigrationRepositoryInterface first()
+ * @method MigrationRepositoryInterface last()
+ * @method MigrationRepositoryInterface next()
+ * @method MigrationRepositoryInterface current()
+ * @method MigrationRepositoryInterface offsetGet($offset)
+ * @method MigrationRepositoryInterface offsetUnset($offset)
+ * @method MigrationRepositoryInterface[] toArray()
+ * @method MigrationRepositoryInterface[] getValues()
+ * @property MigrationRepositoryInterface[] elements
  */
 final class RepositoryCollection extends ArrayCollection implements RepositoryCollectionInterface
 {
@@ -83,13 +83,13 @@ final class RepositoryCollection extends ArrayCollection implements RepositoryCo
      *
      * @param null|int|string $key
      *
-     * @return Linked
+     * @return CollectionInterface
      *
      * @throws CliException
      */
     public function fetchAll($key = null)
     {
-        $collection = new Linked([], null, $this->comparator);
+        $collection = new Collection([], null, $this->comparator);
         if (null !== $key) {
             $repo = $this->get($key);
             if (null === $repo) {
@@ -142,10 +142,10 @@ final class RepositoryCollection extends ArrayCollection implements RepositoryCo
      * @throws CliException
      */
     protected function validate($value) {
-        if (!is_object($value) || !$value instanceof RepositoryInterface) {
+        if (!is_object($value) || !$value instanceof MigrationRepositoryInterface) {
             throw new CliException(sprintf(
                 'Expected value to be an instance of "%s". Got "%s" instead.',
-                RepositoryInterface::class,
+                MigrationRepositoryInterface::class,
                 is_object($value) ? get_class($value) : gettype($value)
             ));
         }

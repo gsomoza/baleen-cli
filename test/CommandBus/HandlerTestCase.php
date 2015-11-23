@@ -23,6 +23,7 @@ use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Version;
 use Baleen\Migrations\Version\Collection\Migrated;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 use Mockery\Matcher\MatcherAbstract;
@@ -45,7 +46,7 @@ class HandlerTestCase extends BaseTestCase
     /** @var m\Mock */
     protected $instance;
 
-    /** @var m\Mock|StorageInterface */
+    /** @var m\Mock|VersionRepositoryInterface */
     protected $storage;
 
     /** @var m\Mock|AbstractMessage */
@@ -59,7 +60,7 @@ class HandlerTestCase extends BaseTestCase
         parent::setUp();
         $this->input = m::mock(InputInterface::class);
         $this->output = m::mock(OutputInterface::class);
-        $this->storage = m::mock(StorageInterface::class);
+        $this->storage = m::mock(VersionRepositoryInterface::class);
         if ($this->command) {
             $this->command->shouldReceive('getInput')->zeroOrMoreTimes()->andReturn($this->input);
             $this->command->shouldReceive('getOutput')->zeroOrMoreTimes()->andReturn($this->output);

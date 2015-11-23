@@ -23,6 +23,7 @@ use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Migrations\Exception\TimelineException;
 use Baleen\Migrations\Migration\Options;
+use Baleen\Migrations\Migration\Options\Direction;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
@@ -62,9 +63,10 @@ class ExecuteHandler
 
         $output->writeln('Target: ' . $helper->formatVersion($target));
 
-        $direction = $input->getArgument(ExecuteMessage::ARG_DIRECTION) == Options::DIRECTION_DOWN ?
-            Options::DIRECTION_DOWN :
-            Options::DIRECTION_UP;
+        $direction = $input->getArgument(ExecuteMessage::ARG_DIRECTION) == Direction::UP ?
+            Direction::up() :
+            Direction::down();
+
         $dryRun = (bool) $input->getOption(ExecuteMessage::OPT_DRY_RUN);
         $forced = true; // because we're executing a single migration
 

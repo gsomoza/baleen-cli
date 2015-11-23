@@ -14,38 +14,29 @@
  *
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license. For more information, see
- * <http://www.doctrine-project.org>.
+ * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository\Latest;
+namespace Baleen\Cli\CommandBus\Migration\Latest;
 
-use Baleen\Cli\CommandBus\Repository\Latest\LatestMessage;
-use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Cli\CommandBus\Migration\AbstractMigrationMessage;
+use Symfony\Component\Console\Command\Command;
 
 /**
- * Class LatestHandler.
+ * Class ListMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestHandler
+class LatestMessage extends AbstractMigrationMessage
 {
     /**
-     * handle.
+     * configure.
      *
-     * @param LatestMessage $command
+     * @param Command $command
      */
-    public function handle(LatestMessage $command)
+    public static function configure(Command $command)
     {
-        $output = $command->getOutput();
-        $versions = $command->getRepositories()->fetchAll();
-
-        if (count($versions) > 0) {
-            /** @var VersionFormatter $formatter */
-            $formatter = $command->getCliCommand()->getHelper('versionFormatter');
-            $message = $formatter->formatVersion($versions->last());
-        } else {
-            $message = 'No available migrations were found. Please check your settings.';
-        }
-        $output->writeln($message);
+        $command->setName('migrations:latest')
+            ->setDescription('Prints the version ID of the latest available migration.');
     }
 }

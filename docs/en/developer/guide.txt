@@ -134,7 +134,7 @@ section you should already understand how to do that (hint: you'll want to repla
 .. note::
 
     The resulting Doctrine-specific ``MigrationFactory`` class can be found in the Doctrine Migrations repository at
-    ``lib/Migration/MigrationFactory``. And the provider can be found at ``lib/Providers/RepositoryProvider``.
+    ``lib/Migration/MigrationFactory``. And the provider can be found at ``lib/Providers/MigrationRepositoryProvider``.
 
 As for the abstract migration class itself, which we'll simply name ``AbstractMigration`, it will require Doctrine's
 ``ObjectManager`` on the constructor and make it available to concrete migrations as a protected property.

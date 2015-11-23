@@ -1,5 +1,5 @@
 ------------------------------------------------
-Baleen\\Cli\\CommandBus\\Repository\\ListHandler
+Baleen\\Cli\\CommandBus\\Migration\\Listing\\ListHandler
 ------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Repository

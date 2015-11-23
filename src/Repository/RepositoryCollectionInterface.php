@@ -20,6 +20,7 @@
 namespace Baleen\Cli\Repository;
 
 use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Version\Collection\Collection;
 use Baleen\Migrations\Version\Collection\Linked;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 
@@ -35,7 +36,7 @@ interface RepositoryCollectionInterface
      *
      * @param null|int|string $key
      *
-     * @return Linked
+     * @return Collection
      *
      * @throws CliException
      */

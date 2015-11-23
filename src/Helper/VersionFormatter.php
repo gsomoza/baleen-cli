@@ -16,10 +16,11 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace Baleen\Cli\Helper;
 
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
-use Baleen\Migrations\Version\Collection;
+use Baleen\Migrations\Version\Collection\Collection;
 use Baleen\Migrations\Version\VersionInterface;
 use Symfony\Component\Console\Helper\Helper;
 

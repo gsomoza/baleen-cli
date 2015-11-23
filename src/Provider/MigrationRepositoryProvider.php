@@ -21,26 +21,27 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
-use Baleen\Cli\Repository\RepositoryServiceFactory;
+use Baleen\Cli\Repository\MigrationRepositoryServiceFactory;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 
 /**
- * Class RepositoryProvider.
+ * Class MigrationRepositoryProvider.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class RepositoryProvider extends ServiceProvider
+class MigrationRepositoryProvider extends AbstractServiceProvider
 {
     protected $provides = [
-        Services::REPOSITORY,
-        Services::REPOSITORY_FILESYSTEM,
+        Services::MIGRATION_REPOSITORY,
+        Services::MIGRATION_REPOSITORY_FILESYSTEM,
         Services::MIGRATION_FACTORY,
     ];
 
@@ -51,38 +52,20 @@ class RepositoryProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->singleton(Services::MIGRATION_FACTORY, SimpleFactory::class);
+        $container->share(Services::MIGRATION_FACTORY, SimpleFactory::class);
 
-        $container->singleton(Services::REPOSITORY_FILESYSTEM, function (Config $appConfig) {
+        $container->share(Services::MIGRATION_REPOSITORY_FILESYSTEM, function (Config $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
 
             return new Filesystem($adapter);
         })->withArgument(Services::CONFIG);
 
-        $container->singleton(
-            Services::REPOSITORY,
-            function (
-                Config $config,
-                FactoryInterface $migrationFactory,
-                FilesystemInterface $filesystem,
-                ComparatorInterface $comparator,
-                ClassLoader $autoloader
-            ) {
+        $container->share(
+            Services::MIGRATION_REPOSITORY,
+            function (MigrationRepositoryServiceFactory $factory) {
                 // a factory class is cleaner easier to test
-                return (new RepositoryServiceFactory(
-                        $config->getMigrationsConfig(),
-                        $migrationFactory,
-                        $filesystem,
-                        $comparator,
-                        $autoloader
-                ))->create();
+                return $factory->create();
             }
-        )->withArguments([
-            Services::CONFIG,
-            Services::MIGRATION_FACTORY,
-            Services::REPOSITORY_FILESYSTEM,
-            Services::COMPARATOR,
-            Services::AUTOLOADER,
-        ]);
+        )->withArguments([MigrationRepositoryServiceFactory::class]);
     }
 }

@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Repository;
 
 use Baleen\Cli\CommandBus\Repository\AbstractRepositoriesMessage;
-use Baleen\Cli\CommandBus\Repository\Create\CreateMessage;
+use Baleen\Cli\CommandBus\Migration\Create\CreateMessage;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
 use Mockery as m;
 use Symfony\Component\Console\Input\InputOption;
@@ -37,7 +37,7 @@ class CreateMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return \Baleen\Cli\CommandBus\Repository\Create\CreateMessage::class;
+        return \Baleen\Cli\CommandBus\Migration\Create\CreateMessage::class;
     }
 
     /**
@@ -45,7 +45,7 @@ class CreateMessageTest extends MessageTestCase
      */
     public function testConstructor()
     {
-        $instance = new \Baleen\Cli\CommandBus\Repository\Create\CreateMessage();
+        $instance = new \Baleen\Cli\CommandBus\Migration\Create\CreateMessage();
         $this->assertInstanceOf(AbstractRepositoriesMessage::class, $instance);
     }
 

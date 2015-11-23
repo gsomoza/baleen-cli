@@ -1,5 +1,5 @@
 --------------------------------------------------
-Baleen\\Cli\\CommandBus\\Repository\\Create\\CreateHandler
+Baleen\\Cli\\CommandBus\\Migration\\Create\\CreateHandler
 --------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Repository

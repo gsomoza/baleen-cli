@@ -16,21 +16,25 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+
 namespace Baleen\Cli\Repository;
 
+use Baleen\Cli\Config\ConfigInterface;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
-use Baleen\Migrations\Repository\DirectoryRepository;
+use Baleen\Migrations\Migration\Repository\Mapper\DirectoryMapper;
+use Baleen\Migrations\Migration\Repository\MigrationRepository;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 use Composer\Autoload\ClassLoader;
 use League\Flysystem\FilesystemInterface;
 
 /**
- * Class RepositoryServiceFactory
+ * Class MigrationRepositoryServiceFactory
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class RepositoryServiceFactory
+class MigrationRepositoryServiceFactory
 {
     /**
      * @var ClassLoader
@@ -53,27 +57,33 @@ class RepositoryServiceFactory
      */
     private $comparator;
 
+    /** @var VersionRepositoryInterface */
+    private $storage;
+
     /**
-     * RepositoryServiceFactory constructor.
+     * MigrationRepositoryServiceFactory constructor.
      *
-     * @param string[] $migrationsConfig
+     * @param ConfigInterface $config
+     * @param VersionRepositoryInterface $versionRepository
      * @param FactoryInterface $migrationFactory
      * @param FilesystemInterface $filesystem
      * @param ComparatorInterface $comparator
      * @param ClassLoader $autoloader
      */
     public function __construct(
-        array $migrationsConfig,
+        ConfigInterface $config,
+        VersionRepositoryInterface $versionRepository,
         FactoryInterface $migrationFactory,
         FilesystemInterface $filesystem,
         ComparatorInterface $comparator,
         ClassLoader $autoloader
     ) {
-        $this->migrationsConfig = $migrationsConfig;
+        $this->migrationsConfig = $config->getMigrationsConfig();
         $this->migrationFactory = $migrationFactory;
         $this->filesystem = $filesystem;
         $this->comparator = $comparator;
         $this->autoloader = $autoloader;
+        $this->storage = $versionRepository;
     }
 
     /**
@@ -91,7 +101,8 @@ class RepositoryServiceFactory
             $this->ensureDirectoryExists($dir);
             $this->configureAutoloader($config['namespace'], $dir);
 
-            $repo = new DirectoryRepository($dir, null, $this->migrationFactory, $this->comparator);
+            $mapper = new DirectoryMapper($dir, $this->migrationFactory);
+            $repo = new MigrationRepository($this->storage, $mapper, $this->comparator);
             $alias = isset($config['alias']) ? $config['alias'] : $dir;
             $repositories->set($alias, $repo);
         }

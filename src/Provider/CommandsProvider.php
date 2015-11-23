@@ -27,12 +27,12 @@ use Baleen\Cli\CommandBus\Config\Status\StatusHandler;
 use Baleen\Cli\CommandBus\Config\Status\StatusMessage;
 use Baleen\Cli\CommandBus\Factory\DefaultFactory;
 use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
-use Baleen\Cli\CommandBus\Repository\Create\CreateHandler;
-use Baleen\Cli\CommandBus\Repository\Create\CreateMessage;
-use Baleen\Cli\CommandBus\Repository\Latest\LatestHandler as RepositoryLatestHandler;
-use Baleen\Cli\CommandBus\Repository\Latest\LatestMessage as RepositoryLatestCommand;
-use Baleen\Cli\CommandBus\Repository\ListHandler;
-use Baleen\Cli\CommandBus\Repository\ListMessage;
+use Baleen\Cli\CommandBus\Migration\Create\CreateHandler;
+use Baleen\Cli\CommandBus\Migration\Create\CreateMessage;
+use Baleen\Cli\CommandBus\Migration\Latest\LatestHandler as RepositoryLatestHandler;
+use Baleen\Cli\CommandBus\Migration\Latest\LatestMessage as RepositoryLatestCommand;
+use Baleen\Cli\CommandBus\Migration\Listing\ListHandler;
+use Baleen\Cli\CommandBus\Migration\Listing\ListMessage;
 use Baleen\Cli\CommandBus\Storage\Latest\LatestHandler as StorageLatestHandler;
 use Baleen\Cli\CommandBus\Storage\Latest\LatestMessage as StorageLatestCommand;
 use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler;
@@ -43,6 +43,8 @@ use Baleen\Cli\Exception\CliException;
 use League\Container\Container;
 use League\Container\ContainerInterface;
 use League\Container\ServiceProvider;
+use League\Container\ServiceProvider\AbstractServiceProvider;
+use League\Tactician\CommandBus;
 use League\Tactician\Setup\QuickStart;
 
 /**
@@ -50,7 +52,7 @@ use League\Tactician\Setup\QuickStart;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class CommandsProvider extends ServiceProvider
+class CommandsProvider extends AbstractServiceProvider
 {
     protected $provides = [
         Services::COMMANDS,
@@ -83,14 +85,14 @@ class CommandsProvider extends ServiceProvider
             'message' => StorageLatestCommand::class,
             'handler' => StorageLatestHandler::class,
         ],
-        Services::CMD_TIMELINE_EXECUTE => [
+        /*Services::CMD_TIMELINE_EXECUTE => [
             'message' => ExecuteMessage::class,
             'handler' => ExecuteHandler::class,
         ],
         Services::CMD_TIMELINE_MIGRATE => [
             'message' => MigrateMessage::class,
             'handler' => MigrateHandler::class,
-        ],
+        ],*/
     ];
 
     /**
@@ -112,25 +114,8 @@ class CommandsProvider extends ServiceProvider
 
         $commands = $this->commands;
 
-        // add all message classes to the container
-        foreach ($commands as $alias => $config) {
-            $container->add($alias, function (Container $container, $config) {
-                /** @var MessageFactoryInterface $factory */
-                $factory = !empty($config['factory']) ? $config['factory'] : DefaultFactory::class;
-                $factory = $container->get($factory);
-                if (!$factory instanceof MessageFactoryInterface) {
-                    throw new CliException(sprintf(
-                        'Expected factory to be an instance of "%s". Got "%s" instead.',
-                        MessageFactoryInterface::class,
-                        is_object($factory) ? get_class($factory) : gettype($factory)
-                    ));
-                }
-                return $factory->create($config['message']);
-            })->withArguments([ContainerInterface::class, $config]);
-        }
-
         // setup the command bus to know which handler to use for each message class
-        $container->singleton(Services::COMMAND_BUS, function () use ($commands) {
+        $container->share(Services::COMMAND_BUS, function () use ($commands) {
             $map = [];
             foreach ($commands as $alias => $config) {
                 $message = $config['message'];
@@ -142,13 +127,22 @@ class CommandsProvider extends ServiceProvider
         });
 
         // create a service (that's just an array) that has a list of all the commands for the app
-        $container->add(Services::COMMANDS, function (ContainerInterface $container) use ($commands) {
+        $container->add(Services::COMMANDS, function (CommandBus $bus) use ($commands) {
             $commandList = [];
-            foreach ($commands as $alias => $config) {
-                $commandList[] = new BaseCommand($container, $alias, $config['message']);
+            foreach ($commands as $config) {
+                $serviceClass = $config['message'];
+                if (!$this->getContainer()->has($serviceClass)) {
+                    throw new CliException(sprintf(
+                        'The container cannot provide class "%s". Make sure the class exists and can be retrieved by ' .
+                        'the container.',
+                        $serviceClass
+                    ));
+                }
+                $commandList[] = new BaseCommand($bus, $serviceClass);
             }
 
             return $commandList;
-        })->withArgument(ContainerInterface::class);
+        })
+        ->withArguments([Services::COMMAND_BUS]);
     }
 }

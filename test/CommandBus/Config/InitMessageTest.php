@@ -36,7 +36,9 @@ class InitMessageTest extends MessageTestCase
      */
     public function testConstructor()
     {
-        $instance = new \Baleen\Cli\CommandBus\Config\Init\InitMessage();
+        /** @var ConfigStorage $configStorage */
+        $configStorage = m::mock(ConfigStorage::class);
+        $instance = new InitMessage($configStorage);
         $this->assertInstanceOf(AbstractConfigMessage::class, $instance);
     }
 
@@ -45,10 +47,9 @@ class InitMessageTest extends MessageTestCase
      */
     public function testGetSetConfigStorage()
     {
-        $instance = new InitMessage();
         /** @var ConfigStorage $configStorage */
         $configStorage = m::mock(ConfigStorage::class);
-        $instance->setConfigStorage($configStorage);
+        $instance = new InitMessage($configStorage);
         $this->assertSame($configStorage, $instance->getConfigStorage());
     }
 
@@ -74,6 +75,6 @@ class InitMessageTest extends MessageTestCase
      */
     protected function getClassName()
     {
-        return \Baleen\Cli\CommandBus\Config\Init\InitMessage::class;
+        return InitMessage::class;
     }
 }

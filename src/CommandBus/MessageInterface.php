@@ -45,13 +45,6 @@ interface MessageInterface
     public function getConfig();
 
     /**
-     * setConfig.
-     *
-     * @param ConfigInterface $config
-     */
-    public function setConfig(ConfigInterface $config);
-
-    /**
      * getInput.
      *
      * @return InputInterface

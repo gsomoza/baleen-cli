@@ -22,6 +22,7 @@ namespace BaleenTest\Cli\CommandBus\Timeline;
 use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
 use Baleen\Migrations\Migration\Options;
+use Baleen\Migrations\Migration\Options\Direction;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\CommandBus\MessageTestCase;
@@ -92,7 +93,7 @@ class ExecuteMessageTest extends MessageTestCase
                     ExecuteMessage::ARG_DIRECTION,
                     InputArgument::OPTIONAL,
                     m::type('string'),
-                    Options::DIRECTION_UP,
+                    Direction::UP,
                 ],
             ],
         ];

@@ -22,6 +22,8 @@ namespace Baleen\Cli\CommandBus\Config;
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\ConfigStorageAwareTrait;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Cli\Config\ConfigStorage;
 
 /**
  * Shared functionality for all configuration-related Messages.
@@ -31,4 +33,16 @@ use Baleen\Cli\CommandBus\Util\ConfigStorageAwareTrait;
 abstract class AbstractConfigMessage extends AbstractMessage implements ConfigStorageAwareInterface
 {
     use ConfigStorageAwareTrait;
+
+    /**
+     * AbstractConfigMessage constructor.
+     *
+     * @param ConfigStorage $configStorage
+     * @param ConfigInterface $config
+     */
+    public function __construct(ConfigInterface $config, ConfigStorage $configStorage)
+    {
+        $this->setConfigStorage($configStorage);
+        parent::__construct($config);
+    }
 }

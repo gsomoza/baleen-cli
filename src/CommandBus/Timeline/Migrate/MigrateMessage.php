@@ -23,6 +23,7 @@ namespace Baleen\Cli\CommandBus\Timeline\Migrate;
 use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Options;
+use Baleen\Migrations\Migration\Options\Direction;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Version\VersionInterface;
 use Symfony\Component\Console\Command\Command;
@@ -44,8 +45,8 @@ class MigrateMessage extends AbstractTimelineCommand
 
     /** @var array */
     private $strategies = [
-        Options::DIRECTION_UP => 'upTowards',
-        Options::DIRECTION_DOWN => 'downTowards',
+        Direction::UP => 'upTowards',
+        Direction::DOWN => 'downTowards',
         'both' => 'goTowards',
     ];
 
@@ -71,7 +72,7 @@ class MigrateMessage extends AbstractTimelineCommand
                 's',
                 InputOption::VALUE_REQUIRED,
                 'Strategy to migrate with (up/down/both).',
-                Options::DIRECTION_UP // 'up'
+                Direction::UP // 'up'
             )->addOption(
                 self::OPT_REPOSITORY,
                 'r',

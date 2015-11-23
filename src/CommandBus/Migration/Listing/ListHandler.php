@@ -17,8 +17,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository;
+namespace Baleen\Cli\CommandBus\Migration\Listing;
 
+use Baleen\Cli\CommandBus\Migration\Listing\ListMessage;
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 

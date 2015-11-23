@@ -20,11 +20,13 @@
 namespace Baleen\Cli\CommandBus\Timeline\Migrate;
 
 use Baleen\Cli\Helper\VersionFormatter;
-use Baleen\Migrations\Event\EventInterface;
-use Baleen\Migrations\Event\Timeline\CollectionEvent;
-use Baleen\Migrations\Event\Timeline\MigrationEvent;
+use Baleen\Migrations\Service\Runner\Event\Collection\CollectionAfterEvent;
+use Baleen\Migrations\Service\Runner\Event\Collection\CollectionBeforeEvent;
+use Baleen\Migrations\Service\Runner\Event\Migration\MigrateAfterEvent;
+use Baleen\Migrations\Service\Runner\Event\Migration\MigrateBeforeEvent;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Zend\EventManager\EventInterface;
 
 /**
  * Class MigrateListener
@@ -72,20 +74,20 @@ final class MigrateSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            EventInterface::COLLECTION_BEFORE => 'onCollectionBefore',
-            EventInterface::COLLECTION_AFTER => 'onCollectionAfter',
-            EventInterface::MIGRATION_BEFORE => 'onMigrationBefore',
-            EventInterface::MIGRATION_AFTER => 'onMigrationAfter',
+            CollectionBeforeEvent::class => 'onCollectionBefore',
+            CollectionAfterEvent::class => 'onCollectionAfter',
+            MigrateBeforeEvent::class => 'onMigrationBefore',
+            MigrateAfterEvent::class => 'onMigrationAfter',
         ];
     }
 
     /**
-     * @param MigrationEvent $event
+     * @param MigrateBeforeEvent $event
      */
-    public function onMigrationBefore(MigrationEvent $event)
+    public function onMigrationBefore(MigrateBeforeEvent $event)
     {
         if (!$this->progress) {
-            $version = $event->getVersion();
+            $version = $event->getTarget();
             $direction = strtoupper($event->getOptions()->getDirection());
             /** @var VersionFormatter $versionFormatter */
             $versionFormatter = $this->command->getCliCommand()->getHelper('versionFormatter');
@@ -97,26 +99,26 @@ final class MigrateSubscriber implements EventSubscriberInterface
     /**
      * onMigrationAfter.
      *
-     * @param MigrationEvent $event
+     * @param MigrateAfterEvent $event
      */
-    public function onMigrationAfter(MigrationEvent $event)
+    public function onMigrationAfter(MigrateAfterEvent $event)
     {
         if ($this->progress) {
-            $runProgress = $event->getProgress();
+            $runProgress = $event->getContext()->getProgress();
             $this->progress->setProgress($runProgress->getCurrent());
         }
         if ($this->command->shouldSaveChanges()) {
-            $version = $event->getVersion();
-            $this->command->getStorage()->update($version);
+            $target = $event->getTarget();
+            $this->command->getStorage()->update($target);
         }
     }
 
     /**
      * onCollectionBefore.
      *
-     * @param CollectionEvent $event
+     * @param CollectionBeforeEvent $event
      */
-    public function onCollectionBefore(CollectionEvent $event)
+    public function onCollectionBefore(CollectionBeforeEvent $event)
     {
         $output = $this->command->getOutput();
         if ($event->getCollection()->isEmpty()) {
@@ -128,11 +130,11 @@ final class MigrateSubscriber implements EventSubscriberInterface
 
         $output->writeln(sprintf(
             '<info>[START]</info> Migrating %s to <comment>%s</comment>:',
-            $event->getOptions()->isDirectionUp() ? 'up' : 'down',
+            $event->getOptions()->getDirection()->isUp() ? 'up' : 'down',
             $target->getId()
         ));
         if ($this->command->shouldTrackProgress()) {
-            $this->progress = new ProgressBar($output, $event->getProgress()->getTotal());
+            $this->progress = new ProgressBar($output, 1);
             $this->progress->setFormat('verbose');
             $this->progress->setProgress(0);
         }

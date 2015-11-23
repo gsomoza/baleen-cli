@@ -19,12 +19,14 @@
 
 namespace BaleenTest\Cli\CommandBus\Repository;
 
-use Baleen\Cli\CommandBus\Repository\ListHandler;
-use Baleen\Cli\CommandBus\Repository\ListMessage;
+use Baleen\Cli\CommandBus\Migration\Listing\ListHandler;
+use Baleen\Cli\CommandBus\Migration\Listing\ListMessage;
 use Baleen\Cli\Helper\VersionFormatterInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
-use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\Linked;
+use Baleen\Migrations\Version\Collection\Collection;
+use Baleen\Migrations\Version\Version;
+use Baleen\Migrations\Version\VersionId;
+use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
 
@@ -93,19 +95,20 @@ class ListHandlerTest extends HandlerTestCase
         $trueFalse = [true, false];
         $arrayCollections = [
             [],
-            Version::fromArray(1, 2, 3, 4, 5),
-            Version::fromArray(1, 2, 'abc', 4, 5)
+            VersionId::fromArray([1, 2, 3, 4, 5]),
+            VersionId::fromArray([1, 2, 'abc', 4, 5]),
         ];
         $collections = [];
         foreach ($arrayCollections as $collection) {
-            foreach ($collection as $version) {
-                /** @var m\Mock|Version $version */
+            $versions = [];
+            foreach ($collection as $versionId) {
+                /** @var m\Mock|VersionInterface $versionId */
                 /** @var m\Mock|MigrationInterface $migration */
                 $migration = m::mock(MigrationInterface::class);
-                $version->setMigration($migration);
+                $versions[] = new Version($migration, false);
             }
-            $collections[] = new Linked($collection);
+            $collections[] = new Collection($collection);
         }
-        return $this->combinations([$collections, $trueFalse]);;
+        return $this->combinations([$collections, $trueFalse]);
     }
 }

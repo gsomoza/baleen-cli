@@ -22,6 +22,7 @@ namespace Baleen\Cli\CommandBus\Timeline\Migrate;
 
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Options;
+use Baleen\Migrations\Migration\Options\Direction;
 
 /**
  * Class MigrateHandler.
@@ -44,12 +45,7 @@ class MigrateHandler
     {
         $this->command = $message;
 
-        $options = new Options(
-            Options::DIRECTION_UP,  // this value will get replaced by timeline later
-            false,
-            $message->isDryRun(),
-            false
-        );
+        $options = (new Options())->withDryRun($message->isDryRun());
 
         $timeline = $message->getTimeline();
 

@@ -1,12 +1,12 @@
 -----------------------------------------
-Baleen\\Cli\\Provider\\RepositoryProvider
+Baleen\\Cli\\Provider\\MigrationRepositoryProvider
 -----------------------------------------
 
 .. php:namespace: Baleen\\Cli\\Provider
 
-.. php:class:: RepositoryProvider
+.. php:class:: MigrationRepositoryProvider
 
-    Class RepositoryProvider.
+    Class MigrationRepositoryProvider.
 
     .. php:attr:: provides
 

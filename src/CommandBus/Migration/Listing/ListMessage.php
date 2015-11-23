@@ -18,8 +18,9 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Repository;
+namespace Baleen\Cli\CommandBus\Migration\Listing;
 
+use Baleen\Cli\CommandBus\Migration\AbstractMigrationMessage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -28,7 +29,7 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ListMessage extends AbstractRepositoryMessage
+class ListMessage extends AbstractMigrationMessage
 {
     /**
      * configure.

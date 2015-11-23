@@ -10,7 +10,7 @@ Baleen\\Cli\\Provider
    CommandsProvider
    ConfigProvider
    HelperSetProvider
-   RepositoryProvider
+   MigrationRepositoryProvider
    Services
    StorageProvider
    TimelineProvider

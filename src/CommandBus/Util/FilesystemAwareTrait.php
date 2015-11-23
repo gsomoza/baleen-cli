@@ -19,7 +19,7 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 
 /**
  * Class FilesystemAwareTrait.
@@ -28,21 +28,18 @@ use League\Flysystem\Filesystem;
  */
 trait FilesystemAwareTrait
 {
-    /** @var Filesystem */
+    /** @var FilesystemInterface */
     private $filesystem;
 
     /**
-     * @return Filesystem
+     * @return FilesystemInterface
      */
     final public function getFilesystem()
     {
         return $this->filesystem;
     }
 
-    /**
-     * @param Filesystem $filesystem
-     */
-    final public function setFilesystem(Filesystem $filesystem)
+    final protected function setFilesystem(FilesystemInterface $filesystem)
     {
         $this->filesystem = $filesystem;
     }

@@ -37,12 +37,16 @@ function mkdir()
 
 namespace BaleenTest\Cli\Provider;
 
-use Baleen\Cli\Provider\RepositoryProvider;
+use Baleen\Cli\Provider\MigrationRepositoryProvider;
 use Baleen\Cli\Provider\Services;
-use Baleen\Cli\Repository\RepositoryServiceFactory;
+use Baleen\Cli\Repository\MigrationRepositoryServiceFactory;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
+use Baleen\Migrations\Migration\Repository\Mapper\DirectoryMapper;
+use Baleen\Migrations\Migration\Repository\MigrationRepository;
+use Baleen\Migrations\Migration\Repository\MigrationRepositoryInterface;
 use Baleen\Migrations\Repository\DirectoryRepository;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 use Composer\Autoload\ClassLoader;
 use League\Flysystem\FilesystemInterface;
 use Mockery as m;
@@ -70,7 +74,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         $autoloaderMock->shouldReceive('addPsr4')->with(__NAMESPACE__ . '\\', __DIR__);
         $this->autoloader = $autoloaderMock;
 
-        $this->setInstance(m::mock(RepositoryProvider::class)->makePartial());
+        $this->setInstance(m::mock(MigrationRepositoryProvider::class)->makePartial());
 
         $this->getContainer()
             ->shouldReceive('get')
@@ -105,14 +109,16 @@ class RepositoryProviderTest extends ServiceProviderTestCase
             'string'
         );
 
-        $repository = new DirectoryRepository(__DIR__);
-        $repositoryFactory = m::mock('overload:' . RepositoryServiceFactory::class)->makePartial();
+        /** @var VersionRepositoryInterface $storage */
+        $storage = m::mock(VersionRepositoryInterface::class);
+        $repository = new MigrationRepository($storage, new DirectoryMapper(__DIR__));
+        $repositoryFactory = m::mock('overload:' . MigrationRepositoryServiceFactory::class)->makePartial();
         $repositoryFactory->shouldReceive('create')->once()->andReturn($repository);
 
         $this->assertSingletonProvided(
-            Services::REPOSITORY,
+            Services::MIGRATION_REPOSITORY,
             $this->assertCallbackInstanceOf(
-                DirectoryRepository::class,
+                MigrationRepositoryInterface::class,
                 [
                     $this->config,
                     new SimpleFactory(),
@@ -124,7 +130,7 @@ class RepositoryProviderTest extends ServiceProviderTestCase
         )->shouldReceive('withArguments')->with([
             Services::CONFIG,
             Services::MIGRATION_FACTORY,
-            Services::REPOSITORY_FILESYSTEM,
+            Services::MIGRATION_REPOSITORY_FILESYSTEM,
             Services::COMPARATOR,
             Services::AUTOLOADER,
         ]);

@@ -19,7 +19,7 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Migrations\Storage\StorageInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 
 /**
  * Interface StorageAwareInterface
@@ -29,12 +29,12 @@ use Baleen\Migrations\Storage\StorageInterface;
 interface StorageAwareInterface
 {
     /**
-     * @return StorageInterface
+     * @return VersionRepositoryInterface
      */
     public function getStorage();
 
     /**
-     * @param StorageInterface $storage
+     * @param VersionRepositoryInterface $versionRepository
      */
-    public function setStorage(StorageInterface $storage = null);
+    public function setStorage(VersionRepositoryInterface $versionRepository = null);
 }

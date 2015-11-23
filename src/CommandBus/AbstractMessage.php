@@ -47,19 +47,21 @@ abstract class AbstractMessage implements MessageInterface
     protected $cliCommand;
 
     /**
-     * @inheritdoc
+     * AbstractMessage constructor.
+     *
+     * @param ConfigInterface $config
      */
-    public function getConfig()
+    public function __construct(ConfigInterface $config)
     {
-        return $this->config;
+        $this->config = $config;
     }
 
     /**
      * @inheritdoc
      */
-    public function setConfig(ConfigInterface $config)
+    public function getConfig()
     {
-        $this->config = $config;
+        return $this->config;
     }
 
     /**

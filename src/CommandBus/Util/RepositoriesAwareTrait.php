@@ -42,7 +42,7 @@ trait RepositoriesAwareTrait
     /**
      * @param RepositoryCollectionInterface $repositories
      */
-    final public function setRepositories(RepositoryCollectionInterface $repositories)
+    final protected function setRepositories(RepositoryCollectionInterface $repositories)
     {
         $this->repositories = $repositories;
     }

@@ -27,6 +27,7 @@ use Baleen\Migrations\Storage\StorageInterface;
 use Baleen\Migrations\Timeline;
 use Baleen\Migrations\Timeline\TimelineFactory;
 use Baleen\Migrations\Timeline\TimelineInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 use BaleenTest\Cli\BaseTestCase;
 use Mockery as m;
 
@@ -62,18 +63,8 @@ class AbstractTimelineMessageTest extends BaseTestCase
      */
     public function testGetSetStorage()
     {
-        $storage = m::mock(StorageInterface::class);
+        $storage = m::mock(VersionRepositoryInterface::class);
         $this->instance->setStorage($storage);
         $this->assertSame($storage, $this->instance->getStorage());
-    }
-
-    /**
-     * testGetSetTimelineFactory
-     */
-    public function testGetSetTimelineFactory()
-    {
-        $factory = new TimelineFactory();
-        $this->instance->setTimelineFactory($factory);
-        $this->assertSame($factory, $this->instance->getTimelineFactory());
     }
 }

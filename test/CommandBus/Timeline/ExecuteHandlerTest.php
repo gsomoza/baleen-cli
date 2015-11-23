@@ -21,13 +21,10 @@ namespace BaleenTest\Cli\CommandBus\Timeline;
 
 use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler;
 use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
+use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Migration\Options;
-use Baleen\Migrations\Timeline;
-use Baleen\Migrations\Timeline\TimelineFactory;
-use Baleen\Migrations\Timeline\TimelineInterface;
-use Baleen\Migrations\Version;
-use Baleen\Migrations\Version\Collection\Linked;
 use Baleen\Migrations\Version\Collection\Migrated;
+use Baleen\Migrations\Version\Version;
 use Baleen\Migrations\Version\VersionInterface;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
 use Mockery as m;
@@ -124,12 +121,14 @@ class ExecuteHandlerTest extends HandlerTestCase
      */
     public function executeProvider()
     {
+        /** @var MigrationInterface|m\Mock $migration */
+        $migration = m::mock(MigrationInterface::class);
         return $this->combinations([
             [true, false], // isInteractive
             [true, false], // isUp
             [true, false], // isDryRun
             [true, false], // askResult
-            [new Version(1), false, null] // executeResult
+            [new Version($migration, false), false, null] // executeResult
         ]);
     }
 

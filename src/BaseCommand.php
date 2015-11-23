@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -21,6 +20,7 @@
 namespace Baleen\Cli;
 
 use Baleen\Cli\CommandBus\MessageInterface;
+use Baleen\Cli\Helper\ContainerHelper;
 use Baleen\Cli\Provider\Services;
 use Baleen\Migrations\Exception\InvalidArgumentException;
 use League\Container\Container;
@@ -37,9 +37,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class BaseCommand extends Command
 {
-    /** @var Container */
-    protected $container;
-
     /**
      * A reference to the CommandBus in charge of handling Messages.
      *
@@ -54,8 +51,7 @@ class BaseCommand extends Command
     protected $serviceClass;
 
     /**
-     * @param ContainerInterface $container A reference to the Application's Container.
-     *
+     * @param CommandBus $commandBus
      * @param string $serviceAlias The key in the Container for the command that the instance of this class represents.
      *
      * @param string $serviceClass Needed in order to run certain checks against the class before instantiating it
@@ -63,11 +59,11 @@ class BaseCommand extends Command
      *                             services through the Container's DI functionality.
      *
      * @throws InvalidArgumentException
+     *
      */
-    public function __construct(ContainerInterface $container, $serviceAlias, $serviceClass)
+    public function __construct(CommandBus $commandBus, $serviceClass)
     {
-        $serviceClass = (string) $serviceClass;
-        if (!class_exists($serviceClass) || !(new $serviceClass()) instanceof MessageInterface) {
+        if (!class_exists($serviceClass)) {
             throw new InvalidArgumentException(sprintf(
                 'Message class "%s" must exist and be an instance of %s',
                 $serviceClass,
@@ -76,27 +72,18 @@ class BaseCommand extends Command
         }
         $this->serviceClass = $serviceClass;
 
-        $serviceAlias = (string) $serviceAlias;
-        $this->serviceAlias = $serviceAlias;
-
-        $commandBus = $container->get(Services::COMMAND_BUS);
-        if (!$commandBus instanceof CommandBus) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid service: expected an instance of "%s".',
-                CommandBus::class
-            ));
-        }
         $this->commandBus = $commandBus;
-        $this->container = $container;
         parent::__construct(null); // name will be set inside configure()
     }
 
     /**
-     * @return Container
+     * @return \Interop\Container\ContainerInterface
      */
     public function getContainer()
     {
-        return $this->container;
+        /** @var ContainerHelper $helper */
+        $helper = $this->getHelper('container');
+        return $helper->getContainer();
     }
 
     /**
@@ -124,15 +111,7 @@ class BaseCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var MessageInterface $message */
-        $message = $this->getContainer()->get($this->serviceAlias);
-
-        if (get_class($message) !== $this->serviceClass) {
-            throw new InvalidArgumentException(sprintf(
-                'The specified service alias (%s) and class (%s) do not correspond to each other.',
-                $this->serviceAlias,
-                $this->serviceClass
-            ));
-        }
+        $message = $this->getContainer()->get($this->serviceClass);
 
         $message->setCliCommand($this);
         $message->setInput($input);

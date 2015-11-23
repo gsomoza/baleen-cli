@@ -50,15 +50,19 @@ use Baleen\Cli\Exception\CliException;
 use Baleen\Cli\PluginInterface;
 use Baleen\Cli\Provider\ConfigProvider;
 use Baleen\Cli\Provider\Services;
+use Interop\Container\ContainerInterface;
 use League\Container\Container;
+use League\Container\ReflectionContainer;
 
 if (!defined('MIGRATIONS_EXECUTABLE')) {
     define('MIGRATIONS_EXECUTABLE', $argv[0]);
 }
 
 $container = new Container();
+$container->delegate(new ReflectionContainer());
+$container->share(ContainerInterface::class, $container);
+$container->share(Services::AUTOLOADER, $composerAutoloader);
 $container->add(Services::BALEEN_BASE_DIR, dirname(__DIR__));
-$container->add(Services::AUTOLOADER, $composerAutoloader);
 
 // the only provider that can't be overwritten
 $container->addServiceProvider(new ConfigProvider());
@@ -74,7 +78,7 @@ foreach ($appConfig->getProviders() as $name => $class) {
 
 // Load plugins
 foreach ($appConfig->getPlugins() as $pluginClass) {
-    $plugin = $container->isRegistered($pluginClass) ? $container->get($pluginClass) : new $pluginClass();
+    $plugin = $container->has($pluginClass) ? $container->get($pluginClass) : new $pluginClass();
     if (!$plugin instanceof PluginInterface) {
         throw new CliException(
             sprintf('Plugin "%s" must implement "%s".', $pluginClass, PluginInterface::class)
