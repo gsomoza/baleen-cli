@@ -19,31 +19,31 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Migrations\Shared\Event\PublisherInterface;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Class PublisherAwareTrait
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoriesAwareTrait
+trait PublisherAwareTrait
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
+    /** @var PublisherInterface */
+    private $publisher;
 
     /**
-     * @return MigrationRepositoriesServiceInterface
+     * @return PublisherInterface
      */
-    final public function getRepositories()
+    final public function getDomainPublisher()
     {
-        return $this->repositories;
+        return $this->publisher;
     }
 
     /**
-     * @param MigrationRepositoriesServiceInterface $repositories
+     * @param PublisherInterface $publisher
      */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
+    final protected function setDomainPublisher(PublisherInterface $publisher)
     {
-        $this->repositories = $repositories;
+        $this->publisher = $publisher;
     }
 }

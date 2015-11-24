@@ -19,31 +19,19 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use League\Tactician\CommandBus;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Interface DomainBusAwareInterface
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoriesAwareTrait
+interface DomainBusAwareInterface
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
-
     /**
-     * @return MigrationRepositoriesServiceInterface
+     * getDomainBus
+     *
+     * @return CommandBus
      */
-    final public function getRepositories()
-    {
-        return $this->repositories;
-    }
-
-    /**
-     * @param MigrationRepositoriesServiceInterface $repositories
-     */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
-    {
-        $this->repositories = $repositories;
-    }
+    public function getDomainBus();
 }

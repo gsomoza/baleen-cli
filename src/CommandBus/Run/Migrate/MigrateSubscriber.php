@@ -17,16 +17,15 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline\Migrate;
+namespace Baleen\Cli\CommandBus\Run\Migrate;
 
 use Baleen\Cli\Helper\VersionFormatter;
-use Baleen\Migrations\Service\Runner\Event\Collection\CollectionAfterEvent;
-use Baleen\Migrations\Service\Runner\Event\Collection\CollectionBeforeEvent;
-use Baleen\Migrations\Service\Runner\Event\Migration\MigrateAfterEvent;
-use Baleen\Migrations\Service\Runner\Event\Migration\MigrateBeforeEvent;
+use Baleen\Cli\Publisher\CollectionAfterEvent;
+use Baleen\Cli\Publisher\CollectionBeforeEvent;
+use Baleen\Cli\Publisher\MigrateAfterEvent;
+use Baleen\Cli\Publisher\MigrateBeforeEvent;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Zend\EventManager\EventInterface;
 
 /**
  * Class MigrateListener
@@ -107,10 +106,6 @@ final class MigrateSubscriber implements EventSubscriberInterface
             $runProgress = $event->getContext()->getProgress();
             $this->progress->setProgress($runProgress->getCurrent());
         }
-        if ($this->command->shouldSaveChanges()) {
-            $target = $event->getTarget();
-            $this->command->getStorage()->update($target);
-        }
     }
 
     /**
@@ -134,7 +129,7 @@ final class MigrateSubscriber implements EventSubscriberInterface
             $target->getId()
         ));
         if ($this->command->shouldTrackProgress()) {
-            $this->progress = new ProgressBar($output, 1);
+            $this->progress = new ProgressBar($output, $event->getCollection()->count());
             $this->progress->setFormat('verbose');
             $this->progress->setProgress(0);
         }
@@ -143,9 +138,9 @@ final class MigrateSubscriber implements EventSubscriberInterface
     /**
      * onCollectionAfter.
      *
-     * @param CollectionEvent $event
+     * @param CollectionAfterEvent $event
      */
-    public function onCollectionAfter(CollectionEvent $event)
+    public function onCollectionAfter(CollectionAfterEvent $event)
     {
         if ($event->getCollection()->isEmpty()) {
             return;

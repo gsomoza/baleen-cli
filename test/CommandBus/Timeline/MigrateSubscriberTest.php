@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Baleen\CommandBus\Timeline;
 
-use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage;
-use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateSubscriber;
+use Baleen\Cli\CommandBus\Run\Migrate\MigrateMessage;
+use Baleen\Cli\CommandBus\Run\Migrate\MigrateSubscriber;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Service\Runner\Event\Collection\CollectionAfterEvent;
 use Baleen\Migrations\Service\Runner\Event\Collection\CollectionBeforeEvent;
@@ -41,7 +41,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MigrateSubscriberTest extends BaseTestCase
 {
-    /** @var MigrateMessage|m\Mock */
+    /** @var \Baleen\Cli\CommandBus\Run\Migrate\MigrateMessage|m\Mock */
     private $command;
 
     /** @var OutputInterface|m\Mock */

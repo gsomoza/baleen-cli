@@ -53,16 +53,9 @@ final class VersionFormatter extends Helper implements VersionFormatterInterface
      */
     public function formatVersion(VersionInterface $version, $style = 'comment')
     {
-        $message = "<$style>{$version->getId()}</$style>";
-        $migration = $version->getMigration();
-        $fileName = null;
-        if ($migration) {
-            $class = new \ReflectionClass($migration);
-            $fullPath = $class->getFileName();
-            $file = $this->getRelativePath(getcwd(), $fullPath);
-            $message .= " $file";
-        }
-        return $message;
+        $fullPath = $version->getMigrationFileName();
+        $file = $this->getRelativePath(getcwd(), $fullPath);
+        return "<$style>{$version->getId()}</$style> $file";
     }
 
     /**

@@ -17,15 +17,25 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline\Execute;
+namespace Baleen\Cli\CommandBus\Migration\Status;
 
-use Baleen\Cli\CommandBus\AbstractHelper;
+use Baleen\Cli\CommandBus\MessageInterface;
+use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
+use Baleen\Cli\CommandBus\Util\FilesystemAwareInterface;
+use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
+use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 
 /**
- * Class ExecuteHelper
+ * Message class for the config:status command.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ExecuteHelper extends AbstractHelper
+interface StatusMessageInterface extends
+    MessageInterface,
+    ComparatorAwareInterface,
+    StorageAwareInterface,
+    RepositoriesAwareInterface
 {
+
 }

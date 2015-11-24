@@ -32,13 +32,4 @@ interface ConfigStorageAwareInterface
      * @return ConfigStorage
      */
     public function getConfigStorage();
-
-    /**
-     * setConfigStorage.
-     *
-     * @param ConfigStorage $configStorage
-     *
-     * @return void
-     */
-    public function setConfigStorage(ConfigStorage $configStorage);
 }

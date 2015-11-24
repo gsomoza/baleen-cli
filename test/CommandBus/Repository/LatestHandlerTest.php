@@ -74,7 +74,7 @@ class LatestHandlerTest extends HandlerTestCase
      */
     public function testHandleNoVersions()
     {
-        $this->markTestSkipped('finish implementing');
+        $this->markTestSkipped();
         // only thing that matters is that its empty
         $this->command->shouldReceive('getRepositories->fetchAll')->once()->andReturn([]);
         $this->instance->shouldNotReceive('outputVersions');

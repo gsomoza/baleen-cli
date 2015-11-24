@@ -17,11 +17,12 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline\Execute;
+namespace Baleen\Cli\CommandBus\Run\Execute;
 
-use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
+use Baleen\Cli\CommandBus\Run\AbstractRunMessage;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Migration\Options\Direction;
+use Baleen\Migrations\Timeline\TimelineFactory;
 use Baleen\Migrations\Version;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -31,7 +32,7 @@ use Symfony\Component\Console\Input\InputArgument;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ExecuteMessage extends AbstractTimelineCommand
+class ExecuteMessage extends AbstractRunMessage
 {
     const COMMAND_NAME = 'execute';
     const COMMAND_ALIAS_SHORT = 'exec';
@@ -45,7 +46,7 @@ class ExecuteMessage extends AbstractTimelineCommand
     public static function configure(Command $command)
     {
         parent::configure($command);
-        $command->setName('timeline:execute')
+        $command->setName('run:execute')
             ->setAliases([self::COMMAND_ALIAS_SHORT, self::COMMAND_ALIAS])
             ->setDescription('Execute a single migration version up or down manually.')
             ->addArgument(self::ARG_VERSION, InputArgument::REQUIRED, 'The version to execute.')

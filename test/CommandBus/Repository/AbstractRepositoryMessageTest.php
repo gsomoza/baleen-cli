@@ -22,7 +22,7 @@ namespace BaleenTest\Cli\CommandBus\Repository;
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Repository\AbstractRepositoriesMessage;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
-use Baleen\Cli\Repository\RepositoryCollectionInterface;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\BaseTestCase;
 use League\Flysystem\Filesystem;
@@ -61,8 +61,8 @@ class AbstractRepositoryMessageTest extends BaseTestCase
      */
     public function testGetSetRepository()
     {
-        /** @var m\Mock|RepositoryCollectionInterface $repository */
-        $repository = m::mock(RepositoryCollectionInterface::class);
+        /** @var m\Mock|MigrationRepositoriesServiceInterface $repository */
+        $repository = m::mock(MigrationRepositoriesServiceInterface::class);
         $this->instance->setRepositories($repository);
         $this->assertSame($repository, $this->instance->getRepositories());
     }

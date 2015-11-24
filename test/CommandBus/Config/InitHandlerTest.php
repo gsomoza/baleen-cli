@@ -54,7 +54,7 @@ class InitHandlerTest extends HandlerTestCase
      */
     public function testExecute($writeResult)
     {
-        $this->markTestSkipped('finish implementing');
+        $this->markTestSkipped();
         $configFileName = '.baleen.yml';
 
         /** @var m\Mock|Config $config */
@@ -91,7 +91,7 @@ class InitHandlerTest extends HandlerTestCase
      */
     public function testExecuteExitsEarlyIfFileExists()
     {
-        $this->markTestSkipped('finish implementing');
+        $this->markTestSkipped('');
         /** @var m\Mock|Config $config */
         $config = m::mock(Config::class);
         $this->command->setConfig($config);

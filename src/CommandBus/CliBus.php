@@ -17,33 +17,29 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Util;
+namespace Baleen\Cli\CommandBus;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Cli\Exception\CliException;
+use League\Tactician\CommandBus;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Class CliBus
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoriesAwareTrait
+final class CliBus extends CommandBus
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
-
     /**
-     * @return MigrationRepositoriesServiceInterface
+     * {@inheritDoc}
+     *
+     * @param MessageInterface $message
      */
-    final public function getRepositories()
+    public function handle($message)
     {
-        return $this->repositories;
-    }
+        if (!$message instanceof MessageInterface) {
+            throw new CliException(sprintf('This bus can only handle messages of type "%s".', MessageInterface::class));
+        }
 
-    /**
-     * @param MigrationRepositoriesServiceInterface $repositories
-     */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
-    {
-        $this->repositories = $repositories;
+        return parent::handle($message);
     }
 }

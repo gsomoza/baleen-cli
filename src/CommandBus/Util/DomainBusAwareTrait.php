@@ -19,31 +19,31 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Migrations\Service\DomainBus\DomainBusInterface;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Class DomainBusAwareTrait
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoriesAwareTrait
+trait DomainBusAwareTrait
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
+    /** @var DomainBusInterface */
+    private $domainBus;
 
     /**
-     * @return MigrationRepositoriesServiceInterface
+     * @return DomainBusInterface
      */
-    final public function getRepositories()
+    final public function getDomainBus()
     {
-        return $this->repositories;
+        return $this->domainBus;
     }
 
     /**
-     * @param MigrationRepositoriesServiceInterface $repositories
+     * @param DomainBusInterface $domainBus
      */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
+    final protected function setDomainBus(DomainBusInterface $domainBus)
     {
-        $this->repositories = $repositories;
+        $this->domainBus = $domainBus;
     }
 }

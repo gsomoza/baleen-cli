@@ -19,7 +19,7 @@
 
 namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Cli\Repository\RepositoryCollectionInterface;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
 
 /**
  * Interface RepositoriesAwareInterface
@@ -29,7 +29,7 @@ use Baleen\Cli\Repository\RepositoryCollectionInterface;
 interface RepositoriesAwareInterface
 {
     /**
-     * @return RepositoryCollectionInterface
+     * @return MigrationRepositoriesServiceInterface
      */
     public function getRepositories();
 }

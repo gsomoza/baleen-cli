@@ -17,33 +17,21 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Util;
+namespace Baleen\Cli\Publisher;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Migrations\Migration\OptionsInterface;
+use Baleen\Migrations\Version\Collection\Collection;
+use Baleen\Migrations\Version\VersionInterface;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Class CollectionAfterEvent
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
+ *
+ * @method Collection getCollection()
+ * @method VersionInterface getTarget()
+ * @method OptionsInterface getOptions()
  */
-trait RepositoriesAwareTrait
+final class CollectionAfterEvent extends BaseEvent
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
-
-    /**
-     * @return MigrationRepositoriesServiceInterface
-     */
-    final public function getRepositories()
-    {
-        return $this->repositories;
-    }
-
-    /**
-     * @param MigrationRepositoriesServiceInterface $repositories
-     */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
-    {
-        $this->repositories = $repositories;
-    }
 }

@@ -20,7 +20,12 @@
 
 namespace Baleen\Cli\CommandBus\Migration\Listing;
 
+use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Migration\AbstractMigrationMessage;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Cli\Repository\MigrationMapperService;
+use Baleen\Cli\Repository\MigrationMapperServiceFactory;
+use Baleen\Migrations\Migration\Repository\Mapper\MigrationMapperInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -29,8 +34,33 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class ListMessage extends AbstractMigrationMessage
+class ListMessage extends AbstractMessage
 {
+    /** @var MigrationMapperServiceFactory */
+    private $migrationMapper;
+
+    /**
+     * ListMessage constructor.
+     *
+     * @param ConfigInterface $config
+     * @param MigrationMapperService $migrationMapper
+     */
+    public function __construct(ConfigInterface $config, MigrationMapperService $migrationMapper)
+    {
+        $this->migrationMapper = $migrationMapper;
+        parent::__construct($config);
+    }
+
+    /**
+     * getMigrationRepositoryMapper
+     *
+     * @return MigrationMapperService
+     */
+    final public function getMigrationMapper()
+    {
+        return $this->migrationMapper;
+    }
+
     /**
      * configure.
      *
@@ -39,6 +69,7 @@ class ListMessage extends AbstractMigrationMessage
     public static function configure(Command $command)
     {
         $command->setName('migrations:list')
+            ->setAliases(['all'])
             ->setDescription('Prints version IDs for all available migrations ordered incrementally.')
             ->addOption(
                 'newest-first',

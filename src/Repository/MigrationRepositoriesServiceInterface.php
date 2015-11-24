@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,44 +17,42 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline\Migrate;
+namespace Baleen\Cli\Repository;
 
 use Baleen\Cli\Exception\CliException;
-use Baleen\Migrations\Migration\Options;
-use Baleen\Migrations\Migration\Options\Direction;
+use Baleen\Migrations\Version\Collection\Collection;
+use Baleen\Migrations\Version\Collection\Linked;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 
 /**
- * Class MigrateHandler.
+ * Interface MigrationRepositoriesService
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class MigrateHandler
+interface MigrationRepositoriesServiceInterface
 {
-    /** @var MigrateMessage */
-    private $command;
-
     /**
-     * handle.
+     * Fetch all versions for the specified repository, or for all repositories at once if $key is null.
      *
-     * @param MigrateMessage $message
+     * @param null|int|string $key
+     *
+     * @return Collection
      *
      * @throws CliException
      */
-    public function handle(MigrateMessage $message)
-    {
-        $this->command = $message;
+    public function fetchAll($key = null);
 
-        $options = (new Options())->withDryRun($message->isDryRun());
+    /**
+     * clearCache
+     *
+     * @param null|int|string $forRepo Clear for a specific repo only
+     */
+    public function clearCache($forRepo = null);
 
-        $timeline = $message->getTimeline();
-
-        $timeline->getEventDispatcher()->addSubscriber(
-            new MigrateSubscriber($message)
-        );
-
-        $strategy = $message->getStrategy();
-        $target = $message->getTarget();
-
-        $timeline->$strategy($target, $options);
-    }
+    /**
+     * Constructor
+     *
+     * @param ComparatorInterface $comparator
+     */
+    public function __construct(ComparatorInterface $comparator);
 }

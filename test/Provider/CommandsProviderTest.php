@@ -44,10 +44,10 @@ class CommandsProviderTest extends ServiceProviderTestCase
             Services::CMD_CONFIG_INIT,
             Services::CMD_REPOSITORY_CREATE,
             Services::CMD_REPOSITORY_LATEST,
-            Services::CMD_REPOSITORY_LIST,
+            Services::CMD_MIGRATIONS_LIST,
             Services::CMD_STORAGE_LATEST,
-            Services::CMD_TIMELINE_EXECUTE,
-            Services::CMD_TIMELINE_MIGRATE,
+            Services::CMD_RUN_EXECUTE,
+            Services::CMD_RUN_MIGRATE,
         ];
 
         foreach ($defaultCommands as $command) {

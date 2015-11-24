@@ -42,7 +42,7 @@ trait ComparatorAwareTrait
     /**
      * @inheritdoc
      */
-    final public function setComparator(ComparatorInterface $comparator)
+    final protected function setComparator(ComparatorInterface $comparator)
     {
         $this->comparator = $comparator;
     }

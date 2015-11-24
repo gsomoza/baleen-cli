@@ -1,5 +1,5 @@
 ----------------------------------------------
-Baleen\\Cli\\CommandBus\\Config\\Status\\StatusHandler
+Baleen\\Cli\\CommandBus\\Migration\\Status\\StatusHandler
 ----------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Config

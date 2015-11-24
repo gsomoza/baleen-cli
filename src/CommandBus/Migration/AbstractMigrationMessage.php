@@ -23,7 +23,7 @@ use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
 use Baleen\Cli\Config\ConfigInterface;
-use Baleen\Cli\Repository\RepositoryCollectionInterface;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
 
 /**
  * Class AbstractRepositoriesMessage.
@@ -38,9 +38,9 @@ abstract class AbstractMigrationMessage extends AbstractMessage implements Repos
      * AbstractMigrationMessage constructor.
      *
      * @param ConfigInterface $config
-     * @param RepositoryCollectionInterface $repositoryCollection
+     * @param MigrationRepositoriesServiceInterface $repositoryCollection
      */
-    public function __construct(ConfigInterface $config, RepositoryCollectionInterface $repositoryCollection)
+    public function __construct(ConfigInterface $config, MigrationRepositoriesServiceInterface $repositoryCollection)
     {
         $this->setRepositories($repositoryCollection);
         parent::__construct($config);

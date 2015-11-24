@@ -17,16 +17,17 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Config\Status;
+namespace Baleen\Cli\CommandBus\Migration\Status;
 
-use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
+use Baleen\Cli\CommandBus\Migration\AbstractMigrationMessage;
 use Baleen\Cli\CommandBus\Util\ComparatorAwareTrait;
-use Baleen\Cli\CommandBus\Util\FilesystemAwareTrait;
-use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
-use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Cli\Config\ConfigStorage;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -35,13 +36,33 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class StatusMessage extends AbstractConfigMessage implements StatusMessageInterface
+class StatusMessage extends AbstractMigrationMessage implements StatusMessageInterface
 {
-    use RepositoriesAwareTrait;
     use StorageAwareTrait;
     use ComparatorAwareTrait;
 
     const OPTION_REPOSITORY = 'repository';
+
+    /**
+     * StatusMessage constructor.
+     *
+     * @param MigrationRepositoriesServiceInterface $repositories
+     * @param VersionRepositoryInterface $versionRepository
+     * @param ComparatorInterface $comparator
+     * @param ConfigStorage $configStorage
+     * @param ConfigInterface $config
+     */
+    public function __construct(
+        MigrationRepositoriesServiceInterface $repositories,
+        VersionRepositoryInterface $versionRepository,
+        ComparatorInterface $comparator,
+        ConfigStorage $configStorage,
+        ConfigInterface $config
+    ) {
+        $this->setStorage($versionRepository);
+        $this->setComparator($comparator);
+        parent::__construct($config, $repositories);
+    }
 
     /**
      * Configures a console command by setting name, description, arguments, etc.
@@ -50,7 +71,7 @@ class StatusMessage extends AbstractConfigMessage implements StatusMessageInterf
      */
     public static function configure(Command $command)
     {
-        $command->setName('config:status');
+        $command->setName('migrations:status');
         $command->setAliases(['status']);
         $command->setDescription(
             'Shows the current migration status. Shows the status across all available repositories unless the ' .

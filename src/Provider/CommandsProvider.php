@@ -21,31 +21,31 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\BaseCommand;
+use Baleen\Cli\CommandBus\CliBus;
 use Baleen\Cli\CommandBus\Config\Init\InitHandler;
 use Baleen\Cli\CommandBus\Config\Init\InitMessage;
-use Baleen\Cli\CommandBus\Config\Status\StatusHandler;
-use Baleen\Cli\CommandBus\Config\Status\StatusMessage;
-use Baleen\Cli\CommandBus\Factory\DefaultFactory;
-use Baleen\Cli\CommandBus\Factory\MessageFactoryInterface;
+use Baleen\Cli\CommandBus\Migration\Status\StatusHandler;
+use Baleen\Cli\CommandBus\Migration\Status\StatusMessage;
+use Baleen\Cli\CommandBus\MappableContainerLocator;
 use Baleen\Cli\CommandBus\Migration\Create\CreateHandler;
 use Baleen\Cli\CommandBus\Migration\Create\CreateMessage;
 use Baleen\Cli\CommandBus\Migration\Latest\LatestHandler as RepositoryLatestHandler;
 use Baleen\Cli\CommandBus\Migration\Latest\LatestMessage as RepositoryLatestCommand;
 use Baleen\Cli\CommandBus\Migration\Listing\ListHandler;
 use Baleen\Cli\CommandBus\Migration\Listing\ListMessage;
+use Baleen\Cli\CommandBus\Run\Migrate\MigrateMessage;
 use Baleen\Cli\CommandBus\Storage\Latest\LatestHandler as StorageLatestHandler;
 use Baleen\Cli\CommandBus\Storage\Latest\LatestMessage as StorageLatestCommand;
-use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler;
-use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
-use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateHandler;
-use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage;
+use Baleen\Cli\CommandBus\Run\Execute\ExecuteHandler;
+use Baleen\Cli\CommandBus\Run\Execute\ExecuteMessage;
+use Baleen\Cli\CommandBus\Run\Migrate\MigrateHandler;
 use Baleen\Cli\Exception\CliException;
-use League\Container\Container;
-use League\Container\ContainerInterface;
 use League\Container\ServiceProvider;
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use League\Tactician\CommandBus;
-use League\Tactician\Setup\QuickStart;
+use League\Tactician\Handler\CommandHandlerMiddleware;
+use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
+use League\Tactician\Handler\MethodNameInflector\HandleInflector;
+use League\Tactician\Plugins\LockingMiddleware;
 
 /**
  * Class CommandsProvider.
@@ -77,7 +77,7 @@ class CommandsProvider extends AbstractServiceProvider
             'message' => RepositoryLatestCommand::class,
             'handler' => RepositoryLatestHandler::class,
         ],
-        Services::CMD_REPOSITORY_LIST => [
+        Services::CMD_MIGRATIONS_LIST => [
             'message' => ListMessage::class,
             'handler' => ListHandler::class,
         ],
@@ -85,23 +85,15 @@ class CommandsProvider extends AbstractServiceProvider
             'message' => StorageLatestCommand::class,
             'handler' => StorageLatestHandler::class,
         ],
-        /*Services::CMD_TIMELINE_EXECUTE => [
+        Services::CMD_RUN_EXECUTE => [
             'message' => ExecuteMessage::class,
             'handler' => ExecuteHandler::class,
         ],
-        Services::CMD_TIMELINE_MIGRATE => [
+        Services::CMD_RUN_MIGRATE => [
             'message' => MigrateMessage::class,
             'handler' => MigrateHandler::class,
-        ],*/
+        ],
     ];
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct()
-    {
-        $this->provides = array_merge($this->provides, array_keys($this->commands));
-    }
 
     /**
      * Use the register method to register items with the container via the
@@ -114,35 +106,47 @@ class CommandsProvider extends AbstractServiceProvider
 
         $commands = $this->commands;
 
-        // setup the command bus to know which handler to use for each message class
-        $container->share(Services::COMMAND_BUS, function () use ($commands) {
-            $map = [];
-            foreach ($commands as $alias => $config) {
-                $message = $config['message'];
-                $handler = $config['handler'];
-                $map[$message] = new $handler();
-            }
+        // setup the command domainBus to know which handler to use for each message class
+        $container->share(
+            Services::COMMAND_BUS,
+            function () use ($commands) {
+                $map = [];
+                foreach ($commands as $alias => $config) {
+                    $message = $config['message'];
+                    $handler = $config['handler'];
+                    $map[$message] = $handler;
+                }
 
-            return QuickStart::create($map);
-        });
+                $handlerMiddleware = new CommandHandlerMiddleware(
+                    new ClassNameExtractor(),
+                    new MappableContainerLocator($this->getContainer(), $map),
+                    new HandleInflector()
+                );
+                $lockingMiddleware = new LockingMiddleware();
+
+                return new CliBus([$lockingMiddleware, $handlerMiddleware]);
+            }
+        );
 
         // create a service (that's just an array) that has a list of all the commands for the app
-        $container->add(Services::COMMANDS, function (CommandBus $bus) use ($commands) {
-            $commandList = [];
-            foreach ($commands as $config) {
-                $serviceClass = $config['message'];
-                if (!$this->getContainer()->has($serviceClass)) {
-                    throw new CliException(sprintf(
-                        'The container cannot provide class "%s". Make sure the class exists and can be retrieved by ' .
-                        'the container.',
-                        $serviceClass
-                    ));
+        $container->add(
+            Services::COMMANDS,
+            function (CliBus $bus) use ($commands) {
+                $commandList = [];
+                foreach ($commands as $config) {
+                    $serviceClass = $config['message'];
+                    if (!$this->getContainer()->has($serviceClass)) {
+                        throw new CliException(sprintf(
+                            'The container cannot provide class "%s". Make sure the class exists and can be retrieved by ' .
+                            'the container.',
+                            $serviceClass
+                        ));
+                    }
+                    $commandList[] = new BaseCommand($bus, $serviceClass);
                 }
-                $commandList[] = new BaseCommand($bus, $serviceClass);
-            }
 
-            return $commandList;
-        })
-        ->withArguments([Services::COMMAND_BUS]);
+                return $commandList;
+            }
+        )->withArguments([Services::COMMAND_BUS]);
     }
 }

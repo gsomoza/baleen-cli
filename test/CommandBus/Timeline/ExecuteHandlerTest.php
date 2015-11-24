@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
-use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler;
-use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
+use Baleen\Cli\CommandBus\Run\Execute\ExecuteHandler;
+use Baleen\Cli\CommandBus\Run\Execute\ExecuteMessage;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version\Collection\Migrated;
@@ -40,7 +40,7 @@ class ExecuteHandlerTest extends HandlerTestCase
      */
     public function setUp()
     {
-        $this->instance = m::mock(\Baleen\Cli\CommandBus\Timeline\Execute\ExecuteHandler::class)
+        $this->instance = m::mock(\Baleen\Cli\CommandBus\Run\Execute\ExecuteHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
         $this->command = m::mock(ExecuteMessage::class)->makePartial();

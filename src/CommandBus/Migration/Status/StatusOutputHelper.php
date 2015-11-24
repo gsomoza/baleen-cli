@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Config\Status;
+namespace Baleen\Cli\CommandBus\Migration\Status;
 
 use Baleen\Migrations\Version\Collection;
 

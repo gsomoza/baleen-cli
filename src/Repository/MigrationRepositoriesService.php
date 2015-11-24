@@ -27,7 +27,7 @@ use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class RepositoryCollection
+ * Class MigrationRepositoriesService
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  *
@@ -41,7 +41,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @method MigrationRepositoryInterface[] getValues()
  * @property MigrationRepositoryInterface[] elements
  */
-final class RepositoryCollection extends ArrayCollection implements RepositoryCollectionInterface
+final class MigrationRepositoriesService extends ArrayCollection implements MigrationRepositoriesServiceInterface
 {
     /** @var ComparatorInterface */
     private $comparator;
@@ -50,7 +50,7 @@ final class RepositoryCollection extends ArrayCollection implements RepositoryCo
     private $cache = [];
 
     /**
-     * RepositoryCollection constructor.
+     * MigrationRepositoriesService constructor.
      *
      * @param ComparatorInterface $comparator
      */
@@ -87,8 +87,7 @@ final class RepositoryCollection extends ArrayCollection implements RepositoryCo
      *
      * @throws CliException
      */
-    public function
-    fetchAll($key = null)
+    public function fetchAll($key = null)
     {
         $collection = new Collection([], null, $this->comparator);
         if (null !== $key) {

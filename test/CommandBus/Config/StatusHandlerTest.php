@@ -19,12 +19,12 @@
 
 namespace BaleenTest\Baleen\CommandBus\Config;
 
-use Baleen\Cli\CommandBus\Config\Status\StatusHandler;
-use Baleen\Cli\CommandBus\Config\Status\StatusMessage;
+use Baleen\Cli\CommandBus\Migration\Status\StatusHandler;
+use Baleen\Cli\CommandBus\Migration\Status\StatusMessage;
 use Baleen\Cli\Config\ConfigStorage;
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Cli\Helper\VersionFormatterInterface;
-use Baleen\Cli\Repository\RepositoryCollectionInterface;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
 use Baleen\Migrations\Migration\MigrationInterface;
 use Baleen\Migrations\Version\Collection\Collection;
 use Baleen\Migrations\Version\Collection\Migrated;
@@ -41,14 +41,14 @@ use Mockery as m;
  *
 *@author Gabriel Somoza <gabriel@strategery.io>
  *
- * @property \Baleen\Cli\CommandBus\Config\Status\StatusMessage|m\Mock command
+ * @property \Baleen\Cli\CommandBus\Migration\Status\StatusMessage|m\Mock command
  */
 class StatusHandlerTest extends HandlerTestCase
 {
     /** @var m\Mock|ConfigStorage */
     protected $configStorage;
 
-    /** @var m\Mock|RepositoryCollectionInterface */
+    /** @var m\Mock|MigrationRepositoriesServiceInterface */
     protected $repositories;
 
     /** @var m\Mock|VersionRepositoryInterface */
@@ -71,7 +71,7 @@ class StatusHandlerTest extends HandlerTestCase
         $this->configStorage = m::mock(ConfigStorage::class);
         $this->command = m::mock(StatusMessage::class, [$this->configStorage])->makePartial();
         $this->command->setConfigStorage($this->configStorage);
-        $this->repositories = m::mock(RepositoryCollectionInterface::class);
+        $this->repositories = m::mock(MigrationRepositoriesServiceInterface::class);
         $this->command->setRepositories($this->repositories);
         $this->storage = m::mock(VersionRepositoryInterface::class);
         $this->command->setStorage($this->storage);

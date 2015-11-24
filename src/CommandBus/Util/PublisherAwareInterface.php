@@ -17,26 +17,20 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Config\Status;
+namespace Baleen\Cli\CommandBus\Util;
 
-use Baleen\Cli\CommandBus\MessageInterface;
-use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
-use Baleen\Cli\CommandBus\Util\ConfigStorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\FilesystemAwareInterface;
-use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
-use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
+use Baleen\Migrations\Shared\Event\PublisherInterface;
 
 /**
- * Message class for the config:status command.
+ * Interface PublisherAwareInterface
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-interface StatusMessageInterface extends
-    MessageInterface,
-    ComparatorAwareInterface,
-    ConfigStorageAwareInterface,
-    StorageAwareInterface,
-    RepositoriesAwareInterface
+interface PublisherAwareInterface
 {
-
+    /**
+     * getDomainPublisher
+     * @return PublisherInterface
+     */
+    public function getDomainPublisher();
 }

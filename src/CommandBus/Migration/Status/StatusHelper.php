@@ -17,11 +17,14 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Config\Status;
+namespace Baleen\Cli\CommandBus\Migration\Status;
 
 use Baleen\Cli\CommandBus\AbstractHelper;
+use Baleen\Cli\CommandBus\Migration\Status\StatusMessageInterface;
+use Baleen\Cli\CommandBus\Migration\Status\StatusOutputHelper;
+use Baleen\Cli\CommandBus\Migration\Status\StatusMessage;
 use Baleen\Cli\Helper\VersionFormatter;
-use Baleen\Migrations\Version\Collection;
+use Baleen\Migrations\Version\Collection\Collection;
 use Baleen\Migrations\Version\VersionInterface;
 
 /**
@@ -49,10 +52,8 @@ final class StatusHelper extends AbstractHelper
             $repository = (string) $repository;
         }
 
-        $migrated = $message->getStorage()->fetchAll();
-
         // get available repos, optionally scoped down to the repository passed as an option
-        $available = $message->getRepositories()->fetchAll($repository)->hydrate($migrated);
+        $available = $message->getRepositories()->fetchAll($repository);
 
         // find versions that haven't been migrated
         $pending = $available->filter(function (VersionInterface $v) {
@@ -71,9 +72,8 @@ final class StatusHelper extends AbstractHelper
     {
         /** @var StatusMessageInterface $message */
         $message = $this->getMessage();
-        $migrated = $message->getStorage()->fetchAll();
         // there's a single head across all repositories, so it must be fetched considering all repositories at once
-        return $message->getRepositories()->fetchAll()->hydrate($migrated)->get('HEAD');
+        return $message->getRepositories()->fetchAll()->find('HEAD');
     }
 
     /**
@@ -92,13 +92,13 @@ final class StatusHelper extends AbstractHelper
             $message = $this->getMessage();
             $comparator = $message->getComparator();
             list($beforeHead, $afterHead) = $pending->partition(
-                function ($index, VersionInterface $v) use ($head, $comparator) {
+                function ($i, VersionInterface $v) use ($head, $comparator) {
                     return $comparator($v, $head) < 0;
                 }
             );
             /** @var Collection $beforeHead */
             /** @var Collection $afterHead */
-            $afterHead->removeElement($head);
+            $afterHead->remove($head->getId());
         } else {
             $beforeHead = new Collection();
             $afterHead = $pending;
@@ -141,6 +141,8 @@ final class StatusHelper extends AbstractHelper
         foreach ($lines as &$line) {
             $output[] = "\t" . $line;
         }
+
+        $output[] = '';
 
         return $output;
     }

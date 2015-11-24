@@ -17,8 +17,11 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Config\Status;
+namespace Baleen\Cli\CommandBus\Migration\Status;
 
+use Baleen\Cli\CommandBus\Migration\Status\StatusHelper;
+use Baleen\Cli\CommandBus\Migration\Status\StatusOutputHelper;
+use Baleen\Cli\CommandBus\Migration\Status\StatusMessage;
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 

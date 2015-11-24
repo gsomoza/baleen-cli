@@ -21,9 +21,13 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Config\Config;
+use Baleen\Cli\Repository\MigrationMapperService;
+use Baleen\Cli\Repository\MigrationMapperServiceFactory;
 use Baleen\Cli\Repository\MigrationRepositoryServiceFactory;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
 use Baleen\Migrations\Migration\Factory\SimpleFactory;
+use Baleen\Migrations\Service\Runner\MigrationRunner;
+use Baleen\Migrations\Service\Runner\MigrationRunnerInterface;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ServiceProvider;
@@ -43,6 +47,7 @@ class MigrationRepositoryProvider extends AbstractServiceProvider
         Services::MIGRATION_REPOSITORY,
         Services::MIGRATION_REPOSITORY_FILESYSTEM,
         Services::MIGRATION_FACTORY,
+        MigrationMapperService::class,
     ];
 
     /**
@@ -52,14 +57,25 @@ class MigrationRepositoryProvider extends AbstractServiceProvider
     {
         $container = $this->getContainer();
 
+        // Migration Factory service
         $container->share(Services::MIGRATION_FACTORY, SimpleFactory::class);
 
+        // Filesystem service
         $container->share(Services::MIGRATION_REPOSITORY_FILESYSTEM, function (Config $appConfig) {
             $adapter = new Local(dirname($appConfig->getConfigFilePath()));
 
             return new Filesystem($adapter);
         })->withArgument(Services::CONFIG);
 
+        // Migration Mapper service
+        $container->share(
+            MigrationMapperService::class,
+            function (MigrationMapperServiceFactory $factory) {
+                return $factory->create();
+            }
+        )->withArguments([MigrationMapperServiceFactory::class]);
+
+        // Migration Repository service
         $container->share(
             Services::MIGRATION_REPOSITORY,
             function (MigrationRepositoryServiceFactory $factory) {

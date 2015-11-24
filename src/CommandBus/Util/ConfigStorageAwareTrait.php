@@ -43,7 +43,7 @@ trait ConfigStorageAwareTrait
     /**
      * @inheritdoc
      */
-    final public function setConfigStorage(ConfigStorage $configStorage)
+    final protected function setConfigStorage(ConfigStorage $configStorage)
     {
         $this->configStorage = $configStorage;
     }

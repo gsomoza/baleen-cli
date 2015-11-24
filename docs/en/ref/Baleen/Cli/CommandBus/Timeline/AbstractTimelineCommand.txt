@@ -1,12 +1,12 @@
 ----------------------------------------------------------
-Baleen\\Cli\\CommandBus\\Timeline\\AbstractTimelineCommand
+Baleen\\Cli\\CommandBus\\Run\\AbstractRunMessage
 ----------------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Timeline
 
-.. php:class:: AbstractTimelineCommand
+.. php:class:: AbstractRunMessage
 
-    Class AbstractTimelineCommand.
+    Class AbstractRunMessage.
 
     .. php:attr:: storage
 

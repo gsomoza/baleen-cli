@@ -52,7 +52,7 @@ class LatestHandlerTest extends HandlerTestCase
      */
     public function testHandle($count)
     {
-        $this->markTestSkipped('finish implementing');
+        $this->markTestSkipped();
         /** @var Migrated|m\Mock $migrated */
         $migrated = m::mock(Migrated::class);
         $migrated->shouldReceive('count')->once()->andReturn($count);

@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
-use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateHandler;
-use Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage;
+use Baleen\Cli\CommandBus\Run\Migrate\MigrateHandler;
+use Baleen\Cli\CommandBus\Run\Migrate\MigrateMessage;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Version;
 use BaleenTest\Cli\CommandBus\HandlerTestCase;
@@ -42,7 +42,7 @@ class MigrateHandlerTest extends HandlerTestCase
         $this->instance = m::mock(MigrateHandler::class)
             ->shouldAllowMockingProtectedMethods()
             ->makePartial();
-        $this->command = m::mock(\Baleen\Cli\CommandBus\Timeline\Migrate\MigrateMessage::class)->makePartial();
+        $this->command = m::mock(\Baleen\Cli\CommandBus\Run\Migrate\MigrateMessage::class)->makePartial();
         parent::setUp();
     }
 

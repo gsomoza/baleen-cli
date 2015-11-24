@@ -19,8 +19,8 @@
 
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
-use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
-use Baleen\Cli\CommandBus\Timeline\Execute\ExecuteMessage;
+use Baleen\Cli\CommandBus\Run\AbstractRunMessage;
+use Baleen\Cli\CommandBus\Run\Execute\ExecuteMessage;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Migration\Options\Direction;
 use Baleen\Migrations\Timeline;
@@ -43,7 +43,7 @@ class ExecuteMessageTest extends MessageTestCase
     public function testConstructor()
     {
         $instance = new ExecuteMessage();
-        $this->assertInstanceOf(AbstractTimelineCommand::class, $instance);
+        $this->assertInstanceOf(\Baleen\Cli\CommandBus\Run\AbstractRunMessage::class, $instance);
     }
 
     /**

@@ -17,42 +17,21 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\Repository;
+namespace Baleen\Cli\Publisher;
 
-use Baleen\Cli\Exception\CliException;
+use Baleen\Migrations\Migration\OptionsInterface;
 use Baleen\Migrations\Version\Collection\Collection;
-use Baleen\Migrations\Version\Collection\Linked;
-use Baleen\Migrations\Version\Comparator\ComparatorInterface;
+use Baleen\Migrations\Version\VersionInterface;
 
 /**
- * Interface RepositoryCollection
+ * Class CollectionBeforeEvent
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
+ *
+ * @method Collection getCollection()
+ * @method VersionInterface getTarget()
+ * @method OptionsInterface getOptions()
  */
-interface RepositoryCollectionInterface
+final class CollectionBeforeEvent extends BaseEvent
 {
-    /**
-     * Fetch all versions for the specified repository, or for all repositories at once if $key is null.
-     *
-     * @param null|int|string $key
-     *
-     * @return Collection
-     *
-     * @throws CliException
-     */
-    public function fetchAll($key = null);
-
-    /**
-     * clearCache
-     *
-     * @param null|int|string $forRepo Clear for a specific repo only
-     */
-    public function clearCache($forRepo = null);
-
-    /**
-     * Constructor
-     *
-     * @param ComparatorInterface $comparator
-     */
-    public function __construct(ComparatorInterface $comparator);
 }

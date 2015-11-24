@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -21,11 +20,18 @@
 namespace Baleen\Cli\Provider;
 
 use Baleen\Cli\Application;
+use Baleen\Cli\CommandBus\CliBus;
+use Baleen\Cli\CommandBus\Migration\Create\CreateMessage;
+use Baleen\Cli\CommandBus\Migration\Latest\LatestMessage;
+use Baleen\Cli\CommandBus\Migration\Listing\ListMessage;
+use Baleen\Cli\CommandBus\Run\Execute\ExecuteMessage;
+use Baleen\Cli\CommandBus\Storage\Latest\LatestMessage as StorageLatestMessage;
 use Baleen\Cli\Config\ConfigInterface;
 use Baleen\Cli\Config\ConfigStorage;
-use Baleen\Cli\Repository\RepositoryCollectionInterface;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
 use Baleen\Migrations\Migration\Factory\FactoryInterface;
-use Baleen\Migrations\Migration\Repository\MigrationRepositoryInterface;
+use Baleen\Migrations\Service\Runner\MigrationRunner;
+use Baleen\Migrations\Shared\Event\PublisherInterface;
 use Baleen\Migrations\Version\Collection\Resolver\ResolverInterface;
 use Baleen\Migrations\Version\Comparator\ComparatorInterface;
 use Baleen\Migrations\Version\Repository\VersionRepositoryInterface;
@@ -51,26 +57,26 @@ interface Services
     const BALEEN_BASE_DIR = 'baleen.base_dir';
 
     // CommandsProvider
-    /** Reference to the CommandBus service */
-    const COMMAND_BUS = 'commands.bus';
+    /** Reference to the domain's CommandBus service */
+    const COMMAND_BUS = CliBus::class;
     /** Reference to an array of available commands */
     const COMMANDS = 'commands';
     /** Reference to the config:init command */
     const CMD_CONFIG_INIT = 'commands.config.init';
     /** Reference to the config:status command */
     const CMD_CONFIG_STATUS = 'commands.config.status';
-    /** Reference to the timeline:execute command */
-    const CMD_TIMELINE_EXECUTE = 'commands.timeline.execute';
+    /** Reference to the run:execute command */
+    const CMD_RUN_EXECUTE = ExecuteMessage::class;
     /** Reference to the timelien:migrate command */
-    const CMD_TIMELINE_MIGRATE = 'commands.timeline.migrate';
+    const CMD_RUN_MIGRATE = 'commands.timeline.migrate';
     /** Reference to the repository:create command */
-    const CMD_REPOSITORY_CREATE = 'commands.repository.create';
+    const CMD_REPOSITORY_CREATE = CreateMessage::class;
     /** Reference to the repository:latest command */
-    const CMD_REPOSITORY_LATEST = 'commands.repository.latest';
+    const CMD_REPOSITORY_LATEST = LatestMessage::class;
     /** Reference to the repository:list command */
-    const CMD_REPOSITORY_LIST = 'commands.repository.list';
+    const CMD_MIGRATIONS_LIST = ListMessage::class;
     /** Reference to the storage:latest command */
-    const CMD_STORAGE_LATEST = 'commands.storage.latest';
+    const CMD_STORAGE_LATEST = StorageLatestMessage::class;
 
     // ApplicationProvider
     /** Reference to the Symfony Console Application instance */
@@ -90,7 +96,7 @@ interface Services
 
     // MigrationRepositoryProvider
     /** Reference to the Repository service */
-    const MIGRATION_REPOSITORY = RepositoryCollectionInterface::class;
+    const MIGRATION_REPOSITORY = MigrationRepositoriesServiceInterface::class;
     /** Reference to the Filesystem to be used for the Repository service */
     const MIGRATION_REPOSITORY_FILESYSTEM = FilesystemInterface::class;
     /** Reference to the factory to be used to instantiate Migrations */
@@ -104,4 +110,10 @@ interface Services
     const COMPARATOR = ComparatorInterface::class;
     /** Reference to a collection resolver service */
     const RESOLVER = ResolverInterface::class;
+
+    // Domain Servics
+    /** Reference to the event publisher service */
+    const PUBLISHER = PublisherInterface::class;
+    /** Reference to the Migration Runner service */
+    const MIGRATION_RUNNER = MigrationRunner::class;
 }

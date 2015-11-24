@@ -20,7 +20,7 @@
 namespace BaleenTest\Baleen\CommandBus\Config;
 
 use Baleen\Cli\CommandBus\Config\AbstractConfigMessage;
-use Baleen\Cli\CommandBus\Config\Status\StatusMessage;
+use Baleen\Cli\CommandBus\Migration\Status\StatusMessage;
 use Baleen\Cli\CommandBus\Util\ComparatorAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;

@@ -1,5 +1,5 @@
 ----------------------------------------------
-Baleen\\Cli\\CommandBus\\Config\\Status\\StatusMessage
+Baleen\\Cli\\CommandBus\\Migration\\Status\\StatusMessage
 ----------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Config

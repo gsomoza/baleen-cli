@@ -34,24 +34,8 @@ use League\Flysystem\FilesystemInterface;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class MigrationRepositoryServiceFactory
+final class MigrationRepositoryServiceFactory
 {
-    /**
-     * @var ClassLoader
-     */
-    protected $autoloader;
-    /**
-     * @var string[]
-     */
-    private $migrationsConfig;
-    /**
-     * @var FactoryInterface
-     */
-    private $migrationFactory;
-    /**
-     * @var FilesystemInterface
-     */
-    private $filesystem;
     /**
      * @var ComparatorInterface
      */
@@ -60,106 +44,42 @@ class MigrationRepositoryServiceFactory
     /** @var VersionRepositoryInterface */
     private $storage;
 
+    /** @var MigrationMapperService */
+    private $mapperService;
+
     /**
      * MigrationRepositoryServiceFactory constructor.
      *
-     * @param ConfigInterface $config
+     * @param MigrationMapperService $mapperService
      * @param VersionRepositoryInterface $versionRepository
-     * @param FactoryInterface $migrationFactory
-     * @param FilesystemInterface $filesystem
      * @param ComparatorInterface $comparator
-     * @param ClassLoader $autoloader
      */
     public function __construct(
-        ConfigInterface $config,
+        MigrationMapperService $mapperService,
         VersionRepositoryInterface $versionRepository,
-        FactoryInterface $migrationFactory,
-        FilesystemInterface $filesystem,
-        ComparatorInterface $comparator,
-        ClassLoader $autoloader
+        ComparatorInterface $comparator
     ) {
-        $this->migrationsConfig = $config->getMigrationsConfig();
-        $this->migrationFactory = $migrationFactory;
-        $this->filesystem = $filesystem;
         $this->comparator = $comparator;
-        $this->autoloader = $autoloader;
         $this->storage = $versionRepository;
+        $this->mapperService = $mapperService;
     }
 
     /**
      * Create
      *
-     * @return RepositoryCollection
+     * @return MigrationRepositoriesService
      *
      * @throws CliException
      */
     public function create() {
-        $repositories = new RepositoryCollection($this->comparator);
-        foreach ($this->migrationsConfig as $priority => $config) {
-            $dir = $config['directory'];
+        $repositories = new MigrationRepositoriesService($this->comparator);
 
-            $this->ensureDirectoryExists($dir);
-            $this->configureAutoloader($config['namespace'], $dir);
-
-            $mapper = new DirectoryMapper($dir, $this->migrationFactory);
+        $mappers = $this->mapperService->getMappers();
+        foreach ($mappers as $alias => $mapper) {
             $repo = new MigrationRepository($this->storage, $mapper, $this->comparator);
-            $alias = isset($config['alias']) ? $config['alias'] : $dir;
             $repositories->set($alias, $repo);
         }
+
         return $repositories;
-    }
-
-    /**
-     * Checks if the directory exists and if not it creates it.
-     *
-     * @param $directory
-     *
-     * @return void
-     * @throws CliException
-     */
-    protected function ensureDirectoryExists($directory)
-    {
-        $filesystem = $this->filesystem;
-        if (!$filesystem->has($directory)) {
-            $result = $filesystem->createDir($directory);
-            if (!$result) {
-                throw new CliException(
-                    sprintf(
-                        'Could not create directory "$s.',
-                        $directory
-                    )
-                );
-            }
-        } else {
-            $meta = $filesystem->getMetadata($directory);
-            if ($meta['type'] !== 'dir') {
-                throw new CliException(
-                    sprintf(
-                        'Expected path "%s" to be a directory, but its a %s.',
-                        $directory,
-                        $meta['type']
-                    )
-                );
-            }
-        }
-    }
-
-    /**
-     * Makes sure classes in the migration directory are autoloaded
-     *
-     * @param string $ns
-     * @param string $directory
-     */
-    protected function configureAutoloader($ns, $directory)
-    {
-        $autoloader = $this->autoloader;
-        // normalize the namespace
-        $ns = rtrim($ns, '\\') . '\\';
-        // add to the autoloader if necessary
-        if (!in_array($ns, $autoloader->getPrefixes())
-            && !in_array($ns, $autoloader->getPrefixesPsr4())
-        ) {
-            $autoloader->addPsr4($ns, getcwd() . DIRECTORY_SEPARATOR . $directory);
-        }
     }
 }

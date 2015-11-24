@@ -24,5 +24,6 @@ return [
         'repository' => \Baleen\Cli\Provider\MigrationRepositoryProvider::class,
         'helperSet' => \Baleen\Cli\Provider\HelperSetProvider::class,
         'commands' => \Baleen\Cli\Provider\CommandsProvider::class,
+        'domainServices' => \Baleen\Cli\Provider\DomainServicesProvider::class,
     ],
 ];

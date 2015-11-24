@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,9 +17,9 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline\Migrate;
+namespace Baleen\Cli\CommandBus\Run\Migrate;
 
-use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
+use Baleen\Cli\CommandBus\Run\AbstractRunMessage;
 use Baleen\Cli\Exception\CliException;
 use Baleen\Migrations\Migration\Options;
 use Baleen\Migrations\Migration\Options\Direction;
@@ -36,18 +35,22 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class MigrateMessage extends AbstractTimelineCommand
+class MigrateMessage extends AbstractRunMessage
 {
     const ARG_TARGET = 'target';
     const OPT_STRATEGY = 'strategy';
     const OPT_PROGRESS = 'progress';
     const OPT_REPOSITORY = 'repository';
 
+    const STRATEGY_UP = 'up';
+    const STRATEGY_DOWN = 'down';
+    const STRATEGY_CONVERGE = 'converge';
+
     /** @var array */
     private $strategies = [
-        Direction::UP => 'upTowards',
-        Direction::DOWN => 'downTowards',
-        'both' => 'goTowards',
+        self::STRATEGY_UP,
+        self::STRATEGY_DOWN,
+        self::STRATEGY_CONVERGE,
     ];
 
     /**
@@ -58,7 +61,7 @@ class MigrateMessage extends AbstractTimelineCommand
         parent::configure($command);
 
         $command
-            ->setName('timeline:migrate')
+            ->setName('run:migrate')
             ->setAliases(['migrate'])
             ->setDescription('Migrates all versions up (or down) to and including the specified target.')
             ->addArgument(self::ARG_TARGET, InputArgument::OPTIONAL, 'The target version to migrate to.', 'latest')
@@ -137,51 +140,31 @@ class MigrateMessage extends AbstractTimelineCommand
     public function getStrategy()
     {
         $strategy = strtolower($this->getInput()->getOption(MigrateMessage::OPT_STRATEGY));
-        if (!isset($this->strategies[$strategy])) {
+        if (!in_array($strategy, $this->strategies)) {
             throw new CliException(sprintf(
                 'Unknown strategy "%s". Must be one of: %s',
                 $strategy,
-                implode(', ', array_keys($this->strategies))
+                implode(', ', $this->strategies)
             ));
         }
 
-        return $this->strategies[$strategy];
+        return $strategy;
     }
 
     /**
-     * Returns the migration target
-     *
-     * @return VersionInterface
-     *
+     * getDirection
+     * @return null|static
      * @throws CliException
      */
-    public function getTarget()
+    public function getDirection()
     {
-        $targetArg = (string) $this->getInput()->getArgument(MigrateMessage::ARG_TARGET);
-        $available = $this->getRepositories()->fetchAll();
-        $migrated = $this->getStorage()->fetchAll();
-        $target = $available->hydrate($migrated)->get($targetArg);
-        if (!$target) {
-            throw new CliException(sprintf(
-                'Migration target with id "%s" could not be found.',
-                $targetArg
-            ));
+        $strategy = $this->getStrategy();
+        $direction = null;
+        if ($strategy == self::STRATEGY_UP) {
+            $direction = Direction::up();
+        } elseif ($strategy == self::STRATEGY_DOWN) {
+            $direction = Direction::down();
         }
-        return $target;
-    }
-
-    /**
-     * getTimeline
-     * @return Timeline
-     */
-    public function getTimeline()
-    {
-        $repositoryOption = $this->getInput()->getOption(self::OPT_REPOSITORY);
-        $factory = $this->getTimelineFactory();
-
-        $available = $this->getRepositories()->fetchAll($repositoryOption);
-        $migrated = $this->getStorage()->fetchAll();
-
-        return $factory->create($available, $migrated);
+        return $direction;
     }
 }

@@ -19,9 +19,11 @@
 
 namespace Baleen\Cli\CommandBus\Migration\Listing;
 
-use Baleen\Cli\CommandBus\Migration\Listing\ListMessage;
 use Baleen\Cli\Helper\VersionFormatter;
 use Baleen\Cli\Util\CalculatesRelativePathsTrait;
+use Baleen\Migrations\Migration\Repository\Mapper\DefinitionInterface;
+use Baleen\Migrations\Version\Collection\Collection;
+use Baleen\Migrations\Version\Version;
 
 /**
  * Class ListHandler.
@@ -43,15 +45,18 @@ class ListHandler
         $output = $command->getOutput();
 
         $reverse = $input->getOption('newest-first');
-        $versions = $command->getRepositories()->fetchAll();
+        $versions = array_map(function(DefinitionInterface $def) {
+            return new Version($def->getMigration(), false, $def->getId());
+        }, $command->getMigrationMapper()->fetchAllDefinitions());
 
         if (count($versions)) {
+            $collection = new Collection($versions);
             if ($reverse) {
-                $versions = $versions->getReverse();
+                $collection = $collection->getReverse();
             }
             /** @var VersionFormatter $formatter */
             $formatter = $command->getCliCommand()->getHelper('versionFormatter');
-            $message = $formatter->formatCollection($versions);
+            $message = $formatter->formatCollection($collection);
         } else {
             $message = 'No available migrations were found. Please check your settings.';
         }

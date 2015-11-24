@@ -17,33 +17,15 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Util;
+namespace Baleen\Cli\CommandBus\Run\Execute;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Cli\CommandBus\AbstractHelper;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Class ExecuteHelper
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoriesAwareTrait
+class ExecuteHelper extends AbstractHelper
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
-
-    /**
-     * @return MigrationRepositoriesServiceInterface
-     */
-    final public function getRepositories()
-    {
-        return $this->repositories;
-    }
-
-    /**
-     * @param MigrationRepositoriesServiceInterface $repositories
-     */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
-    {
-        $this->repositories = $repositories;
-    }
 }

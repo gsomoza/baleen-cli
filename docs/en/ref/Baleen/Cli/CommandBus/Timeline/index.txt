@@ -6,7 +6,7 @@ Baleen\\Cli\\CommandBus\\Timeline
 
 .. toctree::
 
-   AbstractTimelineCommand
+   AbstractRunMessage
    ExecuteHandler
    ExecuteMessage
    MigrateHandler

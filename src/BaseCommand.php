@@ -19,12 +19,11 @@
 
 namespace Baleen\Cli;
 
+use Baleen\Cli\CommandBus\CliBus;
 use Baleen\Cli\CommandBus\MessageInterface;
 use Baleen\Cli\Helper\ContainerHelper;
-use Baleen\Cli\Provider\Services;
 use Baleen\Migrations\Exception\InvalidArgumentException;
-use League\Container\Container;
-use League\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use League\Tactician\CommandBus;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,33 +34,27 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class BaseCommand extends Command
+final class BaseCommand extends Command
 {
     /**
      * A reference to the CommandBus in charge of handling Messages.
      *
-     * @var CommandBus
+     * @var CliBus
      */
-    protected $commandBus;
-
-    /** @var string */
-    protected $serviceAlias;
+    protected $cliBus;
 
     /** @var string */
     protected $serviceClass;
 
     /**
-     * @param CommandBus $commandBus
-     * @param string $serviceAlias The key in the Container for the command that the instance of this class represents.
-     *
+     * @param CliBus $commandBus
      * @param string $serviceClass Needed in order to run certain checks against the class before instantiating it
      *                             with the container. This helps us make those checks without triggering all the other
      *                             services through the Container's DI functionality.
      *
      * @throws InvalidArgumentException
-     *
      */
-    public function __construct(CommandBus $commandBus, $serviceClass)
+    public function __construct(CliBus $commandBus, $serviceClass)
     {
         if (!class_exists($serviceClass)) {
             throw new InvalidArgumentException(sprintf(
@@ -72,12 +65,12 @@ class BaseCommand extends Command
         }
         $this->serviceClass = $serviceClass;
 
-        $this->commandBus = $commandBus;
+        $this->cliBus = $commandBus;
         parent::__construct(null); // name will be set inside configure()
     }
 
     /**
-     * @return \Interop\Container\ContainerInterface
+     * @return ContainerInterface
      */
     public function getContainer()
     {
@@ -87,13 +80,13 @@ class BaseCommand extends Command
     }
 
     /**
-     * getCommandBus.
+     * getCliBus.
      *
      * @return CommandBus
      */
-    public function getCommandBus()
+    public function getCliBus()
     {
-        return $this->commandBus;
+        return $this->cliBus;
     }
 
     /**
@@ -116,7 +109,7 @@ class BaseCommand extends Command
         $message->setCliCommand($this);
         $message->setInput($input);
         $message->setOutput($output);
-        $this->getCommandBus()->handle($message);
+        $this->getCliBus()->handle($message);
     }
 
     /**

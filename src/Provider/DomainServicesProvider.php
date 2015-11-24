@@ -17,33 +17,41 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Baleen\Cli\CommandBus\Util;
+namespace Baleen\Cli\Provider;
 
-use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
+use Baleen\Cli\Publisher\SymfonyPublisher;
+use Baleen\Migrations\Service\Runner\MigrationRunner;
+use Baleen\Migrations\Service\Runner\MigrationRunnerInterface;
+use Baleen\Migrations\Shared\Event\PublisherInterface;
+use League\Container\ServiceProvider\AbstractServiceProvider;
 
 /**
- * Class RepositoriesAwareTrait.
+ * Class DomainServicesProvider
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-trait RepositoriesAwareTrait
+class DomainServicesProvider extends AbstractServiceProvider
 {
-    /** @var MigrationRepositoriesServiceInterface */
-    private $repositories;
+    /** @inheritdoc */
+    protected $provides = [
+        MigrationRunnerInterface::class,
+        PublisherInterface::class
+    ];
 
     /**
-     * @return MigrationRepositoriesServiceInterface
+     * Use the register method to register items with the container via the
+     * protected $this->container property or the `getContainer` method
+     * from the ContainerAwareTrait.
+     *
+     * @return void
      */
-    final public function getRepositories()
+    public function register()
     {
-        return $this->repositories;
-    }
+        $container = $this->getContainer();
 
-    /**
-     * @param MigrationRepositoriesServiceInterface $repositories
-     */
-    final protected function setRepositories(MigrationRepositoriesServiceInterface $repositories)
-    {
-        $this->repositories = $repositories;
+        $container->share(PublisherInterface::class, SymfonyPublisher::class);
+        $container->add(MigrationRunnerInterface::class, function() {
+            return new MigrationRunner($this->getContainer()->get(Services::PUBLISHER));
+        });
     }
 }

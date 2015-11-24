@@ -20,7 +20,7 @@
 namespace BaleenTest\Cli\CommandBus\Timeline;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
-use Baleen\Cli\CommandBus\Timeline\AbstractTimelineCommand;
+use Baleen\Cli\CommandBus\Run\AbstractRunMessage;
 use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
 use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
 use Baleen\Migrations\Storage\StorageInterface;
@@ -37,7 +37,7 @@ use Mockery as m;
  */
 class AbstractTimelineMessageTest extends BaseTestCase
 {
-    /** @var m\Mock|AbstractTimelineCommand */
+    /** @var m\Mock|AbstractRunMessage */
     protected $instance;
 
     /**
@@ -45,7 +45,7 @@ class AbstractTimelineMessageTest extends BaseTestCase
      */
     public function setUp()
     {
-        $this->instance = m::mock(AbstractTimelineCommand::class)->makePartial();
+        $this->instance = m::mock(\Baleen\Cli\CommandBus\Run\AbstractRunMessage::class)->makePartial();
     }
 
     /**

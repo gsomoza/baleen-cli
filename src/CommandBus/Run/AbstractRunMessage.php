@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,34 +17,41 @@
  * <https://github.com/baleen/migrations>.
  */
 
-namespace Baleen\Cli\CommandBus\Timeline;
+namespace Baleen\Cli\CommandBus\Run;
 
 use Baleen\Cli\CommandBus\AbstractMessage;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareInterface;
 use Baleen\Cli\CommandBus\Util\RepositoriesAwareTrait;
-use Baleen\Cli\CommandBus\Util\StorageAwareInterface;
-use Baleen\Cli\CommandBus\Util\StorageAwareTrait;
-use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareInterface;
-use Baleen\Cli\CommandBus\Util\TimelineFactoryAwareTrait;
+use Baleen\Cli\Config\ConfigInterface;
+use Baleen\Cli\Repository\MigrationRepositoriesServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class AbstractTimelineCommand.
+ * Class AbstractRunMessage.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-abstract class AbstractTimelineCommand extends AbstractMessage implements
-    StorageAwareInterface,
-    RepositoriesAwareInterface,
-    TimelineFactoryAwareInterface
+abstract class AbstractRunMessage extends AbstractMessage implements RepositoriesAwareInterface
 {
-    use StorageAwareTrait;
     use RepositoriesAwareTrait;
-    use TimelineFactoryAwareTrait;
 
     const OPT_DRY_RUN = 'dry-run';
     const OPT_NO_STORAGE = 'no-storage';
+
+    /**
+     * AbstractRunMessage constructor.
+     *
+     * @param ConfigInterface $config
+     * @param MigrationRepositoriesServiceInterface $repositories
+     */
+    public function __construct(
+        ConfigInterface $config,
+        MigrationRepositoriesServiceInterface $repositories
+    ) {
+        $this->setRepositories($repositories);
+        parent::__construct($config);
+    }
 
     /**
      * @inheritDoc

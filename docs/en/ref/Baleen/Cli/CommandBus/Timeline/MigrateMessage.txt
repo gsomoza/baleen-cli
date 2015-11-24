@@ -1,5 +1,5 @@
 -------------------------------------------------
-Baleen\\Cli\\CommandBus\\Timeline\\Migrate\\MigrateMessage
+Baleen\\Cli\\CommandBus\\Run\\Migrate\\MigrateMessage
 -------------------------------------------------
 
 .. php:namespace: Baleen\\Cli\\CommandBus\\Timeline
