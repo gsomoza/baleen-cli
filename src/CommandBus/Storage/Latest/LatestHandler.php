@@ -21,6 +21,7 @@ namespace Baleen\Cli\CommandBus\Storage\Latest;
 
 use Baleen\Cli\Exception\CliException;
 use Baleen\Cli\Helper\VersionFormatter;
+use Baleen\Migrations\Version\VersionInterface;
 
 /**
  * Class LatestHandler.
@@ -39,7 +40,14 @@ class LatestHandler
     public function handle(LatestMessage $command)
     {
         $output = $command->getOutput();
-        $migrated = $command->getStorage()->fetchAll();
+
+        // get all available Versions
+        $collection = $command->getRepositories()->fetchAll();
+
+        // filter to a new collection with only versions that have been migrated
+        $migrated = $collection->filter(function(VersionInterface $version) {
+            return $version->isMigrated();
+        });
 
         if ($migrated->count() === 0) {
             $message = 'No migrated versions found in storage.';

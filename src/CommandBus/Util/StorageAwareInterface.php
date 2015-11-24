@@ -32,9 +32,4 @@ interface StorageAwareInterface
      * @return VersionRepositoryInterface
      */
     public function getStorage();
-
-    /**
-     * @param VersionRepositoryInterface $versionRepository
-     */
-    public function setStorage(VersionRepositoryInterface $versionRepository = null);
 }

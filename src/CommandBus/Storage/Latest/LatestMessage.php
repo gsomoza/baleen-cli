@@ -19,15 +19,18 @@
 
 namespace Baleen\Cli\CommandBus\Storage\Latest;
 
-use Baleen\Cli\CommandBus\Storage\AbstractStorageMessage;
+use Baleen\Cli\CommandBus\Migration\AbstractMigrationMessage;
 use Symfony\Component\Console\Command\Command;
 
 /**
- * Class ListMessage.
+ * Class Storage\ListMessage
+ *
+ * Note how this extends from AbstractMigrationMessage. That's because we always need the Migration Repository in order
+ * to retrieve the status of each migration.
  *
  * @author Gabriel Somoza <gabriel@strategery.io>
  */
-class LatestMessage extends AbstractStorageMessage
+class LatestMessage extends AbstractMigrationMessage
 {
     /**
      * @inheritdoc

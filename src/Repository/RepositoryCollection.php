@@ -87,7 +87,8 @@ final class RepositoryCollection extends ArrayCollection implements RepositoryCo
      *
      * @throws CliException
      */
-    public function fetchAll($key = null)
+    public function
+    fetchAll($key = null)
     {
         $collection = new Collection([], null, $this->comparator);
         if (null !== $key) {

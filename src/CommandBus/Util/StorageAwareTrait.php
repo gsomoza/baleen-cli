@@ -38,7 +38,7 @@ trait StorageAwareTrait
     /**
      * @param VersionRepositoryInterface $storage
      */
-    final public function setStorage(VersionRepositoryInterface $storage = null)
+    final protected function setStorage(VersionRepositoryInterface $storage = null)
     {
         $this->storage = $storage;
     }
